@@ -582,6 +582,12 @@ toponyms.part10.1 <- cbind(toponyms.part10[rep(1:nrow(toponyms.part10), lengths(
 # merge all toponyms smaller parts vertically
 toponyms <- rbind(toponyms.part1.1, toponyms.part2.1, toponyms.part3.1, toponyms.part4.1, toponyms.part5.1, toponyms.part6.1, toponyms.part7.1, toponyms.part8.1, toponyms.part9.1, toponyms.part10.1)
 
+# group the toponyms dataframe per journal.id, counting the number of papers and the number of translated country names
+toponyms.count <- toponyms %>%
+  group_by(journal.id) %>%
+  summarize(paper.count = n_distinct(paper.id),
+            toponym.count = sum(!is.na(toponym.english)))
+
 # group the countries and count the occurrences
 
 
