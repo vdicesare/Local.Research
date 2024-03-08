@@ -265,9 +265,7 @@ toponyms.parts[[10]]$toponym <- lapply(toponyms.parts[[10]]$paper.title, functio
 toponyms.part10 <- toponyms.parts[[10]]
 toponyms.part10$toponym <- unlist(toponyms.part10$toponym)
 
-
-############ PROBAR ESTO?
-# Define the translation function
+# create a function for the translation of all toponyms into english language
 translate_country <- function(countries) { translated_countries <- character(length(countries))
   for (i in seq_along(countries)) {
     if (countries[i] %in% c("Afganistán", "Afeganistão", "Afganistan", "アフガニスタン", "Afghanistan")) { translated_countries[i] <- "Afghanistan"
@@ -449,43 +447,61 @@ translate_country <- function(countries) { translated_countries <- character(len
     } else { translated_countries[i] <- NA }}
   return(translated_countries)}
 
-# Apply the translate_country function to each element in the 'toponym' column
+# apply the translation function to each smaller part of the toponyms dataframe and convert the resulting toponym.english variable into character format
 toponyms.part1 <- toponyms.part1 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part1$toponym.english[toponyms.part1$toponym.english == "character(0)"] <- NA
+toponyms.part1$toponym.english <- as.character(toponyms.part1$toponym.english)
 
 toponyms.part2 <- toponyms.part2 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part2$toponym.english[toponyms.part2$toponym.english == "character(0)"] <- NA
+toponyms.part2$toponym.english <- as.character(toponyms.part2$toponym.english)
 
 toponyms.part3 <- toponyms.part3 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part3$toponym.english[toponyms.part3$toponym.english == "character(0)"] <- NA
+toponyms.part3$toponym.english <- as.character(toponyms.part3$toponym.english)
 
 toponyms.part4 <- toponyms.part4 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part4$toponym.english[toponyms.part4$toponym.english == "character(0)"] <- NA
+toponyms.part4$toponym.english <- as.character(toponyms.part4$toponym.english)
 
 toponyms.part5 <- toponyms.part5 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part5$toponym.english[toponyms.part5$toponym.english == "character(0)"] <- NA
+toponyms.part5$toponym.english <- as.character(toponyms.part5$toponym.english)
 
 toponyms.part6 <- toponyms.part6 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part6$toponym.english[toponyms.part6$toponym.english == "character(0)"] <- NA
+toponyms.part6$toponym.english <- as.character(toponyms.part6$toponym.english)
 
 toponyms.part7 <- toponyms.part7 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part7$toponym.english[toponyms.part7$toponym.english == "character(0)"] <- NA
+toponyms.part7$toponym.english <- as.character(toponyms.part7$toponym.english)
 
 toponyms.part8 <- toponyms.part8 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part8$toponym.english[toponyms.part8$toponym.english == "character(0)"] <- NA
+toponyms.part8$toponym.english <- as.character(toponyms.part8$toponym.english)
 
 toponyms.part9 <- toponyms.part9 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part9$toponym.english[toponyms.part9$toponym.english == "character(0)"] <- NA
+toponyms.part9$toponym.english <- as.character(toponyms.part9$toponym.english)
 
 toponyms.part10 <- toponyms.part10 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
-
+toponyms.part10$toponym.english[toponyms.part10$toponym.english == "character(0)"] <- NA
+toponyms.part10$toponym.english <- as.character(toponyms.part10$toponym.english)
 
 # merge all toponyms smaller parts vertically
 toponyms <- rbind(toponyms.part1, toponyms.part2, toponyms.part3, toponyms.part4, toponyms.part5, toponyms.part6, toponyms.part7, toponyms.part8, toponyms.part9, toponyms.part10)
 
-# translate specific toponyms into english in order to group the countries and count the occurrences
-
+# group the countries and count the occurrences
 
 
 ### DATABASES
