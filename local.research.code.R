@@ -538,8 +538,49 @@ toponyms.part10$toponym.english <- gsub('c\\("', '', toponyms.part10$toponym.eng
 toponyms.part10$toponym.english <- gsub('"\\)', '', toponyms.part10$toponym.english)
 toponyms.part10$toponym.english <- gsub('", "', ', ', toponyms.part10$toponym.english)
 
+# duplicate rows when there are two or more country names per cell
+toponyms.part1.1 <- strsplit(toponyms.part1$toponym.english, ", ")
+toponyms.part1.1 <- cbind(toponyms.part1[rep(1:nrow(toponyms.part1), lengths(toponyms.part1.1)), -which(names(toponyms.part1) == 'toponym.english')], 
+                       toponym.english = unlist(toponyms.part1.1))
+
+toponyms.part2.1 <- strsplit(toponyms.part2$toponym.english, ", ")
+toponyms.part2.1 <- cbind(toponyms.part2[rep(1:nrow(toponyms.part2), lengths(toponyms.part2.1)), -which(names(toponyms.part2) == 'toponym.english')], 
+                          toponym.english = unlist(toponyms.part2.1))
+
+toponyms.part3.1 <- strsplit(toponyms.part3$toponym.english, ", ")
+toponyms.part3.1 <- cbind(toponyms.part3[rep(1:nrow(toponyms.part3), lengths(toponyms.part3.1)), -which(names(toponyms.part3) == 'toponym.english')], 
+                          toponym.english = unlist(toponyms.part3.1))
+
+toponyms.part4.1 <- strsplit(toponyms.part4$toponym.english, ", ")
+toponyms.part4.1 <- cbind(toponyms.part4[rep(1:nrow(toponyms.part4), lengths(toponyms.part4.1)), -which(names(toponyms.part4) == 'toponym.english')], 
+                          toponym.english = unlist(toponyms.part4.1))
+
+toponyms.part5.1 <- strsplit(toponyms.part5$toponym.english, ", ")
+toponyms.part5.1 <- cbind(toponyms.part5[rep(1:nrow(toponyms.part5), lengths(toponyms.part5.1)), -which(names(toponyms.part5) == 'toponym.english')], 
+                          toponym.english = unlist(toponyms.part5.1))
+
+toponyms.part6.1 <- strsplit(toponyms.part6$toponym.english, ", ")
+toponyms.part6.1 <- cbind(toponyms.part6[rep(1:nrow(toponyms.part6), lengths(toponyms.part6.1)), -which(names(toponyms.part6) == 'toponym.english')], 
+                          toponym.english = unlist(toponyms.part6.1))
+
+toponyms.part7.1 <- strsplit(toponyms.part7$toponym.english, ", ")
+toponyms.part7.1 <- cbind(toponyms.part7[rep(1:nrow(toponyms.part7), lengths(toponyms.part7.1)), -which(names(toponyms.part7) == 'toponym.english')], 
+                          toponym.english = unlist(toponyms.part7.1))
+
+toponyms.part8.1 <- strsplit(toponyms.part8$toponym.english, ", ")
+toponyms.part8.1 <- cbind(toponyms.part8[rep(1:nrow(toponyms.part8), lengths(toponyms.part8.1)), -which(names(toponyms.part8) == 'toponym.english')], 
+                          toponym.english = unlist(toponyms.part8.1))
+
+toponyms.part9.1 <- strsplit(toponyms.part9$toponym.english, ", ")
+toponyms.part9.1 <- cbind(toponyms.part9[rep(1:nrow(toponyms.part9), lengths(toponyms.part9.1)), -which(names(toponyms.part9) == 'toponym.english')], 
+                          toponym.english = unlist(toponyms.part9.1))
+
+toponyms.part10.1 <- strsplit(toponyms.part10$toponym.english, ", ")
+toponyms.part10.1 <- cbind(toponyms.part10[rep(1:nrow(toponyms.part10), lengths(toponyms.part10.1)), -which(names(toponyms.part10) == 'toponym.english')], 
+                          toponym.english = unlist(toponyms.part10.1))
+
 # merge all toponyms smaller parts vertically
-toponyms <- rbind(toponyms.part1, toponyms.part2, toponyms.part3, toponyms.part4, toponyms.part5, toponyms.part6, toponyms.part7, toponyms.part8, toponyms.part9, toponyms.part10)
+toponyms <- rbind(toponyms.part1.1, toponyms.part2.1, toponyms.part3.1, toponyms.part4.1, toponyms.part5.1, toponyms.part6.1, toponyms.part7.1, toponyms.part8.1, toponyms.part9.1, toponyms.part10.1)
 
 # group the countries and count the occurrences
 
