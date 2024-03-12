@@ -450,7 +450,6 @@ translate_country <- function(countries) { translated_countries <- character(len
 # apply the translation function to each smaller part of the toponyms dataframe, convert the resulting toponym.english variable into character format and clean vectors
 toponyms.part1 <- toponyms.part1 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
-toponyms.part1$toponym.english[toponyms.part1$toponym.english == "character(0)"] <- NA
 toponyms.part1$toponym.english <- as.character(toponyms.part1$toponym.english)
 
 toponyms.part1$toponym.english <- gsub('c\\("', '', toponyms.part1$toponym.english)
@@ -459,7 +458,6 @@ toponyms.part1$toponym.english <- gsub('", "', ', ', toponyms.part1$toponym.engl
 
 toponyms.part2 <- toponyms.part2 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
-toponyms.part2$toponym.english[toponyms.part2$toponym.english == "character(0)"] <- NA
 toponyms.part2$toponym.english <- as.character(toponyms.part2$toponym.english)
 
 toponyms.part2$toponym.english <- gsub('c\\("', '', toponyms.part2$toponym.english)
@@ -468,7 +466,6 @@ toponyms.part2$toponym.english <- gsub('", "', ', ', toponyms.part2$toponym.engl
 
 toponyms.part3 <- toponyms.part3 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
-toponyms.part3$toponym.english[toponyms.part3$toponym.english == "character(0)"] <- NA
 toponyms.part3$toponym.english <- as.character(toponyms.part3$toponym.english)
 
 toponyms.part3$toponym.english <- gsub('c\\("', '', toponyms.part3$toponym.english)
@@ -477,7 +474,6 @@ toponyms.part3$toponym.english <- gsub('", "', ', ', toponyms.part3$toponym.engl
 
 toponyms.part4 <- toponyms.part4 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
-toponyms.part4$toponym.english[toponyms.part4$toponym.english == "character(0)"] <- NA
 toponyms.part4$toponym.english <- as.character(toponyms.part4$toponym.english)
 
 toponyms.part4$toponym.english <- gsub('c\\("', '', toponyms.part4$toponym.english)
@@ -486,7 +482,6 @@ toponyms.part4$toponym.english <- gsub('", "', ', ', toponyms.part4$toponym.engl
 
 toponyms.part5 <- toponyms.part5 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
-toponyms.part5$toponym.english[toponyms.part5$toponym.english == "character(0)"] <- NA
 toponyms.part5$toponym.english <- as.character(toponyms.part5$toponym.english)
 
 toponyms.part5$toponym.english <- gsub('c\\("', '', toponyms.part5$toponym.english)
@@ -495,7 +490,6 @@ toponyms.part5$toponym.english <- gsub('", "', ', ', toponyms.part5$toponym.engl
 
 toponyms.part6 <- toponyms.part6 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
-toponyms.part6$toponym.english[toponyms.part6$toponym.english == "character(0)"] <- NA
 toponyms.part6$toponym.english <- as.character(toponyms.part6$toponym.english)
 
 toponyms.part6$toponym.english <- gsub('c\\("', '', toponyms.part6$toponym.english)
@@ -504,7 +498,6 @@ toponyms.part6$toponym.english <- gsub('", "', ', ', toponyms.part6$toponym.engl
 
 toponyms.part7 <- toponyms.part7 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
-toponyms.part7$toponym.english[toponyms.part7$toponym.english == "character(0)"] <- NA
 toponyms.part7$toponym.english <- as.character(toponyms.part7$toponym.english)
 
 toponyms.part7$toponym.english <- gsub('c\\("', '', toponyms.part7$toponym.english)
@@ -513,7 +506,6 @@ toponyms.part7$toponym.english <- gsub('", "', ', ', toponyms.part7$toponym.engl
 
 toponyms.part8 <- toponyms.part8 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
-toponyms.part8$toponym.english[toponyms.part8$toponym.english == "character(0)"] <- NA
 toponyms.part8$toponym.english <- as.character(toponyms.part8$toponym.english)
 
 toponyms.part8$toponym.english <- gsub('c\\("', '', toponyms.part8$toponym.english)
@@ -522,7 +514,6 @@ toponyms.part8$toponym.english <- gsub('", "', ', ', toponyms.part8$toponym.engl
 
 toponyms.part9 <- toponyms.part9 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
-toponyms.part9$toponym.english[toponyms.part9$toponym.english == "character(0)"] <- NA
 toponyms.part9$toponym.english <- as.character(toponyms.part9$toponym.english)
 
 toponyms.part9$toponym.english <- gsub('c\\("', '', toponyms.part9$toponym.english)
@@ -531,53 +522,62 @@ toponyms.part9$toponym.english <- gsub('", "', ', ', toponyms.part9$toponym.engl
 
 toponyms.part10 <- toponyms.part10 %>%
   mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
-toponyms.part10$toponym.english[toponyms.part10$toponym.english == "character(0)"] <- NA
 toponyms.part10$toponym.english <- as.character(toponyms.part10$toponym.english)
 
 toponyms.part10$toponym.english <- gsub('c\\("', '', toponyms.part10$toponym.english)
 toponyms.part10$toponym.english <- gsub('"\\)', '', toponyms.part10$toponym.english)
 toponyms.part10$toponym.english <- gsub('", "', ', ', toponyms.part10$toponym.english)
 
-# duplicate rows when there are two or more country names per cell
+# duplicate rows when there are two or more country names per cell and convert NA characters to NA values
 toponyms.part1.1 <- strsplit(toponyms.part1$toponym.english, ", ")
 toponyms.part1.1 <- cbind(toponyms.part1[rep(1:nrow(toponyms.part1), lengths(toponyms.part1.1)), -which(names(toponyms.part1) == 'toponym.english')], 
                        toponym.english = unlist(toponyms.part1.1))
+toponyms.part1.1 <- toponyms.part1.1 %>% mutate(toponym.english = na_if(toponym.english, "NA"))
 
 toponyms.part2.1 <- strsplit(toponyms.part2$toponym.english, ", ")
 toponyms.part2.1 <- cbind(toponyms.part2[rep(1:nrow(toponyms.part2), lengths(toponyms.part2.1)), -which(names(toponyms.part2) == 'toponym.english')], 
                           toponym.english = unlist(toponyms.part2.1))
+toponyms.part2.1 <- toponyms.part2.1 %>% mutate(toponym.english = na_if(toponym.english, "NA"))
 
 toponyms.part3.1 <- strsplit(toponyms.part3$toponym.english, ", ")
 toponyms.part3.1 <- cbind(toponyms.part3[rep(1:nrow(toponyms.part3), lengths(toponyms.part3.1)), -which(names(toponyms.part3) == 'toponym.english')], 
                           toponym.english = unlist(toponyms.part3.1))
+toponyms.part3.1 <- toponyms.part3.1 %>% mutate(toponym.english = na_if(toponym.english, "NA"))
 
 toponyms.part4.1 <- strsplit(toponyms.part4$toponym.english, ", ")
 toponyms.part4.1 <- cbind(toponyms.part4[rep(1:nrow(toponyms.part4), lengths(toponyms.part4.1)), -which(names(toponyms.part4) == 'toponym.english')], 
                           toponym.english = unlist(toponyms.part4.1))
+toponyms.part4.1 <- toponyms.part4.1 %>% mutate(toponym.english = na_if(toponym.english, "NA"))
 
 toponyms.part5.1 <- strsplit(toponyms.part5$toponym.english, ", ")
 toponyms.part5.1 <- cbind(toponyms.part5[rep(1:nrow(toponyms.part5), lengths(toponyms.part5.1)), -which(names(toponyms.part5) == 'toponym.english')], 
                           toponym.english = unlist(toponyms.part5.1))
+toponyms.part5.1 <- toponyms.part5.1 %>% mutate(toponym.english = na_if(toponym.english, "NA"))
 
 toponyms.part6.1 <- strsplit(toponyms.part6$toponym.english, ", ")
 toponyms.part6.1 <- cbind(toponyms.part6[rep(1:nrow(toponyms.part6), lengths(toponyms.part6.1)), -which(names(toponyms.part6) == 'toponym.english')], 
                           toponym.english = unlist(toponyms.part6.1))
+toponyms.part6.1 <- toponyms.part6.1 %>% mutate(toponym.english = na_if(toponym.english, "NA"))
 
 toponyms.part7.1 <- strsplit(toponyms.part7$toponym.english, ", ")
 toponyms.part7.1 <- cbind(toponyms.part7[rep(1:nrow(toponyms.part7), lengths(toponyms.part7.1)), -which(names(toponyms.part7) == 'toponym.english')], 
                           toponym.english = unlist(toponyms.part7.1))
+toponyms.part7.1 <- toponyms.part7.1 %>% mutate(toponym.english = na_if(toponym.english, "NA"))
 
 toponyms.part8.1 <- strsplit(toponyms.part8$toponym.english, ", ")
 toponyms.part8.1 <- cbind(toponyms.part8[rep(1:nrow(toponyms.part8), lengths(toponyms.part8.1)), -which(names(toponyms.part8) == 'toponym.english')], 
                           toponym.english = unlist(toponyms.part8.1))
+toponyms.part8.1 <- toponyms.part8.1 %>% mutate(toponym.english = na_if(toponym.english, "NA"))
 
 toponyms.part9.1 <- strsplit(toponyms.part9$toponym.english, ", ")
 toponyms.part9.1 <- cbind(toponyms.part9[rep(1:nrow(toponyms.part9), lengths(toponyms.part9.1)), -which(names(toponyms.part9) == 'toponym.english')], 
                           toponym.english = unlist(toponyms.part9.1))
+toponyms.part9.1 <- toponyms.part9.1 %>% mutate(toponym.english = na_if(toponym.english, "NA"))
 
 toponyms.part10.1 <- strsplit(toponyms.part10$toponym.english, ", ")
 toponyms.part10.1 <- cbind(toponyms.part10[rep(1:nrow(toponyms.part10), lengths(toponyms.part10.1)), -which(names(toponyms.part10) == 'toponym.english')], 
                           toponym.english = unlist(toponyms.part10.1))
+toponyms.part10.1 <- toponyms.part10.1 %>% mutate(toponym.english = na_if(toponym.english, "NA"))
 
 # merge all toponyms smaller parts vertically
 toponyms <- rbind(toponyms.part1.1, toponyms.part2.1, toponyms.part3.1, toponyms.part4.1, toponyms.part5.1, toponyms.part6.1, toponyms.part7.1, toponyms.part8.1, toponyms.part9.1, toponyms.part10.1)
