@@ -629,3 +629,7 @@ databases$journal.name <- toupper(databases$journal.name)
 
 databases <- databases %>%
   mutate(mainstream = ifelse(journal.name %in% ScopusWOS$journal.name, 0, 1))
+
+
+### SAVE DATAFRAMES
+save.image("~/Desktop/Local.Research/local.research.data.RData")
