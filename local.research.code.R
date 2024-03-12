@@ -587,7 +587,11 @@ toponyms.counts <- toponyms %>%
   group_by(journal.id) %>%
   summarise(
     paper.count = n(),
-    toponyms = paste(unique(toponym.english), collapse = ", "))
+    toponym.count = sum(!is.na(toponym.english)),
+    toponyms = paste(unique(na.omit(toponym.english)), collapse = ", "))
+
+# compute the proportion of toponyms per journal
+toponyms.counts$toponyms.prop <- toponyms.counts$toponym.count / toponyms.counts$paper.count
 
 # group the countries and count the occurrences
 
