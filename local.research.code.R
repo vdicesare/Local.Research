@@ -651,6 +651,22 @@ journals$mainstream <- as.integer(journals$journal.name %in% databases$journal.n
 
 
 ### LANGUAGES
+# replace ISO codes with languages full names in Scopus data within databases dataframe
+databases$language.x <- sapply(databases$language.x, function(iso_codes) {
+  languages <- unlist(strsplit(iso_codes, "; "))
+  full_names <- sapply(languages, function(lang) {
+    switch(lang,
+           "JPN" = "Japanese", "ENG" = "English", "FRE" = "French", "CAT" = "Catalan", "SPA" = "Spanish", "POR" = "Portuguese",
+           "GER" = "German", "ITA" = "Italian", "RUS" = "Russian", "CHI" = "Chinese", "DAN" = "Danish", "SLV" = "Slovenian",
+           "LIT" = "Lithuanian", "AFR" = "Afrikaans", "SLO" = "Slovak", "HUN" = "Hungarian", "POL" = "Polish", "CZE" = "Czech",
+           "SCR" = "Croatian", "NOR" = "Norwegian", "GRE" = "Greek", "FIN" = "Finnish", "EST" = "Estonian", "DUT" = "Dutch",
+           "SCC" = "Serbian", "LAV" = "Latvian", "TUR" = "Turkish", "MAY" = "Malay", "PER" = "Persian", "IND" = "Indonesian",
+           "BUL" = "Bulgarian", "ARA" = "Arabic", "RUM" = "Romanian", "AZE" = "Azerbaijani", "KOR" = "Korean", "SWE" = "Swedish",
+           "HEB" = "Hebrew", "BAQ" = "Basque", "GLE" = "Irish", "BEL" = "Belarusian", "UKR" = "Ukrainian", "THA" = "Thai",
+           "GLG" = "Galician", "GEO" = "Georgian", "ICE" = "Icelandic", "BOS" = "Bosnian", "MAC" = "Macedonian", "MAO" = "Maori",
+           "ARM" = "Armenian", "ALB" = "Albanian", lang)})
+  return(paste(full_names, collapse = ", "))
+})
 
 
 ### SAVE DATAFRAMES
