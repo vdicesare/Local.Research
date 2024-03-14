@@ -668,6 +668,25 @@ databases$language.x <- sapply(databases$language.x, function(iso_codes) {
   return(paste(full_names, collapse = ", "))
 })
 
+# convert NA characters to NA values in language.x variable
+databases$language.x[databases$language.x == "NA"] <- NA
+
+# merge language.x and language.y into a single language variable
+databases$language <- apply(databases, 1, function(row) {
+  language_x <- row["language.x"]
+  language_y <- row["language.y"]
+  
+  if (!is.na(language_x) && !is.na(language_y)) {
+    paste(language_x, language_y, sep = ", ")
+  } else if (!is.na(language_x)) {
+    language_x
+  } else if (!is.na(language_y)) {
+    language_y
+  } else {
+    NA
+  }
+})
+
 
 ### SAVE DATAFRAMES
 save.image("~/Desktop/Local.Research/local.research.data.RData")
