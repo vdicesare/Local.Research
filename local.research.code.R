@@ -610,8 +610,8 @@ toponyms.counts <- toponyms %>%
 # compute the proportion of toponyms per journal
 toponyms.counts$toponyms.prop <- toponyms.counts$toponym.count / toponyms.counts$paper.count
 
-# add the toponyms.prop variable to journals dataframe
-journals <- left_join(journals, toponyms.counts[, c("journal.id", "toponyms.prop")], by = "journal.id")
+# add toponyms and toponyms.prop variables to journals dataframe
+journals <- left_join(journals, toponyms.counts[, c("journal.id", "toponyms", "toponyms.prop")], by = "journal.id")
 
 # group the toponyms by countries, count the individual occurrences
 toponyms.countries <- toponyms %>%
