@@ -687,6 +687,13 @@ databases$language <- apply(databases, 1, function(row) {
   }
 })
 
+# remove duplicate languages from the language variable
+databases$language <- sapply(databases$language, function(lang_string) {
+  unique_languages <- unique(unlist(strsplit(lang_string, ", ")))
+  cleaned_language <- paste(unique_languages, collapse = ", ")
+  return(cleaned_language)
+})
+
 
 ### SAVE DATAFRAMES
 save.image("~/Desktop/Local.Research/local.research.data.RData")
