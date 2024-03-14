@@ -8,6 +8,7 @@ library(ggplot2)
 library(sf)
 library(countrycode)
 library(cld2)
+load("~/Desktop/Local.Research/local.research.data.RData")
 
 
 ### CITS & REFS DATA MINING
@@ -151,6 +152,22 @@ ggplot() +
   geom_sf(data = refs.map, aes(fill = mean)) +
   scale_fill_viridis_c(name = "Mean", na.value = "grey90") +
   theme_void()
+
+
+### AUTHORS' ORIGINS
+# filter all rows per journal to keep only the countries with maximum pubs values
+df.journals.max.pubs <- df.journals.final %>%
+  group_by(journal.id) %>%
+  filter(pubs == max(pubs, na.rm = TRUE)) %>%
+  ungroup()
+df.journals.max.pubs <- select(df.journals.max.pubs, c(journal.id, journal.name, country, pubs, pubs.n, pubs.prop, pubs.country.n))
+df.journals.max.pubs$pubs.prop <- as.numeric(df.journals.max.pubs$pubs.prop)
+
+# rename variable
+df.journals.max.pubs <- df.journals.max.pubs %>% rename("pubs.country" = "country")
+
+# merge pubs.country and pubs.prop variables to journals dataframe
+journals <- merge(journals, df.journals.max.pubs[, c("journal.id", "pubs.country", "pubs.prop")], by = "journal.id", all = TRUE)
 
 
 ### TOPONYMS
