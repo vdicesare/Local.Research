@@ -643,12 +643,11 @@ WOS$journal.name <- toupper(WOS$journal.name)
 # merge Scopus and WOS journals data
 databases <- merge(Scopus, WOS, by = "journal.name", all = TRUE)
 
-# isolate refs data ???
-databases <- subset(journals, select = c("journal.id", "journal.name"))
-databases$journal.name <- toupper(databases$journal.name)
+# convert journal.name in journals dataframe to uppercase for case-insensitive comparison with databases
+journals$journal.name <- toupper(journals$journal.name)
 
-databases <- databases %>%
-  mutate(mainstream = ifelse(journal.name %in% ScopusWOS$journal.name, 0, 1))
+# check if every journal.name in journals is also present in databases, and store the binary answer in new mainstream variable
+journals$mainstream <- as.integer(journals$journal.name %in% databases$journal.name)
 
 
 ### LANGUAGES
