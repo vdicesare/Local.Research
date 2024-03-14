@@ -633,19 +633,25 @@ toponyms.countries <- toponyms.countries %>%
 toponyms.countries$proportion <- format(toponyms.countries$count / sum(toponyms.countries$count), scientific = FALSE)
 
 
-### DATABASES
+### MAINSTREAM DATABASES
+# read files
 Scopus <- read.csv("~/Desktop/Local.Research/Scopus.journals.csv", col.names = c("journal.name", "issn", "eissn", "language", "publisher", sep = ","))
 Scopus$journal.name <- toupper(Scopus$journal.name)
 WOS <- read.csv("~/Desktop/Local.Research/WOS.journals.csv", col.names = c("journal.name", "issn", "eissn", "publisher", "language", sep = ","))
 WOS$journal.name <- toupper(WOS$journal.name)
-ScopusWOS <- merge(Scopus, WOS, by = "journal.name", all.x = TRUE)
 
-# isolate refs data
+# merge Scopus and WOS journals data
+databases <- merge(Scopus, WOS, by = "journal.name", all = TRUE)
+
+# isolate refs data ???
 databases <- subset(journals, select = c("journal.id", "journal.name"))
 databases$journal.name <- toupper(databases$journal.name)
 
 databases <- databases %>%
   mutate(mainstream = ifelse(journal.name %in% ScopusWOS$journal.name, 0, 1))
+
+
+### LANGUAGES
 
 
 ### SAVE DATAFRAMES
