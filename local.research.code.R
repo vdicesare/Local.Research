@@ -712,7 +712,8 @@ databases$language <- sapply(databases$language, function(lang_string) {
   return(cleaned_language)
 })
 
-##### falta la info de idioma de muchas revistas, buscar en DOAJ?
+# add language variable to journals dataframe
+journals <- left_join(journals, databases[, c("journal.name", "language")], by = "journal.name", multiple = "all")
 
 
 ### SAVE DATAFRAMES
