@@ -651,6 +651,15 @@ journals$mainstream <- as.integer(journals$journal.name %in% databases$journal.n
 
 
 ### LANGUAGES
+# read file
+DOAJ <- read.csv("~/Desktop/Local.Research/DOAJ.journals.csv")
+DOAJ <- DOAJ %>% rename("journal.name" = "Journal.title",
+                        "language.z" = "Languages.in.which.the.journal.accepts.manuscripts")
+DOAJ$journal.name <- toupper(DOAJ$journal.name)
+
+# merge DOAJ to Scopus and WOS journals data already combined in databases dataframe
+databases <- merge(databases, DOAJ[, c("journal.name", "language.z")], by = "journal.name", all = TRUE)
+
 # replace ISO codes with languages full names in Scopus data within databases dataframe
 databases$language.x <- sapply(databases$language.x, function(iso_codes) {
   languages <- unlist(strsplit(iso_codes, "; "))
@@ -671,21 +680,6 @@ databases$language.x <- sapply(databases$language.x, function(iso_codes) {
 # convert NA characters to NA values in language.x variable
 databases$language.x[databases$language.x == "NA"] <- NA
 
-# merge language.x and language.y into a single language variable
-databases$language <- apply(databases, 1, function(row) {
-  language_x <- row["language.x"]
-  language_y <- row["language.y"]
-  
-  if (!is.na(language_x) && !is.na(language_y)) {
-    paste(language_x, language_y, sep = ", ")
-  } else if (!is.na(language_x)) {
-    language_x
-  } else if (!is.na(language_y)) {
-    language_y
-  } else {
-    NA
-  }
-})
 
 # remove duplicate languages from the language variable
 databases$language <- sapply(databases$language, function(lang_string) {
@@ -693,6 +687,8 @@ databases$language <- sapply(databases$language, function(lang_string) {
   cleaned_language <- paste(unique_languages, collapse = ", ")
   return(cleaned_language)
 })
+
+##### falta la info de idioma de muchas revistas, buscar en DOAJ?
 
 
 ### SAVE DATAFRAMES
