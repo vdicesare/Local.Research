@@ -680,6 +680,30 @@ databases$language.x <- sapply(databases$language.x, function(iso_codes) {
 # convert NA characters to NA values in language.x variable
 databases$language.x[databases$language.x == "NA"] <- NA
 
+# merge language.x, language.y and language.z into a single language variable
+databases$language <- apply(databases, 1, function(row) {
+  language_x <- row["language.x"]
+  language_y <- row["language.y"]
+  language_z <- row["language.z"]
+  
+  if (!is.na(language_x) && !is.na(language_y) && !is.na(language_z)) {
+    paste(language_x, language_y, language_z, sep = ", ")
+  } else if (!is.na(language_x) && !is.na(language_y)) {
+    paste(language_x, language_y, sep = ", ")
+  } else if (!is.na(language_x) && !is.na(language_z)) {
+    paste(language_x, language_z, sep = ", ")
+  } else if (!is.na(language_y) && !is.na(language_z)) {
+    paste(language_y, language_z, sep = ", ")
+  } else if (!is.na(language_x)) {
+    language_x
+  } else if (!is.na(language_y)) {
+    language_y
+  } else if (!is.na(language_z)) {
+    language_z
+  } else {
+    NA
+  }
+})
 
 # remove duplicate languages from the language variable
 databases$language <- sapply(databases$language, function(lang_string) {
