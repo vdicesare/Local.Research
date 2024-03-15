@@ -713,7 +713,12 @@ databases$language <- sapply(databases$language, function(lang_string) {
 })
 
 # add language variable to journals dataframe
-journals <- left_join(journals, databases[, c("journal.name", "language")], by = "journal.name", multiple = "all")
+journals <- left_join(journals, databases[, c("journal.name", "language")], by = "journal.name", keep = FALSE)
+journals <- journals[!duplicated(journals), ]
+
+
+### FINAL JOURNALS TABLE
+journals.full <- journals[complete.cases(journals), ]
 
 
 ### SAVE DATAFRAMES
