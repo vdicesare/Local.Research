@@ -724,9 +724,14 @@ databases$language <- sapply(databases$language, function(lang_string) {
   return(cleaned_language)
 })
 
-# add language variable to journals dataframe
+# add language variable to journals dataframe and remove duplicates
 journals <- left_join(journals, databases[, c("journal.name", "language")], by = "journal.name", keep = FALSE)
 journals <- journals[!duplicated(journals), ]
+
+# apply the function to transform all empty cells into NA values, convert NA characters to NA values in language variable
+journals <- journals %>%
+  mutate(across(everything(), replace_empty_with_na))
+journals$language[journals$language == "NA"] <- NA
 
 
 ### FINAL JOURNALS TABLE
