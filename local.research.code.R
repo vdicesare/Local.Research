@@ -643,6 +643,14 @@ WOS$journal.name <- toupper(WOS$journal.name)
 # merge Scopus and WOS journals data
 databases <- merge(Scopus, WOS, by = "journal.name", all = TRUE)
 
+# transform all empty cells into NA values
+replace_empty_with_na <- function(x) {
+  x[x == ""] <- NA
+  return(x)
+}
+databases <- databases %>%
+  mutate(across(everything(), replace_empty_with_na))
+
 # convert journal.name in journals dataframe to uppercase for case-insensitive comparison with databases
 journals$journal.name <- toupper(journals$journal.name)
 
@@ -656,6 +664,10 @@ DOAJ <- read.csv("~/Desktop/Local.Research/DOAJ.journals.csv")
 DOAJ <- DOAJ %>% rename("journal.name" = "Journal.title",
                         "language.z" = "Languages.in.which.the.journal.accepts.manuscripts")
 DOAJ$journal.name <- toupper(DOAJ$journal.name)
+
+# apply the function to transform all empty cells into NA values to DOAJ before merging
+DOAJ <- DOAJ %>%
+  mutate(across(everything(), replace_empty_with_na))
 
 # merge DOAJ to Scopus and WOS journals data already combined in databases dataframe
 databases <- merge(databases, DOAJ[, c("journal.name", "language.z")], by = "journal.name", all = TRUE)
