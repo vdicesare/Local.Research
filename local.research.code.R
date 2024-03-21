@@ -610,8 +610,8 @@ toponyms.counts <- toponyms %>%
 # compute the proportion of toponyms per journal
 toponyms.counts$toponyms.prop <- toponyms.counts$toponym.count / toponyms.counts$paper.count
 
-# add toponyms and toponyms.prop variables to journals dataframe
-journals <- left_join(journals, toponyms.counts[, c("journal.id", "toponyms", "toponyms.prop")], by = "journal.id")
+# add toponyms, toponym.count and toponyms.prop variables to journals dataframe
+journals <- left_join(journals, toponyms.counts[, c("journal.id", "toponyms", "toponym.count", "toponyms.prop")], by = "journal.id")
 
 # group the toponyms by countries, count the individual occurrences
 toponyms.countries <- toponyms %>%
@@ -734,8 +734,21 @@ journals <- journals %>%
 journals$language[journals$language == "NA"] <- NA
 
 
-### FINAL JOURNALS TABLE
-journals.full <- journals[complete.cases(journals), ]
+### SUMMARY TABLE
+# compute measures of central tendency, non-central position and variability in all continuous variables: cits.prop, refs.prop, pubs.prop, toponym.count, toponyms.prop
+journals$toponyms.prop <- round(journals$toponyms.prop, digits = 2)
+print(mean(journals$toponyms.prop, na.rm = TRUE))
+print(median(journals$toponyms.prop, na.rm = TRUE))
+
+t <- table(journals$toponyms.prop)
+mode <- names(t)[which(t == max(t))]
+print(mode)
+
+print(min(journals$toponyms.prop, na.rm = TRUE))
+print(max(journals$toponyms.prop, na.rm = TRUE))
+
+print(quantile(journals$toponyms.prop, probs = c(0.25,0.75), na.rm = TRUE))
+print(sd(journals$toponyms.prop, na.rm = TRUE))
 
 
 ### SAVE DATAFRAMES
