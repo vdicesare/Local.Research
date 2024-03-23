@@ -613,27 +613,8 @@ toponyms.counts <- toponyms.counts %>%
 # compute the proportion of toponyms per journal
 toponyms.counts$toponyms.prop <- toponyms.counts$paper.with.top / toponyms.counts$paper.total
 
-# add toponyms, toponym.count and toponyms.prop variables to journals dataframe
-journals <- left_join(journals, toponyms.counts[, c("journal.id", "toponyms", "toponym.count", "toponyms.prop")], by = "journal.id")
-
-# group the toponyms by countries, count the individual occurrences
-toponyms.countries <- toponyms %>%
-  group_by(toponym.english) %>%
-  summarise(count = n())
-
-# correct specific spelling mistakes
-toponyms.countries <- toponyms.countries %>%
-  filter(!is.na(toponym.english) & !grepl("NA\\)| NA\\)", toponym.english)) %>%
-  group_by(toponym = ifelse(toponym.english %in% c("United Kingdom\""), "United Kingdom",
-                            ifelse(toponym.english %in% c("Cyprus\""), "Cyprus",
-                                   ifelse(toponym.english %in% c("India\""), "India",
-                                          ifelse(toponym.english %in% c("Luxemburg"), "Luxembourg",
-                                                 toponym.english))))) %>%
-  summarise(count = sum(count)) %>%
-  ungroup()
-
-# compute the proportion of each country in the toponyms' total amount
-toponyms.countries$proportion <- format(toponyms.countries$count / sum(toponyms.countries$count), scientific = FALSE)
+# add toponyms.prop variable to journals dataframe
+journals <- left_join(journals, toponyms.counts[, c("journal.id", "toponyms.prop")], by = "journal.id")
 
 
 ### MAINSTREAM DATABASES
