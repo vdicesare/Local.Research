@@ -599,6 +599,10 @@ toponyms.part10.1 <- toponyms.part10.1 %>% mutate(toponym.english = na_if(topony
 # merge all toponyms smaller parts vertically
 toponyms <- rbind(toponyms.part1.1, toponyms.part2.1, toponyms.part3.1, toponyms.part4.1, toponyms.part5.1, toponyms.part6.1, toponyms.part7.1, toponyms.part8.1, toponyms.part9.1, toponyms.part10.1)
 
+# add a with.toponym variable to check whether a paper contains or not toponyms in its title
+toponyms$with.toponym <- ifelse(is.na(toponyms$toponym.english), 0, 1)
+
+
 # group the toponyms dataframe per journal.id, counting the number of papers and aggregating the translated country names
 toponyms.counts <- toponyms %>%
   group_by(journal.id) %>%
@@ -736,19 +740,19 @@ journals$language[journals$language == "NA"] <- NA
 
 ### SUMMARY TABLE
 # compute measures of central tendency, non-central position and variability in all continuous variables: cits.prop, refs.prop, pubs.prop, toponym.count, toponyms.prop
-journals$toponyms.prop <- round(journals$toponyms.prop, digits = 2)
-print(mean(journals$toponyms.prop, na.rm = TRUE))
-print(median(journals$toponyms.prop, na.rm = TRUE))
+journals$cits.prop <- round(journals$cits.prop, digits = 2)
+print(mean(journals$cits.prop, na.rm = TRUE))
+print(median(journals$cits.prop, na.rm = TRUE))
 
-t <- table(journals$toponyms.prop)
+t <- table(journals$cits.prop)
 mode <- names(t)[which(t == max(t))]
 print(mode)
 
-print(min(journals$toponyms.prop, na.rm = TRUE))
-print(max(journals$toponyms.prop, na.rm = TRUE))
+print(min(journals$cits.prop, na.rm = TRUE))
+print(max(journals$cits.prop, na.rm = TRUE))
 
-print(quantile(journals$toponyms.prop, probs = c(0.25,0.75), na.rm = TRUE))
-print(sd(journals$toponyms.prop, na.rm = TRUE))
+print(quantile(journals$cits.prop, probs = c(0.25,0.75), na.rm = TRUE))
+print(sd(journals$cits.prop, na.rm = TRUE))
 
 
 ### SAVE DATAFRAMES
