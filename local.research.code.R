@@ -602,14 +602,13 @@ toponyms <- rbind(toponyms.part1.1, toponyms.part2.1, toponyms.part3.1, toponyms
 # add a with.toponym variable to check whether a paper contains or not toponyms in its title
 toponyms$with.toponym <- ifelse(is.na(toponyms$toponym.english), 0, 1)
 
-
-# group the toponyms dataframe per journal.id, counting the number of papers and aggregating the translated country names
-toponyms.counts <- toponyms %>%
+# group the toponyms dataframe per journal.id, counting the number of total papers and papers with toponyms
+toponyms.counts <- subset(toponyms, select = c("journal.id", "paper.id", "with.toponym"))
+toponyms.counts <- distinct(toponyms.counts, paper.id, .keep_all = TRUE)
+toponyms.counts <- toponyms.counts %>%
   group_by(journal.id) %>%
-  summarise(
-    paper.count = n(),
-    toponym.count = sum(!is.na(toponym.english)),
-    toponyms = paste(unique(na.omit(toponym.english)), collapse = ", "))
+  summarise(paper.total = n(),
+            paper.with.top = sum(with.toponym))
 
 # compute the proportion of toponyms per journal
 toponyms.counts$toponyms.prop <- toponyms.counts$toponym.count / toponyms.counts$paper.count
