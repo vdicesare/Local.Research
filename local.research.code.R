@@ -5,6 +5,7 @@ library(tidyr)
 library(stringr)
 library(reshape2)
 library(readxl)
+library(ineq)
 library(ggplot2)
 library(sf)
 library(countrycode)
@@ -755,21 +756,29 @@ journals <- left_join(journals, disciplines, by = "journal.id")
 
 
 ### SUMMARY TABLE
-# compute measures of central tendency, non-central position and variability in all continuous variables: cits.prop, refs.prop, pubs.prop, toponym.count, toponyms.prop
-journals$cits.prop <- round(journals$cits.prop, digits = 2)
-print(mean(journals$cits.prop, na.rm = TRUE))
-print(median(journals$cits.prop, na.rm = TRUE))
+# compute measures of central tendency, non-central position and variability in all quantitative variables: cits.prop, refs.prop, pubs.prop and toponyms.prop
+journals$toponyms.prop <- round(journals$toponyms.prop, digits = 2)
+print(mean(journals$toponyms.prop, na.rm = TRUE))
+print(median(journals$toponyms.prop, na.rm = TRUE))
 
-t <- table(journals$cits.prop)
+t <- table(journals$toponyms.prop)
 mode <- names(t)[which(t == max(t))]
 print(mode)
 
-print(min(journals$cits.prop, na.rm = TRUE))
-print(max(journals$cits.prop, na.rm = TRUE))
+print(min(journals$toponyms.prop, na.rm = TRUE))
+print(max(journals$toponyms.prop, na.rm = TRUE))
 
-print(quantile(journals$cits.prop, probs = c(0.25,0.75), na.rm = TRUE))
-print(sd(journals$cits.prop, na.rm = TRUE))
+print(quantile(journals$toponyms.prop, probs = c(0.25,0.75), na.rm = TRUE))
+print(sd(journals$toponyms.prop, na.rm = TRUE))
 
+# compute measures of distribution, central tendency and dispersion in all categorical variables: mainstream.database, language, mainstream.language and discipline
+print(journals %>% distinct(journal.id, .keep_all = TRUE) %>% summarise(sum(mainstream.database == 0)))
+print(journals %>% distinct(journal.id, .keep_all = TRUE) %>% summarise(gini_index = ineq::Gini(mainstream.database)) %>% pull(gini_index))
+
+print(journals %>% distinct(journal.id, .keep_all = TRUE) %>% summarise(sum(mainstream.language == 0)))
+print(journals %>% distinct(journal.id, .keep_all = TRUE) %>% summarise(gini_index = ineq::Gini(mainstream.language)) %>% pull(gini_index))
+
+###### continuar acá ^
 
 ### SAVE DATAFRAMES
 save.image("~/Desktop/Local.Research/local.research.data.RData")
