@@ -111,22 +111,15 @@ journals <- journals %>% rename("journal.name" = "journal.name.x",
 cits <- subset(journals, select = c("journal.id", "journal.name", "cits.country", "cits.prop"))
 cits <- cits %>% distinct(journal.id, cits.country, .keep_all = TRUE)
 
-# obtain values per country
-cits.countries <- cits %>%
-  group_by(cits.country) %>%
-  summarise(mean = mean(cits.prop),
-            median = median(cits.prop),
-            mode = as.numeric(names(sort(table(cits.prop), decreasing = TRUE)[1])))
-
 # plot world map
-world.map <- st_read("~/Desktop/Local.Research/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp")
-cits.map <- merge(world.map, cits.countries, by.x = "ISO_A2", by.y = "cits.country", all.x = TRUE)
+#world.map <- st_read("~/Desktop/Local.Research/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp")
+#cits.map <- merge(world.map, cits.countries, by.x = "ISO_A2", by.y = "cits.country", all.x = TRUE)
 #cits.map <- cits.map[complete.cases(cits.map$mean), ]
 
-ggplot() +
-  geom_sf(data = cits.map, aes(fill = mean)) +
-  scale_fill_viridis_c(name = "Mean", na.value = "grey90") +
-  theme_void()
+#ggplot() +
+  #geom_sf(data = cits.map, aes(fill = mean)) +
+  #scale_fill_viridis_c(name = "Mean", na.value = "grey90") +
+  #theme_void()
 
 
 ### LOCALLY ROOTED RESEARCH
@@ -137,21 +130,14 @@ ggplot() +
 refs <- subset(journals, select = c("journal.id", "journal.name", "refs.country", "refs.prop"))
 refs <- refs %>% distinct(journal.id, refs.country, .keep_all = TRUE)
 
-# obtain values per country
-refs.countries <- refs %>%
-  group_by(refs.country) %>%
-  summarise(mean = mean(refs.prop),
-            median = median(refs.prop),
-            mode = as.numeric(names(sort(table(refs.prop), decreasing = TRUE)[1])))
-
 # plot world map
-world.map <- st_read("~/Desktop/Local.Research/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp")
-refs.map <- merge(world.map, refs.countries, by.x = "ISO_A2", by.y = "refs.country", all.x = TRUE)
+#world.map <- st_read("~/Desktop/Local.Research/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp")
+#refs.map <- merge(world.map, refs.countries, by.x = "ISO_A2", by.y = "refs.country", all.x = TRUE)
 
-ggplot() +
-  geom_sf(data = refs.map, aes(fill = mean)) +
-  scale_fill_viridis_c(name = "Mean", na.value = "grey90") +
-  theme_void()
+#ggplot() +
+  #geom_sf(data = refs.map, aes(fill = mean)) +
+  #scale_fill_viridis_c(name = "Mean", na.value = "grey90") +
+  #theme_void()
 
 
 ### AUTHORS' ORIGINS
@@ -638,8 +624,8 @@ databases <- databases %>%
 # convert journal.name in journals dataframe to uppercase for case-insensitive comparison with databases
 journals$journal.name <- toupper(journals$journal.name)
 
-# check if every journal.name in journals is also present in databases, and store the binary answer in new mainstream variable
-journals$mainstream <- as.integer(journals$journal.name %in% databases$journal.name)
+# check if every journal.name in journals is also present in databases, and store the binary answer in new mainstream.database variable
+journals$mainstream.database <- as.integer(journals$journal.name %in% databases$journal.name)
 
 
 ### LANGUAGES
@@ -716,6 +702,47 @@ journals <- journals[!duplicated(journals), ]
 journals <- journals %>%
   mutate(across(everything(), replace_empty_with_na))
 journals$language[journals$language == "NA"] <- NA
+
+# isolate NA rows from journals dataframe in order to complete only those empty cases with language data from papers' titles
+journals.language <- journals[is.na(journals$language),]
+journals.language <- subset(journals.language, select = c("journal.id", "language"))
+journals.language <- unique(journals.language)
+journals.language <- subset(journals.language, select = -language)
+
+# isolate language data from toponyms dataframe and process it to replicate the format of journals$language
+toponyms.language <- subset(toponyms, select = c("journal.id", "title.language"))
+toponyms.language <- unique(toponyms.language)
+toponyms.language <- na.omit(toponyms.language)
+toponyms.language$title.language <- sapply(toponyms.language$title.language, function(lang) {switch(lang,
+  "en" = "English", "es" = "Spanish", "fr" = "French", "pl" = "Polish", "pt" = "Portuguese", "ja" = "Japanese", "de" = "German",
+  "gl" = "Galician", "sk" = "Slovak", "ro" = "Romanian", "it" = "Italian", "nl" = "Dutch", "lt" = "Lithuanian", "da" = "Danish",
+  "el" = "Greek", "rw" = "Rwandan", "st" = "Southern Sotho", "af" = "Afrikaans", "sw" = "Swahili", "et" = "Estonian", "ca" = "Catalan",
+  "ms" = "Malay", "zh-Hant" = "Chinese", "no" = "Norwegian", "jw" = "Javanese", "ru" = "Russian", "mg" = "Malagasy", "ku" = "Kurdish",
+  "id" = "Indonesian", "ny" = "Chichewa", "tl" = "Tagalog", "su" = "Sundanese", "cy" = "Welsh", "eu" = "Basque", "tr" = "Turkish",
+  "ceb" = "Cebuano", "sq" = "Albanian", "zh" = "Chinese", "uz" = "Uzbek", "ga" = "Irish", "mt" = "Maltese", "sl" = "Slovenian",
+  "hu" = "Hungarian", "ht" = "Haitian", "uk" = "Ukranian", "ar" = "Arabic", "sr" = "Serbian", "fi" = "Finnish", "sv" = "Swedish",
+  "gd" = "Gaelic", "lg" = "Ganda", "is" = "Icelandic", "hr" = "Croatian", "bs" = "Bosnian", "mk" = "Macedonian", "bg" = "Bulgarian",
+  "cs" = "Czech", "az" = "Azerbaijani", "iw" = "Hebrew", "ko" = "Korean", "lv" = "Latvian", "vi" = "Vietnamese", "hmn" = "Mong",
+  "ky" = "Kirghiz", "be" = "Belarusian", "th" = "Thai", "fa" = "Persian", "ne" = "Nepali", "ur" = "Urdu", "ta" = "Tamil",
+  "kk" = "Kazakh", "hi" = "Hindi", "pa" = "Punjabi", "si" = "Sinhala", "gu" = "Gujarati", "hy" = "Armenian", NA)})
+
+# group by journal.id and concatenate languages into a single cell separated by ", "
+toponyms.language <- toponyms.language %>%
+  group_by(journal.id) %>%
+  summarise(language = paste(unique(title.language), collapse = ", "))
+
+# merge both subsets in order to keep only the languages of the journals presenting NA values in journals dataframe
+journals.toponyms.language <- merge(journals.language, toponyms.language, by = "journal.id", all.x = TRUE)
+
+# fill in the language variable in journals dataframe with the language identified in papers' titles
+journals <- left_join(journals, prueba3, by = "journal.id") %>%
+  mutate(language = coalesce(language.x, language.y)) %>%
+  select(-language.x, -language.y)
+
+# create a new binary variable mainstream.language to separate English and Multi-Language (1 = mainstream) from the rest (0 = not mainstream)
+journals <- journals %>%
+  mutate(mainstream.language = ifelse(
+    grepl("English|Multi-Language", language, ignore.case = TRUE), 1, 0))
 
 
 ### SUMMARY TABLE
