@@ -4,6 +4,7 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 library(reshape2)
+library(readxl)
 library(ggplot2)
 library(sf)
 library(countrycode)
@@ -11,7 +12,7 @@ library(cld2)
 load("~/Desktop/Local.Research/local.research.data.RData")
 
 
-### CITS & REFS DATA MINING
+### CITS, REFS & PUBS DATA MINING
 # read Dimensions file
 df <- read.csv2("~/Desktop/Local.Research/dataset_journals.csv", col.names = c("pubs.refs.cits", "source.type", "journal.id", "journal.name", "issn", "eissn", "publisher", "country", "count"))
 
@@ -735,7 +736,7 @@ toponyms.language <- toponyms.language %>%
 journals.toponyms.language <- merge(journals.language, toponyms.language, by = "journal.id", all.x = TRUE)
 
 # fill in the language variable in journals dataframe with the language identified in papers' titles
-journals <- left_join(journals, prueba3, by = "journal.id") %>%
+journals <- left_join(journals, journals.toponyms.language, by = "journal.id") %>%
   mutate(language = coalesce(language.x, language.y)) %>%
   select(-language.x, -language.y)
 
@@ -743,6 +744,14 @@ journals <- left_join(journals, prueba3, by = "journal.id") %>%
 journals <- journals %>%
   mutate(mainstream.language = ifelse(
     grepl("English|Multi-Language", language, ignore.case = TRUE), 1, 0))
+
+
+### DISCIPLINES
+# read Dimensions file
+disciplines <- read_excel("~/Desktop/Local.Research/journal-for-division.xlsx")
+
+# add a discipline and a discipline.prop variables to journals dataframe
+journals <- left_join(journals, disciplines, by = "journal.id")
 
 
 ### SUMMARY TABLE
