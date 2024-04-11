@@ -754,7 +754,7 @@ disciplines <- read_excel("~/Desktop/Local.Research/journal-for-division.xlsx")
 journals <- left_join(journals, disciplines, by = "journal.id")
 
 
-### SUMMARY TABLE
+### SUMMARY TABLES
 # compute measures of central tendency, non-central position and variability in all continuous variables: cits.prop, refs.prop, pubs.prop and toponyms.prop
 journals$toponyms.prop <- round(journals$toponyms.prop, digits = 2)
 print(mean(journals$toponyms.prop, na.rm = TRUE))
@@ -780,6 +780,21 @@ print(sum(table(languages[!duplicated(languages[c("journal.id", "language")]), "
 print(journals %>% distinct(journal.id, .keep_all = TRUE) %>% summarise(sum(mainstream.language == 0)))
 
 print(sort(table(journals[!duplicated(journals[c("journal.id", "discipline")]), "discipline"]), decreasing = TRUE))
+
+# compute the mean distribution of journals per discipline, per variable: cits.prop, refs.prop, pubs.prop, toponyms.prop, mainstream.database and mainstream.language
+journals %>% 
+  na.omit() %>%
+  distinct(journal.id, .keep_all = TRUE) %>% 
+  group_by(discipline) %>% 
+  summarise(avg_toponyms_prop = mean(toponyms.prop)) %>%
+  print(n = Inf)
+
+journals %>%
+  na.omit() %>%
+  distinct(journal.id, .keep_all = TRUE) %>%
+  group_by(discipline) %>%
+  summarise(avg_mainstream_yes = mean(mainstream.language, na.rm = TRUE)) %>%
+  print(n = Inf)
 
 
 ### SAVE DATAFRAMES
