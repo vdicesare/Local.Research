@@ -113,19 +113,6 @@ journals <- journals %>% rename("journal.name" = "journal.name.x",
 # set cut-off threshold at >= ?? references in 3 years (2017-2019 period)
 # posible umbral de corte: el número mínimo de referencias que realiza una revista identificada como Locally Rooted debe superar la media de referencias que realiza esa misma revista en general
 
-# isolate refs data
-refs <- subset(journals, select = c("journal.id", "journal.name", "refs.country", "refs.prop"))
-refs <- refs %>% distinct(journal.id, refs.country, .keep_all = TRUE)
-
-# plot world map
-#world.map <- st_read("~/Desktop/Local.Research/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp")
-#refs.map <- merge(world.map, refs.countries, by.x = "ISO_A2", by.y = "refs.country", all.x = TRUE)
-
-#ggplot() +
-  #geom_sf(data = refs.map, aes(fill = mean)) +
-  #scale_fill_viridis_c(name = "Mean", na.value = "grey90") +
-  #theme_void()
-
 
 ### AUTHORS' ORIGINS
 # filter all rows per journal to keep only the countries with maximum pubs values
@@ -896,6 +883,29 @@ map.language.data <- map.language.data[complete.cases(map.language.data$pubs.sha
 
 ggplot() +
   geom_sf(data = map.language.data, aes(fill = pubs.share)) +
+  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
+  theme_void()
+
+
+# for mainstream.database dichotomous variable, isolate local journals (= 0)
+local.database <- subset(journals, select = c("journal.id", "journal.name", "mainstream.database"), mainstream.database == 0)
+
+# subset the necessary variables for mapping and remove NA values
+map.database <- df.journals.final[df.journals.final$journal.id %in% local.database$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+map.database <- map.database[complete.cases(map.database), ]
+
+# compute each country's publication share
+map.database.countries <- aggregate(pubs ~ country, data = map.database, FUN = sum)
+map.database.countries <- map.database.countries %>% mutate(pubs.share = pubs / sum(pubs))
+map.database.countries$pubs.share <- as.numeric(as.character(map.database.countries$pubs.share))
+map.database.countries$pubs.share <- round(map.database.countries$pubs.share, digits = 8)
+
+# plot database world map
+map.database.data <- merge(map.world, map.database.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+map.database.data <- map.database.data[complete.cases(map.database.data$pubs.share), ]
+
+ggplot() +
+  geom_sf(data = map.database.data, aes(fill = pubs.share)) +
   scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
   theme_void()
 
