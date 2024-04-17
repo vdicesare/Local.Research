@@ -108,20 +108,6 @@ journals <- journals %>% rename("journal.name" = "journal.name.x",
                                                        #ifelse(df.journals.max.cits$country %in% africa, "Africa",
                                                               #ifelse(df.journals.max.cits$country %in% oceania, "Oceania", NA)))))
 
-# isolate cits data
-cits <- subset(journals, select = c("journal.id", "journal.name", "cits.country", "cits.prop"))
-cits <- cits %>% distinct(journal.id, cits.country, .keep_all = TRUE)
-
-# plot world map
-#world.map <- st_read("~/Desktop/Local.Research/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp")
-#cits.map <- merge(world.map, cits.countries, by.x = "ISO_A2", by.y = "cits.country", all.x = TRUE)
-#cits.map <- cits.map[complete.cases(cits.map$mean), ]
-
-#ggplot() +
-  #geom_sf(data = cits.map, aes(fill = mean)) +
-  #scale_fill_viridis_c(name = "Mean", na.value = "grey90") +
-  #theme_void()
-
 
 ### LOCALLY ROOTED RESEARCH
 # set cut-off threshold at >= ?? references in 3 years (2017-2019 period)
@@ -795,6 +781,31 @@ journals %>%
   group_by(discipline) %>%
   summarise(avg_mainstream_yes = mean(mainstream.language, na.rm = TRUE)) %>%
   print(n = Inf)
+
+
+### WORLD MAPS                                                                      (provisional cut-off threshold = 51%)
+# for cits proportions, isolate local journals (>= 0.51)
+local.cits <- subset(journals, select = c("journal.id", "journal.name", "cits.prop"), cits.prop >= 0.51)
+
+# subset the necessary variables for mapping and remove NA values
+map.cits <- df.journals.final[df.journals.final$journal.id %in% local.cits$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+map.cits <- map.cits[complete.cases(map.cits), ]
+
+# compute each country's publication share
+map.cits.countries <- aggregate(pubs ~ country, data = map.cits, FUN = sum)
+map.cits.countries <- map.cits.countries %>% mutate(pubs.share = pubs / sum(pubs))
+map.cits.countries$pubs.share <- as.numeric(as.character(map.cits.countries$pubs.share))
+map.cits.countries$pubs.share <- round(map.cits.countries$pubs.share, digits = 8)
+
+# plot cits world map
+map.world <- st_read("~/Desktop/Local.Research/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp")
+map.cits.data <- merge(map.world, map.cits.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+map.cits.data <- map.cits.data[complete.cases(map.cits.data$pubs.share), ]
+
+ggplot() +
+geom_sf(data = map.cits.data, aes(fill = pubs.share)) +
+scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
+theme_void()
 
 
 ### SAVE DATAFRAMES
