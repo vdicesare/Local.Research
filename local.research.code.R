@@ -831,5 +831,28 @@ scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
 theme_void()
 
 
+# for toponyms proportions, isolate local journals (>= 0.51)
+local.toponyms <- subset(journals, select = c("journal.id", "journal.name", "toponyms.prop"), toponyms.prop >= 0.51)
+
+# subset the necessary variables for mapping and remove NA values
+map.toponyms <- df.journals.final[df.journals.final$journal.id %in% local.toponyms$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+map.toponyms <- map.toponyms[complete.cases(map.toponyms), ]
+
+# compute each country's publication share
+map.toponyms.countries <- aggregate(pubs ~ country, data = map.toponyms, FUN = sum)
+map.toponyms.countries <- map.toponyms.countries %>% mutate(pubs.share = pubs / sum(pubs))
+map.toponyms.countries$pubs.share <- as.numeric(as.character(map.toponyms.countries$pubs.share))
+map.toponyms.countries$pubs.share <- round(map.toponyms.countries$pubs.share, digits = 8)
+
+# plot toponyms world map
+map.toponyms.data <- merge(map.world, map.toponyms.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+map.toponyms.data <- map.toponyms.data[complete.cases(map.toponyms.data$pubs.share), ]
+
+ggplot() +
+  geom_sf(data = map.toponyms.data, aes(fill = pubs.share)) +
+  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
+  theme_void()
+
+
 ### SAVE DATAFRAMES
 save.image("~/Desktop/Local.Research/local.research.data.RData")
