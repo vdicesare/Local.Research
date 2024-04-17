@@ -784,6 +784,30 @@ journals %>%
 
 
 ### WORLD MAPS                                                                      (provisional cut-off threshold = 51%)
+# for refs proportions, isolate local journals (>= 0.51)
+local.refs <- subset(journals, select = c("journal.id", "journal.name", "refs.prop"), refs.prop >= 0.51)
+
+# subset the necessary variables for mapping and remove NA values
+map.refs <- df.journals.final[df.journals.final$journal.id %in% local.refs$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+map.refs <- map.refs[complete.cases(map.refs), ]
+
+# compute each country's publication share
+map.refs.countries <- aggregate(pubs ~ country, data = map.refs, FUN = sum)
+map.refs.countries <- map.refs.countries %>% mutate(pubs.share = pubs / sum(pubs))
+map.refs.countries$pubs.share <- as.numeric(as.character(map.refs.countries$pubs.share))
+map.refs.countries$pubs.share <- round(map.refs.countries$pubs.share, digits = 8)
+
+# plot refs world map
+map.world <- st_read("~/Desktop/Local.Research/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp")
+map.refs.data <- merge(map.world, map.refs.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+map.refs.data <- map.refs.data[complete.cases(map.refs.data$pubs.share), ]
+
+ggplot() +
+  geom_sf(data = map.refs.data, aes(fill = pubs.share)) +
+  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
+  theme_void()
+
+
 # for cits proportions, isolate local journals (>= 0.51)
 local.cits <- subset(journals, select = c("journal.id", "journal.name", "cits.prop"), cits.prop >= 0.51)
 
@@ -798,7 +822,6 @@ map.cits.countries$pubs.share <- as.numeric(as.character(map.cits.countries$pubs
 map.cits.countries$pubs.share <- round(map.cits.countries$pubs.share, digits = 8)
 
 # plot cits world map
-map.world <- st_read("~/Desktop/Local.Research/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp")
 map.cits.data <- merge(map.world, map.cits.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
 map.cits.data <- map.cits.data[complete.cases(map.cits.data$pubs.share), ]
 
