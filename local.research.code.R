@@ -854,5 +854,28 @@ ggplot() +
   theme_void()
 
 
+# for pubs proportions, isolate local journals (>= 0.51)
+local.pubs <- subset(journals, select = c("journal.id", "journal.name", "pubs.prop"), pubs.prop >= 0.51)
+
+# subset the necessary variables for mapping and remove NA values
+map.pubs <- df.journals.final[df.journals.final$journal.id %in% local.pubs$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+map.pubs <- map.pubs[complete.cases(map.pubs), ]
+
+# compute each country's publication share
+map.pubs.countries <- aggregate(pubs ~ country, data = map.pubs, FUN = sum)
+map.pubs.countries <- map.pubs.countries %>% mutate(pubs.share = pubs / sum(pubs))
+map.pubs.countries$pubs.share <- as.numeric(as.character(map.pubs.countries$pubs.share))
+map.pubs.countries$pubs.share <- round(map.pubs.countries$pubs.share, digits = 8)
+
+# plot pubs world map
+map.pubs.data <- merge(map.world, map.pubs.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+map.pubs.data <- map.pubs.data[complete.cases(map.pubs.data$pubs.share), ]
+
+ggplot() +
+  geom_sf(data = map.pubs.data, aes(fill = pubs.share)) +
+  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
+  theme_void()
+
+
 ### SAVE DATAFRAMES
 save.image("~/Desktop/Local.Research/local.research.data.RData")
