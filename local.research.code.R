@@ -877,5 +877,28 @@ ggplot() +
   theme_void()
 
 
+# for mainstream.language dichotomous variable, isolate local journals (= 0)
+local.language <- subset(journals, select = c("journal.id", "journal.name", "mainstream.language"), mainstream.language == 0)
+
+# subset the necessary variables for mapping and remove NA values
+map.language <- df.journals.final[df.journals.final$journal.id %in% local.language$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+map.language <- map.language[complete.cases(map.language), ]
+
+# compute each country's publication share
+map.language.countries <- aggregate(pubs ~ country, data = map.language, FUN = sum)
+map.language.countries <- map.language.countries %>% mutate(pubs.share = pubs / sum(pubs))
+map.language.countries$pubs.share <- as.numeric(as.character(map.language.countries$pubs.share))
+map.language.countries$pubs.share <- round(map.language.countries$pubs.share, digits = 8)
+
+# plot language world map
+map.language.data <- merge(map.world, map.language.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+map.language.data <- map.language.data[complete.cases(map.language.data$pubs.share), ]
+
+ggplot() +
+  geom_sf(data = map.language.data, aes(fill = pubs.share)) +
+  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
+  theme_void()
+
+
 ### SAVE DATAFRAMES
 save.image("~/Desktop/Local.Research/local.research.data.RData")
