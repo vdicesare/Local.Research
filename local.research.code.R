@@ -789,10 +789,10 @@ map.world <- st_read("~/Desktop/Local.Research/ne_110m_admin_0_countries/ne_110m
 map.refs.data <- merge(map.world, map.refs.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
 map.refs.data <- map.refs.data[complete.cases(map.refs.data$pubs.share), ]
 
-ggplot() +
-  geom_sf(data = map.refs.data, aes(fill = pubs.share)) +
-  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
-  theme_void()
+#ggplot() +
+#  geom_sf(data = map.refs.data, aes(fill = pubs.share)) +
+#  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
+#  theme_void()
 
 
 # for cits proportions, isolate local journals (>= 0.51)
@@ -812,10 +812,10 @@ map.cits.countries$pubs.share <- round(map.cits.countries$pubs.share, digits = 8
 map.cits.data <- merge(map.world, map.cits.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
 map.cits.data <- map.cits.data[complete.cases(map.cits.data$pubs.share), ]
 
-ggplot() +
-geom_sf(data = map.cits.data, aes(fill = pubs.share)) +
-scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
-theme_void()
+#ggplot() +
+#  geom_sf(data = map.cits.data, aes(fill = pubs.share)) +
+#  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
+#  theme_void()
 
 
 # for toponyms proportions, isolate local journals (>= 0.51)
@@ -835,10 +835,10 @@ map.toponyms.countries$pubs.share <- round(map.toponyms.countries$pubs.share, di
 map.toponyms.data <- merge(map.world, map.toponyms.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
 map.toponyms.data <- map.toponyms.data[complete.cases(map.toponyms.data$pubs.share), ]
 
-ggplot() +
-  geom_sf(data = map.toponyms.data, aes(fill = pubs.share)) +
-  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
-  theme_void()
+#ggplot() +
+#  geom_sf(data = map.toponyms.data, aes(fill = pubs.share)) +
+#  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
+#  theme_void()
 
 
 # for pubs proportions, isolate local journals (>= 0.51)
@@ -858,10 +858,10 @@ map.pubs.countries$pubs.share <- round(map.pubs.countries$pubs.share, digits = 8
 map.pubs.data <- merge(map.world, map.pubs.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
 map.pubs.data <- map.pubs.data[complete.cases(map.pubs.data$pubs.share), ]
 
-ggplot() +
-  geom_sf(data = map.pubs.data, aes(fill = pubs.share)) +
-  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
-  theme_void()
+#ggplot() +
+#  geom_sf(data = map.pubs.data, aes(fill = pubs.share)) +
+#  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
+#  theme_void()
 
 
 # for mainstream.language dichotomous variable, isolate local journals (= 0)
@@ -881,10 +881,10 @@ map.language.countries$pubs.share <- round(map.language.countries$pubs.share, di
 map.language.data <- merge(map.world, map.language.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
 map.language.data <- map.language.data[complete.cases(map.language.data$pubs.share), ]
 
-ggplot() +
-  geom_sf(data = map.language.data, aes(fill = pubs.share)) +
-  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
-  theme_void()
+#ggplot() +
+#  geom_sf(data = map.language.data, aes(fill = pubs.share)) +
+#  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
+#  theme_void()
 
 
 # for mainstream.database dichotomous variable, isolate local journals (= 0)
@@ -904,10 +904,29 @@ map.database.countries$pubs.share <- round(map.database.countries$pubs.share, di
 map.database.data <- merge(map.world, map.database.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
 map.database.data <- map.database.data[complete.cases(map.database.data$pubs.share), ]
 
+#ggplot() +
+#  geom_sf(data = map.database.data, aes(fill = pubs.share)) +
+#  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
+#  theme_void()
+
+
+# create one faceted plot with 6 maps and 1 common legend
+map.toponyms.data$variable <- "Toponyms proportion"
+map.database.data$variable <- "Non-mainstream indexing"
+map.refs.data$variable <- "Referenced proportion"
+map.cits.data$variable <- "Citing proportion"
+map.language.data$variable <- "Non-English publishing"
+map.pubs.data$variable <- "Publishing proportion"
+
+map <- rbind(map.toponyms.data, map.database.data, map.refs.data, map.cits.data, map.language.data, map.pubs.data)
+map$variable <- factor(map$variable, levels = c("Toponyms proportion", "Non-mainstream indexing", "Referenced proportion", "Citing proportion", "Non-English publishing", "Publishing proportion"))
+
 ggplot() +
-  geom_sf(data = map.database.data, aes(fill = pubs.share)) +
-  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
-  theme_void()
+  geom_sf(data = map, aes(fill = pubs.share)) +
+  scale_fill_viridis_c(name = "Publication share", na.value = "grey90", option = "plasma") +
+  facet_wrap(~variable, ncol = 2) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
 
 
 ### SAVE DATAFRAMES
