@@ -6,6 +6,7 @@ library(stringr)
 library(reshape2)
 library(readxl)
 library(ggplot2)
+library(viridis)
 library(sf)
 library(countrycode)
 library(cld2)
@@ -929,7 +930,7 @@ ggplot() +
   theme(legend.position = "bottom")
 
 
-### CASE STUDIES (publication share per discipline per country case studies within local research journals according to pubs.prop data)
+### CASE STUDIES
 # considering local journals where pubs.prop >= 0.51, isolate the countries selected for case study: United States, China, Germany, Indonesia, Brazil and South Africa
 case.studies <- subset(journals, select = c("pubs.prop", "pubs.country", "discipline"),
                        pubs.prop >= 0.51 & pubs.country %in% c("US", "CN", "DE", "ID", "BR", "ZA"))
@@ -983,23 +984,16 @@ case.studies$pubs.share <- case.studies$pubs.discipline.total / case.studies$pub
 case.studies <- subset(case.studies, select = -pubs.prop)
 case.studies <- case.studies %>% distinct()
 
-# plot
-ggplot(case.studies, aes(x = pubs.prop, y = discipline.acronym)) +
-  geom_bar(stat = "identity") +
-  facet_wrap(~pubs.country, scales = "free_y", ncol = 2) +
-  labs(x = "Proportions", y = "Discipline")
-
-
-library(viridis)
-
+# plot the publication share per discipline per country within local research journals
 ggplot(case.studies, aes(x = pubs.share, y = discipline.acronym)) +
-  geom_bar(stat = "identity", fill = viridis(10)[5]) +  # Using a color from the Viridis palette
-  facet_wrap(~ pubs.country, scales = "free_y", ncol = 2) +
+  geom_bar(stat = "identity", aes(fill = pubs.country)) +  
+  facet_wrap(~ pubs.country, scales = "free_y", ncol = 2,
+             labeller = labeller(pubs.country = c("BR" = "Brazil", "CN" = "China", "DE" = "Germany", "ID" = "Indonesia", "US" = "United States", "ZA" = "South Africa"))) +
   labs(x = "Publication share", y = "Discipline") +
   theme_minimal() +
-  theme(legend.position = "bottom")
-
-
+  theme(legend.position = "bottom") +
+  scale_fill_viridis_d(option = "plasma") +
+  guides(fill = FALSE)
 
 
 ### SAVE DATAFRAMES
