@@ -929,5 +929,78 @@ ggplot() +
   theme(legend.position = "bottom")
 
 
+### CASE STUDIES (publication share per discipline per country case studies within local research journals according to pubs.prop data)
+# considering local journals where pubs.prop >= 0.51, isolate the countries selected for case study: United States, China, Germany, Indonesia, Brazil and South Africa
+case.studies <- subset(journals, select = c("pubs.prop", "pubs.country", "discipline"),
+                       pubs.prop >= 0.51 & pubs.country %in% c("US", "CN", "DE", "ID", "BR", "ZA"))
+
+# add a variable for discipline acronyms
+case.studies <- case.studies %>% 
+  mutate(discipline.acronym = case_when(
+    discipline == "Agricultural, Veterinary and Food Sciences" ~ "AV&FS",
+    discipline == "Biological Sciences" ~ "BS",
+    discipline == "Biomedical and Clinical Sciences" ~ "B&CS",
+    discipline == "Built Environment and Design" ~ "BE&D",
+    discipline == "Chemical Sciences" ~ "CS",
+    discipline == "Commerce, Management, Tourism and Services" ~ "CMT&S",
+    discipline == "Creative Arts and Writing" ~ "CA&W",
+    discipline == "Earth Sciences" ~ "EaS",
+    discipline == "Economics" ~ "Ec",
+    discipline == "Education" ~ "Ed",
+    discipline == "Engineering" ~ "En",
+    discipline == "Environmental Sciences" ~ "EnS",
+    discipline == "Health Sciences" ~ "HeS",
+    discipline == "History, Heritage and Archaeology" ~ "HH&A",
+    discipline == "Human Society" ~ "HuS",
+    discipline == "Information and Computing Sciences" ~ "I&CS",
+    discipline == "Language, Communication and Culture" ~ "LC&C",
+    discipline == "Law and Legal Studies" ~ "L&LS",
+    discipline == "Mathematical Sciences" ~ "MS",
+    discipline == "Philosophy and Religious Studies" ~ "P&RS",
+    discipline == "Physical Sciences" ~ "PS",
+    discipline == "Psychology" ~ "P",
+    TRUE ~ NA_character_))
+
+# drop NA values
+case.studies <- case.studies[complete.cases(case.studies), ]
+
+# compute the total pubs.prop per country
+case.studies <- case.studies %>%
+  group_by(pubs.country) %>%
+  mutate(pubs.country.total = sum(pubs.prop)) %>%
+  ungroup()
+
+# compute the total pubs.prop per discipline per country
+case.studies <- case.studies %>%
+  group_by(discipline.acronym, pubs.country) %>%
+  mutate(pubs.discipline.total = sum(pubs.prop)) %>%
+  ungroup()
+
+# compute the share of publications per discipline per country
+case.studies$pubs.share <- case.studies$pubs.discipline.total / case.studies$pubs.country.total
+
+# drop the original pubs.prop variable and keep only unique cases
+case.studies <- subset(case.studies, select = -pubs.prop)
+case.studies <- case.studies %>% distinct()
+
+# plot
+ggplot(case.studies, aes(x = pubs.prop, y = discipline.acronym)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~pubs.country, scales = "free_y", ncol = 2) +
+  labs(x = "Proportions", y = "Discipline")
+
+
+library(viridis)
+
+ggplot(case.studies, aes(x = pubs.share, y = discipline.acronym)) +
+  geom_bar(stat = "identity", fill = viridis(10)[5]) +  # Using a color from the Viridis palette
+  facet_wrap(~ pubs.country, scales = "free_y", ncol = 2) +
+  labs(x = "Publication share", y = "Discipline") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+
+
+
 ### SAVE DATAFRAMES
 save.image("~/Desktop/Local.Research/local.research.data.RData")
