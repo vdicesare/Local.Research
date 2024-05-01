@@ -720,31 +720,71 @@ journals <- journals %>%
     grepl("English|Multi-Language", language, ignore.case = TRUE), 1, 0))
 
 
-### DISCIPLINES
+### CATEGORIES
 # read Dimensions file
-disciplines <- read_excel("~/Desktop/Local.Research/journal-for-division.xlsx")
+categories <- read_excel("~/Desktop/Local.Research/journal-for-division.xlsx")
 
-# add a discipline and a discipline.prop variables to journals dataframe
-journals <- left_join(journals, disciplines, by = "journal.id")
+# add a category and a category.prop variables to journals dataframe
+journals <- left_join(journals, categories, by = "journal.id")
+
+# add a variable for categories acronyms
+journals <- journals %>% 
+  mutate(category.acronym = case_when(
+    category == "Agricultural, Veterinary and Food Sciences" ~ "AgriVetFoodSci",
+    category == "Biological Sciences" ~ "BiolSci",
+    category == "Biomedical and Clinical Sciences" ~ "BiomClinSci",
+    category == "Built Environment and Design" ~ "EnvironDes",
+    category == "Chemical Sciences" ~ "ChemSci",
+    category == "Commerce, Management, Tourism and Services" ~ "ComManTourServ",
+    category == "Creative Arts and Writing" ~ "ArtWrit",
+    category == "Earth Sciences" ~ "EarthSci",
+    category == "Economics" ~ "Econ",
+    category == "Education" ~ "Edu",
+    category == "Engineering" ~ "Eng",
+    category == "Environmental Sciences" ~ "EnvironSci",
+    category == "Health Sciences" ~ "HealthSci",
+    category == "History, Heritage and Archaeology" ~ "HisHeritArch",
+    category == "Human Society" ~ "HumSoc",
+    category == "Information and Computing Sciences" ~ "InfCompSci",
+    category == "Language, Communication and Culture" ~ "LangCommCult",
+    category == "Law and Legal Studies" ~ "LawLegSci",
+    category == "Mathematical Sciences" ~ "MathSci",
+    category == "Philosophy and Religious Studies" ~ "PhilReligStud",
+    category == "Physical Sciences" ~ "PhysSci",
+    category == "Psychology" ~ "Psych",
+    TRUE ~ NA_character_))
+
+# add a variable to group categories into fields
+health.sciences <- c("BiomClinSci", "HealthSci")
+humanities <- c("ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud")
+life.sciences <- c("AgriVetFoodSci", "BiolSci", "EarthSci", "EnvironSci")
+physical.sciences <- c("EnvironDes", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci")
+social.sciences <- c("ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegSci", "Psych")
+
+journals$field <- ifelse(journals$category.acronym %in% health.sciences, "Health Sciences",
+                         ifelse(journals$category.acronym %in% humanities, "Humanities",
+                                ifelse(journals$category.acronym %in% life.sciences, "Life Sciences",
+                                       ifelse(journals$category.acronym %in% physical.sciences, "Physical Sciences",
+                                              ifelse(journals$category.acronym %in% social.sciences, "Social Sciences", NA)))))
 
 
 ### SUMMARY TABLES
-# compute measures of central tendency, non-central position and variability in all continuous variables: cits.prop, refs.prop, pubs.prop and toponyms.prop
-journals$toponyms.prop <- round(journals$toponyms.prop, digits = 2)
-print(mean(journals$toponyms.prop, na.rm = TRUE))
-print(median(journals$toponyms.prop, na.rm = TRUE))
+# compute measures of central tendency, non-central position and variability in all continuous variables at journal level: cits.prop, refs.prop, pubs.prop and toponyms.prop
+journals$cits.prop <- round(journals$cits.prop, digits = 2)
+print(mean(journals$cits.prop, na.rm = TRUE))
+print(median(journals$cits.prop, na.rm = TRUE))
 
-t <- table(journals$toponyms.prop)
+t <- table(journals$cits.prop)
 mode <- names(t)[which(t == max(t))]
 print(mode)
 
-print(min(journals$toponyms.prop, na.rm = TRUE))
-print(max(journals$toponyms.prop, na.rm = TRUE))
+print(min(journals$cits.prop, na.rm = TRUE))
+print(max(journals$cits.prop, na.rm = TRUE))
 
-print(quantile(journals$toponyms.prop, probs = c(0.25,0.75), na.rm = TRUE))
-print(sd(journals$toponyms.prop, na.rm = TRUE))
+print(quantile(journals$cits.prop, probs = c(0.25,0.75), na.rm = TRUE))
+print(sd(journals$cits.prop, na.rm = TRUE))
 
-# compute measures of distribution in all categorical variables: mainstream.database, language, mainstream.language and discipline
+# compute measures of distribution in all categorical variables at journal level: mainstream.database, language, mainstream.language and category
 print(journals %>% distinct(journal.id, .keep_all = TRUE) %>% summarise(sum(mainstream.database == 0)))
 
 languages <- journals %>% mutate(language = strsplit(language, ", ")) %>% unnest(language)
@@ -753,22 +793,24 @@ print(sum(table(languages[!duplicated(languages[c("journal.id", "language")]), "
 
 print(journals %>% distinct(journal.id, .keep_all = TRUE) %>% summarise(sum(mainstream.language == 0)))
 
-print(sort(table(journals[!duplicated(journals[c("journal.id", "discipline")]), "discipline"]), decreasing = TRUE))
+print(sort(table(journals[!duplicated(journals[c("journal.id", "category")]), "category"]), decreasing = TRUE))
 
-# compute the mean distribution of journals per discipline, per variable: cits.prop, refs.prop, pubs.prop, toponyms.prop, mainstream.database and mainstream.language
+# compute the mean distribution of journals per category, per variable: cits.prop, refs.prop, pubs.prop, toponyms.prop, mainstream.database and mainstream.language
 journals %>% 
   na.omit() %>%
   distinct(journal.id, .keep_all = TRUE) %>% 
-  group_by(discipline) %>% 
-  summarise(avg_toponyms_prop = mean(toponyms.prop)) %>%
+  group_by(category.acronym) %>% 
+  summarise(avg_cits_prop = mean(cits.prop)) %>%
   print(n = Inf)
 
 journals %>%
   na.omit() %>%
   distinct(journal.id, .keep_all = TRUE) %>%
-  group_by(discipline) %>%
+  group_by(category.acronym) %>%
   summarise(avg_mainstream_yes = mean(mainstream.language, na.rm = TRUE)) %>%
   print(n = Inf)
+
+# country level
 
 
 ### WORLD MAPS                                                                      (provisional cut-off threshold = 51%)
@@ -932,35 +974,8 @@ ggplot() +
 
 ### CASE STUDIES
 # considering local journals where pubs.prop >= 0.51, isolate the countries selected for case study: United States, China, Germany, Indonesia, Brazil and South Africa
-case.studies <- subset(journals, select = c("pubs.prop", "pubs.country", "discipline"),
+case.studies <- subset(journals, select = c("pubs.prop", "pubs.country", "category"),
                        pubs.prop >= 0.51 & pubs.country %in% c("US", "CN", "DE", "ID", "BR", "ZA"))
-
-# add a variable for discipline acronyms
-case.studies <- case.studies %>% 
-  mutate(discipline.acronym = case_when(
-    discipline == "Agricultural, Veterinary and Food Sciences" ~ "AV&FS",
-    discipline == "Biological Sciences" ~ "BS",
-    discipline == "Biomedical and Clinical Sciences" ~ "B&CS",
-    discipline == "Built Environment and Design" ~ "BE&D",
-    discipline == "Chemical Sciences" ~ "CS",
-    discipline == "Commerce, Management, Tourism and Services" ~ "CMT&S",
-    discipline == "Creative Arts and Writing" ~ "CA&W",
-    discipline == "Earth Sciences" ~ "EaS",
-    discipline == "Economics" ~ "Ec",
-    discipline == "Education" ~ "Ed",
-    discipline == "Engineering" ~ "En",
-    discipline == "Environmental Sciences" ~ "EnS",
-    discipline == "Health Sciences" ~ "HeS",
-    discipline == "History, Heritage and Archaeology" ~ "HH&A",
-    discipline == "Human Society" ~ "HuS",
-    discipline == "Information and Computing Sciences" ~ "I&CS",
-    discipline == "Language, Communication and Culture" ~ "LC&C",
-    discipline == "Law and Legal Studies" ~ "L&LS",
-    discipline == "Mathematical Sciences" ~ "MS",
-    discipline == "Philosophy and Religious Studies" ~ "P&RS",
-    discipline == "Physical Sciences" ~ "PS",
-    discipline == "Psychology" ~ "P",
-    TRUE ~ NA_character_))
 
 # drop NA values
 case.studies <- case.studies[complete.cases(case.studies), ]
@@ -989,7 +1004,7 @@ ggplot(case.studies, aes(x = pubs.share, y = discipline.acronym)) +
   geom_bar(stat = "identity", aes(fill = pubs.country)) +  
   facet_wrap(~ pubs.country, scales = "free_y", ncol = 2,
              labeller = labeller(pubs.country = c("BR" = "Brazil", "CN" = "China", "DE" = "Germany", "ID" = "Indonesia", "US" = "United States", "ZA" = "South Africa"))) +
-  labs(x = "Publication share", y = "Discipline") +
+  labs(x = "Publishing proportion", y = "Discipline") +
   theme_minimal() +
   theme(legend.position = "bottom") +
   scale_fill_viridis_d(option = "plasma") +
