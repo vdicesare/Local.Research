@@ -768,8 +768,8 @@ journals$field <- ifelse(journals$category.acronym %in% health.sciences, "Health
                                               ifelse(journals$category.acronym %in% social.sciences, "Social Sciences", NA)))))
 
 
-### SUMMARY TABLES
-# compute measures of central tendency, non-central position and variability in all continuous variables at journal level: cits.prop, refs.prop, pubs.prop and toponyms.prop
+### JOURNAL LEVEL SUMMARY TABLES
+# compute measures of central tendency, non-central position and variability in all continuous variables: cits.prop, refs.prop, pubs.prop and toponyms.prop
 journals$cits.prop <- round(journals$cits.prop, digits = 2)
 print(mean(journals$cits.prop, na.rm = TRUE))
 print(median(journals$cits.prop, na.rm = TRUE))
@@ -784,7 +784,7 @@ print(max(journals$cits.prop, na.rm = TRUE))
 print(quantile(journals$cits.prop, probs = c(0.25,0.75), na.rm = TRUE))
 print(sd(journals$cits.prop, na.rm = TRUE))
 
-# compute measures of distribution in all categorical variables at journal level: mainstream.database, language, mainstream.language and category
+# compute measures of distribution in all categorical variables: mainstream.database, language, mainstream.language and category
 print(journals %>% distinct(journal.id, .keep_all = TRUE) %>% summarise(sum(mainstream.database == 0)))
 
 languages <- journals %>% mutate(language = strsplit(language, ", ")) %>% unnest(language)
@@ -810,12 +810,35 @@ journals %>%
   summarise(avg_mainstream_yes = mean(mainstream.language, na.rm = TRUE)) %>%
   print(n = Inf)
 
-# country level
+
+### COUNTRY LEVEL SUMMARY TABLE
+# isolate local research journals according to the toponyms approach (cut-off threshold > 0.50)
+local.toponyms <- subset(journals, select = c("journal.id", "journal.name", "toponyms.prop", "category.acronym", "category.prop", "field"), toponyms.prop > 0.50)
+
+# isolate local research journals according to the languages approach (= 0)
+local.language <- subset(journals, select = c("journal.id", "journal.name", "mainstream.language", "category.acronym", "category.prop", "field"), mainstream.language == 0)
+
+# isolate local research journals according to the journals approach (cut-off threshold > 0.50)
+local.pubs <- subset(journals, select = c("journal.id", "journal.name", "pubs.prop", "category.acronym", "category.prop", "field"), pubs.prop > 0.50)
+
+# isolate local research journals according to the databases approach (= 0)
+local.database <- subset(journals, select = c("journal.id", "journal.name", "mainstream.database", "category.acronym", "category.prop", "field"), mainstream.database == 0)
+
+# isolate local research journals according to the references approach (cut-off threshold > 0.50)
+local.refs <- subset(journals, select = c("journal.id", "journal.name", "refs.prop", "category.acronym", "category.prop", "field"), refs.prop > 0.50)
+
+# isolate local research journals according to the citations approach (cut-off threshold > 0.50)
+local.cits <- subset(journals, select = c("journal.id", "journal.name", "cits.prop", "category.acronym", "category.prop", "field"), cits.prop > 0.50)
+
+# compute measures of central tendency, non-central position and variability in all continuous and dichotomous variables: cits.prop, refs.prop, pubs.prop, toponyms.prop, mainstream.database and mainstream.language
+### ¿DEBERÍA ARMAR LA TABLA RESUMEN CONSIDERANDO LAS REVISTAS LOCALES SEGÚN CADA ENFOQUE EN GENERAL, O DESGLOSANDO LAS REVISTAS LOCALES SEGÚN CADA ENFOQUE POR PAÍS?
 
 
-### WORLD MAPS                                                                      (provisional cut-off threshold = 51%)
-# for refs proportions, isolate local journals (>= 0.51)
-local.refs <- subset(journals, select = c("journal.id", "journal.name", "refs.prop"), refs.prop >= 0.51)
+### WORLD MAPS
+
+
+
+
 
 # subset the necessary variables for mapping and remove NA values
 map.refs <- df.journals.final[df.journals.final$journal.id %in% local.refs$journal.id, c("journal.id", "journal.name", "country", "pubs")]
@@ -838,9 +861,6 @@ map.refs.data <- map.refs.data[complete.cases(map.refs.data$pubs.share), ]
 #  theme_void()
 
 
-# for cits proportions, isolate local journals (>= 0.51)
-local.cits <- subset(journals, select = c("journal.id", "journal.name", "cits.prop"), cits.prop >= 0.51)
-
 # subset the necessary variables for mapping and remove NA values
 map.cits <- df.journals.final[df.journals.final$journal.id %in% local.cits$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 map.cits <- map.cits[complete.cases(map.cits), ]
@@ -860,9 +880,6 @@ map.cits.data <- map.cits.data[complete.cases(map.cits.data$pubs.share), ]
 #  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
 #  theme_void()
 
-
-# for toponyms proportions, isolate local journals (>= 0.51)
-local.toponyms <- subset(journals, select = c("journal.id", "journal.name", "toponyms.prop"), toponyms.prop >= 0.51)
 
 # subset the necessary variables for mapping and remove NA values
 map.toponyms <- df.journals.final[df.journals.final$journal.id %in% local.toponyms$journal.id, c("journal.id", "journal.name", "country", "pubs")]
@@ -884,9 +901,6 @@ map.toponyms.data <- map.toponyms.data[complete.cases(map.toponyms.data$pubs.sha
 #  theme_void()
 
 
-# for pubs proportions, isolate local journals (>= 0.51)
-local.pubs <- subset(journals, select = c("journal.id", "journal.name", "pubs.prop"), pubs.prop >= 0.51)
-
 # subset the necessary variables for mapping and remove NA values
 map.pubs <- df.journals.final[df.journals.final$journal.id %in% local.pubs$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 map.pubs <- map.pubs[complete.cases(map.pubs), ]
@@ -907,9 +921,6 @@ map.pubs.data <- map.pubs.data[complete.cases(map.pubs.data$pubs.share), ]
 #  theme_void()
 
 
-# for mainstream.language dichotomous variable, isolate local journals (= 0)
-local.language <- subset(journals, select = c("journal.id", "journal.name", "mainstream.language"), mainstream.language == 0)
-
 # subset the necessary variables for mapping and remove NA values
 map.language <- df.journals.final[df.journals.final$journal.id %in% local.language$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 map.language <- map.language[complete.cases(map.language), ]
@@ -929,9 +940,6 @@ map.language.data <- map.language.data[complete.cases(map.language.data$pubs.sha
 #  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
 #  theme_void()
 
-
-# for mainstream.database dichotomous variable, isolate local journals (= 0)
-local.database <- subset(journals, select = c("journal.id", "journal.name", "mainstream.database"), mainstream.database == 0)
 
 # subset the necessary variables for mapping and remove NA values
 map.database <- df.journals.final[df.journals.final$journal.id %in% local.database$journal.id, c("journal.id", "journal.name", "country", "pubs")]
