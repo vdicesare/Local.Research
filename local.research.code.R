@@ -92,29 +92,6 @@ journals <- journals %>% rename("journal.name" = "journal.name.x",
                                 "refs.country" = "country.y")
 
 
-### LOCALLY RELEVANT RESEARCH
-# set cut-off threshold at >= ?? citations in 3 years (2017-2019 period)
-# posible umbral de corte: el número mínimo de citas que recibe una revista identificada como Locally Relevant debe superar la media de citas que recibe esa misma revista en general
-
-# add continents column
-#america <- c("US", "CA", "MX", "BZ", "CR", "SV", "GT", "HN", "NI", "PA", "AG", "BS", "BB", "CU", "DM", "GD", "HT", "JM", "DO", "KN", "LC", "VC", "TT", "AR", "BO", "BR", "CO", "EC", "GY", "PY", "PE", "SR", "UY", "VE", "CL")
-#europe <- c("AL", "AD", "BA", "HR", "SI", "ES", "GR", "IT", "MK", "MT", "ME", "PT", "SM", "RS", "DE", "AT", "BE", "FR", "LI", "LU", "MC", "NL", "CH", "BY", "BG", "HU", "MD", "PL", "CZ", "SK", "RO", "RU", "UA", "DK", "EE", "FI", "IE", "IS", "LV", "LT", "NO", "GB", "SE")
-#asia <- c("KZ", "KG", "TJ", "TM", "UZ", "AF", "BD", "BT", "IN", "IR", "MV", "NP", "PK", "LK", "SA", "AM", "AZ", "BH", "AE", "GE", "YE", "IQ", "IL", "JO", "KW", "LB", "OM", "QA", "SY", "PS", "TR", "CY", "KP", "KR", "JP", "MN", "TW", "CN", "BN", "KH", "PH", "ID", "LA", "MY", "MM", "SG", "TH", "TL", "VN")
-#africa <- c("AO", "CM", "CG", "GA", "GQ", "CF", "CD", "ST", "BW", "TD", "LS", "NA", "ZA", "SZ", "BJ", "BF", "CV", "CI", "GM", "GH", "GN", "GW", "LR", "ML", "MR", "NE", "NG", "SN", "SL", "TG", "BI", "KM", "ER", "ET", "KE", "MG", "MW", "MU", "MZ", "RW", "SC", "SO", "TZ", "UG", "ZM", "ZW", "DZ", "EG", "LY", "MA", "SD", "SS", "TN")
-#oceania <- c("AU", "NZ", "FJ", "SB", "PG", "PF", "VU", "MH", "KI", "FM", "NR", "PW", "WS", "TO", "TV")
-
-#df.journals.max.cits$continent <- ifelse(df.journals.max.cits$country %in% america, "America",
-                                         #ifelse(df.journals.max.cits$country %in% europe, "Europe",
-                                                #ifelse(df.journals.max.cits$country %in% asia, "Asia",
-                                                       #ifelse(df.journals.max.cits$country %in% africa, "Africa",
-                                                              #ifelse(df.journals.max.cits$country %in% oceania, "Oceania", NA)))))
-
-
-### LOCALLY ROOTED RESEARCH
-# set cut-off threshold at >= ?? references in 3 years (2017-2019 period)
-# posible umbral de corte: el número mínimo de referencias que realiza una revista identificada como Locally Rooted debe superar la media de referencias que realiza esa misma revista en general
-
-
 ### AUTHORS' ORIGINS
 # filter all rows per journal to keep only the countries with maximum pubs values
 df.journals.max.pubs <- df.journals.final %>%
@@ -812,8 +789,34 @@ journals %>%
 
 
 ### COUNTRY LEVEL SUMMARY TABLE
+# before working with country data in local journals, compute the total number of publications per country considering all journals
+total.pubs.country <- subset(df.journals.final, select = c(country, pubs))
+total.pubs.country <- total.pubs.country[complete.cases(total.pubs.country), ]
+total.pubs.country <- total.pubs.country %>%
+  group_by(country) %>% 
+  summarise(total.pubs = sum(pubs), .groups = 'drop') %>%
+  as.data.frame()
+
+
 # isolate local research journals according to the toponyms approach (cut-off threshold > 0.50)
-local.toponyms <- subset(journals, select = c("journal.id", "journal.name", "toponyms.prop", "category.acronym", "category.prop", "field"), toponyms.prop > 0.50)
+local.toponyms <- subset(journals, select = c("journal.id", "journal.name", "toponyms.prop"), toponyms.prop > 0.50)
+
+# subset the necessary variables to work at country level and remove NA values
+local.toponyms.countries <- df.journals.final[df.journals.final$journal.id %in% local.toponyms$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+local.toponyms.countries <- local.toponyms.countries[complete.cases(local.toponyms.countries), ]
+
+# compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
+local.toponyms.countries <- aggregate(pubs ~ country, data = local.toponyms.countries, FUN = sum)
+local.toponyms.countries <- local.toponyms.countries %>% mutate(pubs.share = local.toponyms.countries$pubs / total.pubs.country$total.pubs)
+# Assuming `ID` is the common ID column name
+local.toponyms.countries <- local.toponyms.countries %>%
+  left_join(total.pubs.country, by = "country") %>%
+  mutate(pubs.share = pubs / total.pubs)
+
+
+
+
+
 
 # isolate local research journals according to the languages approach (= 0)
 local.language <- subset(journals, select = c("journal.id", "journal.name", "mainstream.language", "category.acronym", "category.prop", "field"), mainstream.language == 0)
@@ -830,14 +833,84 @@ local.refs <- subset(journals, select = c("journal.id", "journal.name", "refs.pr
 # isolate local research journals according to the citations approach (cut-off threshold > 0.50)
 local.cits <- subset(journals, select = c("journal.id", "journal.name", "cits.prop", "category.acronym", "category.prop", "field"), cits.prop > 0.50)
 
-# compute measures of central tendency, non-central position and variability in all continuous and dichotomous variables: cits.prop, refs.prop, pubs.prop, toponyms.prop, mainstream.database and mainstream.language
-### ¿DEBERÍA ARMAR LA TABLA RESUMEN CONSIDERANDO LAS REVISTAS LOCALES SEGÚN CADA ENFOQUE EN GENERAL, O DESGLOSANDO LAS REVISTAS LOCALES SEGÚN CADA ENFOQUE POR PAÍS?
 
 
+
+
+
+
+
+
+
+
+
+# compute measures of central tendency, non-central position and variability in all continuous and dichotomous variables within local research journals: cits.prop, refs.prop, pubs.prop, toponyms.prop, mainstream.database and mainstream.language
+print(mean(local.refs$refs.prop, na.rm = TRUE))
+print(median(local.refs$refs.prop, na.rm = TRUE))
+
+t <- table(local.refs$refs.prop)
+mode <- names(t)[which(t == max(t))]
+print(mode)
+
+print(min(local.refs$refs.prop, na.rm = TRUE))
+print(max(local.refs$refs.prop, na.rm = TRUE))
+
+print(quantile(local.refs$refs.prop, probs = c(0.25,0.75), na.rm = TRUE))
+print(sd(local.refs$refs.prop, na.rm = TRUE))
+
+
+################## CONTINUAR CORRIGIENDO LOS MAPAS
 ### WORLD MAPS
 
 
+# plot toponyms world map
+map.toponyms.data <- merge(map.world, map.toponyms.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+map.toponyms.data <- map.toponyms.data[complete.cases(map.toponyms.data$pubs.share), ]
 
+
+# subset the necessary variables for mapping and remove NA values
+map.language <- df.journals.final[df.journals.final$journal.id %in% local.language$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+map.language <- map.language[complete.cases(map.language), ]
+
+# compute each country's publication share
+map.language.countries <- aggregate(pubs ~ country, data = map.language, FUN = sum)
+map.language.countries <- map.language.countries %>% mutate(pubs.share = pubs / sum(pubs))
+map.language.countries$pubs.share <- as.numeric(as.character(map.language.countries$pubs.share))
+map.language.countries$pubs.share <- round(map.language.countries$pubs.share, digits = 8)
+
+# plot language world map
+map.language.data <- merge(map.world, map.language.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+map.language.data <- map.language.data[complete.cases(map.language.data$pubs.share), ]
+
+
+# subset the necessary variables for mapping and remove NA values
+map.pubs <- df.journals.final[df.journals.final$journal.id %in% local.pubs$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+map.pubs <- map.pubs[complete.cases(map.pubs), ]
+
+# compute each country's publication share
+map.pubs.countries <- aggregate(pubs ~ country, data = map.pubs, FUN = sum)
+map.pubs.countries <- map.pubs.countries %>% mutate(pubs.share = pubs / sum(pubs))
+map.pubs.countries$pubs.share <- as.numeric(as.character(map.pubs.countries$pubs.share))
+map.pubs.countries$pubs.share <- round(map.pubs.countries$pubs.share, digits = 8)
+
+# plot pubs world map
+map.pubs.data <- merge(map.world, map.pubs.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+map.pubs.data <- map.pubs.data[complete.cases(map.pubs.data$pubs.share), ]
+
+
+# subset the necessary variables for mapping and remove NA values
+map.database <- df.journals.final[df.journals.final$journal.id %in% local.database$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+map.database <- map.database[complete.cases(map.database), ]
+
+# compute each country's publication share
+map.database.countries <- aggregate(pubs ~ country, data = map.database, FUN = sum)
+map.database.countries <- map.database.countries %>% mutate(pubs.share = pubs / sum(pubs))
+map.database.countries$pubs.share <- as.numeric(as.character(map.database.countries$pubs.share))
+map.database.countries$pubs.share <- round(map.database.countries$pubs.share, digits = 8)
+
+# plot database world map
+map.database.data <- merge(map.world, map.database.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+map.database.data <- map.database.data[complete.cases(map.database.data$pubs.share), ]
 
 
 # subset the necessary variables for mapping and remove NA values
@@ -854,11 +927,6 @@ map.refs.countries$pubs.share <- round(map.refs.countries$pubs.share, digits = 8
 map.world <- st_read("~/Desktop/Local.Research/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp")
 map.refs.data <- merge(map.world, map.refs.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
 map.refs.data <- map.refs.data[complete.cases(map.refs.data$pubs.share), ]
-
-#ggplot() +
-#  geom_sf(data = map.refs.data, aes(fill = pubs.share)) +
-#  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
-#  theme_void()
 
 
 # subset the necessary variables for mapping and remove NA values
@@ -877,86 +945,6 @@ map.cits.data <- map.cits.data[complete.cases(map.cits.data$pubs.share), ]
 
 #ggplot() +
 #  geom_sf(data = map.cits.data, aes(fill = pubs.share)) +
-#  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
-#  theme_void()
-
-
-# subset the necessary variables for mapping and remove NA values
-map.toponyms <- df.journals.final[df.journals.final$journal.id %in% local.toponyms$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-map.toponyms <- map.toponyms[complete.cases(map.toponyms), ]
-
-# compute each country's publication share
-map.toponyms.countries <- aggregate(pubs ~ country, data = map.toponyms, FUN = sum)
-map.toponyms.countries <- map.toponyms.countries %>% mutate(pubs.share = pubs / sum(pubs))
-map.toponyms.countries$pubs.share <- as.numeric(as.character(map.toponyms.countries$pubs.share))
-map.toponyms.countries$pubs.share <- round(map.toponyms.countries$pubs.share, digits = 8)
-
-# plot toponyms world map
-map.toponyms.data <- merge(map.world, map.toponyms.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-map.toponyms.data <- map.toponyms.data[complete.cases(map.toponyms.data$pubs.share), ]
-
-#ggplot() +
-#  geom_sf(data = map.toponyms.data, aes(fill = pubs.share)) +
-#  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
-#  theme_void()
-
-
-# subset the necessary variables for mapping and remove NA values
-map.pubs <- df.journals.final[df.journals.final$journal.id %in% local.pubs$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-map.pubs <- map.pubs[complete.cases(map.pubs), ]
-
-# compute each country's publication share
-map.pubs.countries <- aggregate(pubs ~ country, data = map.pubs, FUN = sum)
-map.pubs.countries <- map.pubs.countries %>% mutate(pubs.share = pubs / sum(pubs))
-map.pubs.countries$pubs.share <- as.numeric(as.character(map.pubs.countries$pubs.share))
-map.pubs.countries$pubs.share <- round(map.pubs.countries$pubs.share, digits = 8)
-
-# plot pubs world map
-map.pubs.data <- merge(map.world, map.pubs.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-map.pubs.data <- map.pubs.data[complete.cases(map.pubs.data$pubs.share), ]
-
-#ggplot() +
-#  geom_sf(data = map.pubs.data, aes(fill = pubs.share)) +
-#  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
-#  theme_void()
-
-
-# subset the necessary variables for mapping and remove NA values
-map.language <- df.journals.final[df.journals.final$journal.id %in% local.language$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-map.language <- map.language[complete.cases(map.language), ]
-
-# compute each country's publication share
-map.language.countries <- aggregate(pubs ~ country, data = map.language, FUN = sum)
-map.language.countries <- map.language.countries %>% mutate(pubs.share = pubs / sum(pubs))
-map.language.countries$pubs.share <- as.numeric(as.character(map.language.countries$pubs.share))
-map.language.countries$pubs.share <- round(map.language.countries$pubs.share, digits = 8)
-
-# plot language world map
-map.language.data <- merge(map.world, map.language.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-map.language.data <- map.language.data[complete.cases(map.language.data$pubs.share), ]
-
-#ggplot() +
-#  geom_sf(data = map.language.data, aes(fill = pubs.share)) +
-#  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
-#  theme_void()
-
-
-# subset the necessary variables for mapping and remove NA values
-map.database <- df.journals.final[df.journals.final$journal.id %in% local.database$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-map.database <- map.database[complete.cases(map.database), ]
-
-# compute each country's publication share
-map.database.countries <- aggregate(pubs ~ country, data = map.database, FUN = sum)
-map.database.countries <- map.database.countries %>% mutate(pubs.share = pubs / sum(pubs))
-map.database.countries$pubs.share <- as.numeric(as.character(map.database.countries$pubs.share))
-map.database.countries$pubs.share <- round(map.database.countries$pubs.share, digits = 8)
-
-# plot database world map
-map.database.data <- merge(map.world, map.database.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-map.database.data <- map.database.data[complete.cases(map.database.data$pubs.share), ]
-
-#ggplot() +
-#  geom_sf(data = map.database.data, aes(fill = pubs.share)) +
 #  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
 #  theme_void()
 
