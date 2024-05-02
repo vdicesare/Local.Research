@@ -759,6 +759,7 @@ print(min(journals$cits.prop, na.rm = TRUE))
 print(max(journals$cits.prop, na.rm = TRUE))
 
 print(quantile(journals$cits.prop, probs = c(0.25,0.75), na.rm = TRUE))
+print(quantile(journals$cits.prop, probs = 0.9, na.rm = TRUE))
 print(sd(journals$cits.prop, na.rm = TRUE))
 
 # compute measures of distribution in all categorical variables: mainstream.database, language, mainstream.language and category
