@@ -751,10 +751,6 @@ journals$cits.prop <- round(journals$cits.prop, digits = 2)
 print(mean(journals$cits.prop, na.rm = TRUE))
 print(median(journals$cits.prop, na.rm = TRUE))
 
-t <- table(journals$cits.prop)
-mode <- names(t)[which(t == max(t))]
-print(mode)
-
 print(min(journals$cits.prop, na.rm = TRUE))
 print(max(journals$cits.prop, na.rm = TRUE))
 
@@ -799,16 +795,23 @@ total.pubs.country <- total.pubs.country %>%
   as.data.frame()
 
 
-# isolate local research journals according to the toponyms approach (cut-off threshold > 0.50)
-local.toponyms <- subset(journals, select = c("journal.id", "journal.name", "toponyms.prop"), toponyms.prop > 0.50)
+# isolate local research journals according to the toponyms approach (cut-off thresholds for trial >= 0.14 (3º quartile) & >= 0.30 (9º decile))
+local.toponyms.q <- subset(journals, select = c("journal.id", "journal.name", "toponyms.prop"), toponyms.prop >= 0.14)
+local.toponyms.d <- subset(journals, select = c("journal.id", "journal.name", "toponyms.prop"), toponyms.prop >= 0.30)
 
 # subset the necessary variables to work at country level and remove NA values
-local.toponyms.countries <- df.journals.final[df.journals.final$journal.id %in% local.toponyms$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-local.toponyms.countries <- local.toponyms.countries[complete.cases(local.toponyms.countries), ]
+local.toponyms.countries.q <- df.journals.final[df.journals.final$journal.id %in% local.toponyms.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+local.toponyms.countries.q <- local.toponyms.countries.q[complete.cases(local.toponyms.countries.q), ]
+local.toponyms.countries.d <- df.journals.final[df.journals.final$journal.id %in% local.toponyms.d$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+local.toponyms.countries.d <- local.toponyms.countries.d[complete.cases(local.toponyms.countries.d), ]
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
-local.toponyms.countries <- aggregate(pubs ~ country, data = local.toponyms.countries, FUN = sum)
-local.toponyms.countries <- local.toponyms.countries %>%
+local.toponyms.countries.q <- aggregate(pubs ~ country, data = local.toponyms.countries.q, FUN = sum)
+local.toponyms.countries.q <- local.toponyms.countries.q %>%
+  left_join(total.pubs.country, by = "country") %>%
+  mutate(pubs.share = pubs / total.pubs)
+local.toponyms.countries.d <- aggregate(pubs ~ country, data = local.toponyms.countries.d, FUN = sum)
+local.toponyms.countries.d <- local.toponyms.countries.d %>%
   left_join(total.pubs.country, by = "country") %>%
   mutate(pubs.share = pubs / total.pubs)
 
@@ -827,16 +830,23 @@ local.language.countries <- local.language.countries %>%
   mutate(pubs.share = pubs / total.pubs)
 
 
-# isolate local research journals according to the journals approach (cut-off threshold > 0.50)
-local.pubs <- subset(journals, select = c("journal.id", "journal.name", "pubs.prop", "category.acronym", "category.prop", "field"), pubs.prop > 0.50)
+# isolate local research journals according to the journals approach (cut-off thresholds for trial >= 0.82 (3º quartile) & >= 0.95 (9º decile))
+local.pubs.q <- subset(journals, select = c("journal.id", "journal.name", "pubs.prop", "category.acronym", "category.prop", "field"), pubs.prop >= 0.82)
+local.pubs.d <- subset(journals, select = c("journal.id", "journal.name", "pubs.prop", "category.acronym", "category.prop", "field"), pubs.prop >= 0.95)
 
 # subset the necessary variables to work at country level and remove NA values
-local.pubs.countries <- df.journals.final[df.journals.final$journal.id %in% local.pubs$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-local.pubs.countries <- local.pubs.countries[complete.cases(local.pubs.countries), ]
+local.pubs.countries.q <- df.journals.final[df.journals.final$journal.id %in% local.pubs.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+local.pubs.countries.q <- local.pubs.countries.q[complete.cases(local.pubs.countries.q), ]
+local.pubs.countries.d <- df.journals.final[df.journals.final$journal.id %in% local.pubs.d$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+local.pubs.countries.d <- local.pubs.countries.d[complete.cases(local.pubs.countries.d), ]
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
-local.pubs.countries <- aggregate(pubs ~ country, data = local.pubs.countries, FUN = sum)
-local.pubs.countries <- local.pubs.countries %>%
+local.pubs.countries.q <- aggregate(pubs ~ country, data = local.pubs.countries.q, FUN = sum)
+local.pubs.countries.q <- local.pubs.countries.q %>%
+  left_join(total.pubs.country, by = "country") %>%
+  mutate(pubs.share = pubs / total.pubs)
+local.pubs.countries.d <- aggregate(pubs ~ country, data = local.pubs.countries.d, FUN = sum)
+local.pubs.countries.d <- local.pubs.countries.d %>%
   left_join(total.pubs.country, by = "country") %>%
   mutate(pubs.share = pubs / total.pubs)
 
@@ -855,49 +865,57 @@ local.database.countries <- local.database.countries %>%
   mutate(pubs.share = pubs / total.pubs)
 
 
-# isolate local research journals according to the references approach (cut-off threshold > 0.50)
-local.refs <- subset(journals, select = c("journal.id", "journal.name", "refs.prop", "category.acronym", "category.prop", "field"), refs.prop > 0.50)
+# isolate local research journals according to the references approach (cut-off thresholds for trial >= 0.40 (3º quartile) & >= 0.53 (9º decile))
+local.refs.q <- subset(journals, select = c("journal.id", "journal.name", "refs.prop", "category.acronym", "category.prop", "field"), refs.prop >= 0.40)
+local.refs.d <- subset(journals, select = c("journal.id", "journal.name", "refs.prop", "category.acronym", "category.prop", "field"), refs.prop >= 0.53)
 
 # subset the necessary variables to work at country level and remove NA values
-local.refs.countries <- df.journals.final[df.journals.final$journal.id %in% local.refs$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-local.refs.countries <- local.refs.countries[complete.cases(local.refs.countries), ]
+local.refs.countries.q <- df.journals.final[df.journals.final$journal.id %in% local.refs.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+local.refs.countries.q <- local.refs.countries.q[complete.cases(local.refs.countries.q), ]
+local.refs.countries.d <- df.journals.final[df.journals.final$journal.id %in% local.refs.d$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+local.refs.countries.d <- local.refs.countries.d[complete.cases(local.refs.countries.d), ]
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
-local.refs.countries <- aggregate(pubs ~ country, data = local.refs.countries, FUN = sum)
-local.refs.countries <- local.refs.countries %>%
+local.refs.countries.q <- aggregate(pubs ~ country, data = local.refs.countries.q, FUN = sum)
+local.refs.countries.q <- local.refs.countries.q %>%
+  left_join(total.pubs.country, by = "country") %>%
+  mutate(pubs.share = pubs / total.pubs)
+local.refs.countries.d <- aggregate(pubs ~ country, data = local.refs.countries.d, FUN = sum)
+local.refs.countries.d <- local.refs.countries.d %>%
   left_join(total.pubs.country, by = "country") %>%
   mutate(pubs.share = pubs / total.pubs)
 
 
-# isolate local research journals according to the citations approach (cut-off threshold > 0.50)
-local.cits <- subset(journals, select = c("journal.id", "journal.name", "cits.prop", "category.acronym", "category.prop", "field"), cits.prop > 0.50)
+# isolate local research journals according to the citations approach (cut-off thresholds for trial >= 0.50 (3º quartile) & >= 0.86 (9º decile))
+local.cits.q <- subset(journals, select = c("journal.id", "journal.name", "cits.prop", "category.acronym", "category.prop", "field"), cits.prop >= 0.50)
+local.cits.d <- subset(journals, select = c("journal.id", "journal.name", "cits.prop", "category.acronym", "category.prop", "field"), cits.prop >= 0.86)
 
 # subset the necessary variables to work at country level and remove NA values
-local.cits.countries <- df.journals.final[df.journals.final$journal.id %in% local.cits$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-local.cits.countries <- local.cits.countries[complete.cases(local.cits.countries), ]
+local.cits.countries.q <- df.journals.final[df.journals.final$journal.id %in% local.cits.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+local.cits.countries.q <- local.cits.countries.q[complete.cases(local.cits.countries.q), ]
+local.cits.countries.d <- df.journals.final[df.journals.final$journal.id %in% local.cits.d$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+local.cits.countries.d <- local.cits.countries.d[complete.cases(local.cits.countries.d), ]
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
-local.toponyms.countries <- aggregate(pubs ~ country, data = local.toponyms.countries, FUN = sum)
-local.toponyms.countries <- local.toponyms.countries %>%
+local.cits.countries.q <- aggregate(pubs ~ country, data = local.cits.countries.q, FUN = sum)
+local.cits.countries.q <- local.cits.countries.q %>%
+  left_join(total.pubs.country, by = "country") %>%
+  mutate(pubs.share = pubs / total.pubs)
+local.cits.countries.d <- aggregate(pubs ~ country, data = local.cits.countries.d, FUN = sum)
+local.cits.countries.d <- local.cits.countries.d %>%
   left_join(total.pubs.country, by = "country") %>%
   mutate(pubs.share = pubs / total.pubs)
 
 
-######################### CALCULAR LAS MEDIDAS PARA LA TABLA ENFOCADA EN PAÍSES, A PARTIR DE LOS DATAFRAMES LOCAL.TOPONYMS.COUNTRIES, LOCAL.LANGUAGE.COUNTRIES, ETC.
-####### TAMBIÉN VER SI ES NECESARIO CORREGIR LA TABLA RESUMEN ANTERIOR, ESPERAR RESPUESTA DE NICO
-# compute measures of central tendency, non-central position and variability in all continuous and dichotomous variables within local research journals: cits.prop, refs.prop, pubs.prop, toponyms.prop, mainstream.database and mainstream.language
-print(mean(local.refs$refs.prop, na.rm = TRUE))
-print(median(local.refs$refs.prop, na.rm = TRUE))
+# compute measures of central tendency, non-central position and variability in all approaches within local research journals, focusing on countries' publication share
+print(mean(local.cits.countries.d$pubs.share, na.rm = TRUE))
+print(median(local.cits.countries.d$pubs.share, na.rm = TRUE))
 
-t <- table(local.refs$refs.prop)
-mode <- names(t)[which(t == max(t))]
-print(mode)
+print(min(local.cits.countries.d$pubs.share, na.rm = TRUE))
+print(max(local.cits.countries.d$pubs.share, na.rm = TRUE))
 
-print(min(local.refs$refs.prop, na.rm = TRUE))
-print(max(local.refs$refs.prop, na.rm = TRUE))
-
-print(quantile(local.refs$refs.prop, probs = c(0.25,0.75), na.rm = TRUE))
-print(sd(local.refs$refs.prop, na.rm = TRUE))
+print(quantile(local.cits.countries.d$pubs.share, probs = c(0.25,0.75), na.rm = TRUE))
+print(sd(local.cits.countries.d$pubs.share, na.rm = TRUE))
 
 
 ################## CONTINUAR CORRIGIENDO LOS MAPAS A PARTIR DE LOS CÁLCULOS YA HECHOS EN LOCAL.TOPONYMS.COUNTRIES, LOCAL.LANGUAGE.COUNTRIES, ETC.
