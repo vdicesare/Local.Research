@@ -6,7 +6,8 @@ library(stringr)
 library(reshape2)
 library(readxl)
 library(ggplot2)
-library(viridis)
+library(ggcorrplot)
+library(viridisLite)
 library(sf)
 library(countrycode)
 library(cld2)
@@ -1029,6 +1030,41 @@ ggplot(case.studies, aes(x = pubs.share, y = discipline.acronym)) +
   theme(legend.position = "bottom") +
   scale_fill_viridis_d(option = "plasma") +
   guides(fill = FALSE)
+
+
+### CORRELATIONS
+# country level with 3ºQ data
+corr.local.toponyms <- subset(local.toponyms.countries.q, select = c(country, pubs.share))
+corr.local.toponyms <- corr.local.toponyms %>% rename("toponyms.pubs.share" = "pubs.share")
+
+corr.local.language <- subset(local.language.countries, select = c(country, pubs.share))
+corr.local.language <- corr.local.language %>% rename("language.pubs.share" = "pubs.share")
+
+corr.local.pubs <- subset(local.pubs.countries.q, select = c(country, pubs.share))
+corr.local.pubs <- corr.local.pubs %>% rename("pubs.pubs.share" = "pubs.share")
+
+corr.local.database <- subset(local.database.countries, select = c(country, pubs.share))
+corr.local.database <- corr.local.database %>% rename("database.pubs.share" = "pubs.share")
+
+corr.local.refs <- subset(local.refs.countries.q, select = c(country, pubs.share))
+corr.local.refs <- corr.local.refs %>% rename("refs.pubs.share" = "pubs.share")
+
+corr.local.cits <- subset(local.cits.countries.q, select = c(country, pubs.share))
+corr.local.cits <- corr.local.cits %>% rename("cits.pubs.share" = "pubs.share")
+
+corr.local <- Reduce(function(x, y) merge(x, y, by = "country", all = TRUE), list(corr.local.toponyms, corr.local.language, corr.local.pubs, corr.local.database, corr.local.refs, corr.local.cits))
+corr.local <- corr.local %>% rename("Tops prop" = "toponyms.pubs.share", "Eng pub" = "language.pubs.share", "Pub prop" = "pubs.pubs.share", "W/S index" = "database.pubs.share", "Ref prop" = "refs.pubs.share", "Cit prop" = "cits.pubs.share")
+
+corr.local.matrix <- cor(corr.local[, c("Tops prop", "Eng pub", "Pub prop", "W/S index", "Ref prop", "Cit prop")], use = "pairwise.complete.obs")
+
+ggcorrplot(corr.local.matrix,
+           hc.order = TRUE,
+           type = "lower",
+           ggtheme = ggplot2::theme_minimal,
+           lab = TRUE) +
+  scale_fill_gradientn(colours = viridis(10, option = "plasma"))
+
+# regional level
 
 
 ### SAVE DATAFRAMES
