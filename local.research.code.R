@@ -918,58 +918,74 @@ print(quantile(local.cits.countries.d$pubs.share, probs = c(0.25,0.75), na.rm = 
 print(sd(local.cits.countries.d$pubs.share, na.rm = TRUE))
 
 
-################## CONTINUAR CORRIGIENDO LOS MAPAS A PARTIR DE LOS CÁLCULOS YA HECHOS EN LOCAL.TOPONYMS.COUNTRIES, LOCAL.LANGUAGE.COUNTRIES, ETC.
 ### WORLD MAPS
-
+map.world <- st_read("~/Desktop/Local.Research/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp")
 
 # plot toponyms world map
-map.toponyms.data <- merge(map.world, map.toponyms.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-map.toponyms.data <- map.toponyms.data[complete.cases(map.toponyms.data$pubs.share), ]
-
+local.toponyms.map.q <- merge(map.world, local.toponyms.countries.q, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+local.toponyms.map.q <- local.toponyms.map.q[complete.cases(local.toponyms.map.q$pubs.share), ]
+local.toponyms.map.d <- merge(map.world, local.toponyms.countries.d, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+local.toponyms.map.d <- local.toponyms.map.d[complete.cases(local.toponyms.map.d$pubs.share), ]
 
 # plot language world map
-map.language.data <- merge(map.world, map.language.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-map.language.data <- map.language.data[complete.cases(map.language.data$pubs.share), ]
-
+local.language.map <- merge(map.world, local.language.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+local.language.map <- local.language.map[complete.cases(local.language.map$pubs.share), ]
 
 # plot pubs world map
-map.pubs.data <- merge(map.world, map.pubs.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-map.pubs.data <- map.pubs.data[complete.cases(map.pubs.data$pubs.share), ]
+local.pubs.map.q <- merge(map.world, local.pubs.countries.q, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+local.pubs.map.q <- local.pubs.map.q[complete.cases(local.pubs.map.q$pubs.share), ]
+local.pubs.map.d <- merge(map.world, local.pubs.countries.d, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+local.pubs.map.d <- local.pubs.map.d[complete.cases(local.pubs.map.d$pubs.share), ]
 
 # plot database world map
-map.database.data <- merge(map.world, map.database.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-map.database.data <- map.database.data[complete.cases(map.database.data$pubs.share), ]
-
+local.database.map <- merge(map.world, local.database.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+local.database.map <- local.database.map[complete.cases(local.database.map$pubs.share), ]
 
 # plot refs world map
-map.world <- st_read("~/Desktop/Local.Research/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp")
-map.refs.data <- merge(map.world, map.refs.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-map.refs.data <- map.refs.data[complete.cases(map.refs.data$pubs.share), ]
-
+local.refs.map.q <- merge(map.world, local.refs.countries.q, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+local.refs.map.q <- local.refs.map.q[complete.cases(local.refs.map.q$pubs.share), ]
+local.refs.map.d <- merge(map.world, local.refs.countries.d, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+local.refs.map.d <- local.refs.map.d[complete.cases(local.refs.map.d$pubs.share), ]
 
 # plot cits world map
-map.cits.data <- merge(map.world, map.cits.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-map.cits.data <- map.cits.data[complete.cases(map.cits.data$pubs.share), ]
+local.cits.map.q <- merge(map.world, local.cits.countries.q, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+local.cits.map.q <- local.cits.map.q[complete.cases(local.cits.map.q$pubs.share), ]
+local.cits.map.d <- merge(map.world, local.cits.countries.d, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+local.cits.map.d <- local.cits.map.d[complete.cases(local.cits.map.d$pubs.share), ]
 
-#ggplot() +
-#  geom_sf(data = map.cits.data, aes(fill = pubs.share)) +
-#  scale_fill_viridis_c(name = "Publication share", na.value = "grey90") +
-#  theme_void()
-
-
+## 3ºQ
 # create one faceted plot with 6 maps and 1 common legend
-map.toponyms.data$variable <- "Toponyms proportion"
-map.database.data$variable <- "Non-mainstream indexing"
-map.refs.data$variable <- "Referenced proportion"
-map.cits.data$variable <- "Citing proportion"
-map.language.data$variable <- "Non-English publishing"
-map.pubs.data$variable <- "Publishing proportion"
+local.toponyms.map.q$variable <- "Toponyms proportion"
+local.language.map$variable <- "Non-English publishing"
+local.pubs.map.q$variable <- "Publishing proportion"
+local.database.map$variable <- "Non-mainstream indexing"
+local.refs.map.q$variable <- "Referenced proportion"
+local.cits.map.q$variable <- "Citing proportion"
 
-map <- rbind(map.toponyms.data, map.database.data, map.refs.data, map.cits.data, map.language.data, map.pubs.data)
-map$variable <- factor(map$variable, levels = c("Toponyms proportion", "Non-mainstream indexing", "Referenced proportion", "Citing proportion", "Non-English publishing", "Publishing proportion"))
+map.q <- rbind(local.toponyms.map.q, local.language.map, local.pubs.map.q, local.database.map, local.refs.map.q, local.cits.map.q)
+map.q$variable <- factor(map.q$variable, levels = c("Toponyms proportion", "Non-English publishing", "Publishing proportion", "Non-mainstream indexing", "Referenced proportion", "Citing proportion"))
 
 ggplot() +
-  geom_sf(data = map, aes(fill = pubs.share)) +
+  geom_sf(data = map.q, aes(fill = pubs.share)) +
+  scale_fill_viridis_c(name = "Publication share", na.value = "grey90", option = "plasma") +
+  facet_wrap(~variable, ncol = 2) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+## 9ºD
+# create one faceted plot with 6 maps and 1 common legend
+local.toponyms.map.d$variable <- "Toponyms proportion"
+local.language.map$variable <- "Non-English publishing"
+local.pubs.map.d$variable <- "Publishing proportion"
+local.database.map$variable <- "Non-mainstream indexing"
+local.refs.map.d$variable <- "Referenced proportion"
+local.cits.map.d$variable <- "Citing proportion"
+
+map.d <- rbind(local.toponyms.map.d, local.language.map, local.pubs.map.d, local.database.map, local.refs.map.d, local.cits.map.d)
+map.d$variable <- factor(map.d$variable, levels = c("Toponyms proportion", "Non-English publishing", "Publishing proportion", "Non-mainstream indexing", "Referenced proportion", "Citing proportion"))
+
+ggplot() +
+  geom_sf(data = map.d, aes(fill = pubs.share)) +
   scale_fill_viridis_c(name = "Publication share", na.value = "grey90", option = "plasma") +
   facet_wrap(~variable, ncol = 2) +
   theme_minimal() +
