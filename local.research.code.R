@@ -1034,37 +1034,66 @@ ggplot(case.studies, aes(x = pubs.share, y = discipline.acronym)) +
 
 ### CORRELATIONS
 # country level with 3ºQ data
-corr.local.toponyms <- subset(local.toponyms.countries.q, select = c(country, pubs.share))
-corr.local.toponyms <- corr.local.toponyms %>% rename("toponyms.pubs.share" = "pubs.share")
+corr.local.toponyms.q <- subset(local.toponyms.countries.q, select = c(country, pubs.share))
+corr.local.toponyms.q <- corr.local.toponyms.q %>% rename("toponyms.pubs.share" = "pubs.share")
 
 corr.local.language <- subset(local.language.countries, select = c(country, pubs.share))
 corr.local.language <- corr.local.language %>% rename("language.pubs.share" = "pubs.share")
 
-corr.local.pubs <- subset(local.pubs.countries.q, select = c(country, pubs.share))
-corr.local.pubs <- corr.local.pubs %>% rename("pubs.pubs.share" = "pubs.share")
+corr.local.pubs.q <- subset(local.pubs.countries.q, select = c(country, pubs.share))
+corr.local.pubs.q <- corr.local.pubs.q %>% rename("pubs.pubs.share" = "pubs.share")
 
 corr.local.database <- subset(local.database.countries, select = c(country, pubs.share))
 corr.local.database <- corr.local.database %>% rename("database.pubs.share" = "pubs.share")
 
-corr.local.refs <- subset(local.refs.countries.q, select = c(country, pubs.share))
-corr.local.refs <- corr.local.refs %>% rename("refs.pubs.share" = "pubs.share")
+corr.local.refs.q <- subset(local.refs.countries.q, select = c(country, pubs.share))
+corr.local.refs.q <- corr.local.refs.q %>% rename("refs.pubs.share" = "pubs.share")
 
-corr.local.cits <- subset(local.cits.countries.q, select = c(country, pubs.share))
-corr.local.cits <- corr.local.cits %>% rename("cits.pubs.share" = "pubs.share")
+corr.local.cits.q <- subset(local.cits.countries.q, select = c(country, pubs.share))
+corr.local.cits.q <- corr.local.cits.q %>% rename("cits.pubs.share" = "pubs.share")
 
-corr.local <- Reduce(function(x, y) merge(x, y, by = "country", all = TRUE), list(corr.local.toponyms, corr.local.language, corr.local.pubs, corr.local.database, corr.local.refs, corr.local.cits))
-corr.local <- corr.local %>% rename("Tops prop" = "toponyms.pubs.share", "Eng pub" = "language.pubs.share", "Pub prop" = "pubs.pubs.share", "W/S index" = "database.pubs.share", "Ref prop" = "refs.pubs.share", "Cit prop" = "cits.pubs.share")
+corr.local.q <- Reduce(function(x, y) merge(x, y, by = "country", all = TRUE), list(corr.local.toponyms.q, corr.local.language, corr.local.pubs.q, corr.local.database, corr.local.refs.q, corr.local.cits.q))
+corr.local.q <- corr.local.q %>% rename("Tops prop" = "toponyms.pubs.share", "Eng pub" = "language.pubs.share", "Pub prop" = "pubs.pubs.share", "W/S index" = "database.pubs.share", "Ref prop" = "refs.pubs.share", "Cit prop" = "cits.pubs.share")
 
-corr.local.matrix <- cor(corr.local[, c("Tops prop", "Eng pub", "Pub prop", "W/S index", "Ref prop", "Cit prop")], use = "pairwise.complete.obs")
+corr.local.matrix.q <- cor(corr.local.q[, c("Tops prop", "Eng pub", "Pub prop", "W/S index", "Ref prop", "Cit prop")], use = "pairwise.complete.obs")
 
-ggcorrplot(corr.local.matrix,
-           hc.order = TRUE,
+ggcorrplot(corr.local.matrix.q,
            type = "lower",
            ggtheme = ggplot2::theme_minimal,
            lab = TRUE) +
   scale_fill_gradientn(colours = viridis(10, option = "plasma"))
 
-# regional level
+# country level with 9ºD data
+corr.local.toponyms.d <- subset(local.toponyms.countries.d, select = c(country, pubs.share))
+corr.local.toponyms.d <- corr.local.toponyms.d %>% rename("toponyms.pubs.share" = "pubs.share")
+
+corr.local.language <- subset(local.language.countries, select = c(country, pubs.share))
+corr.local.language <- corr.local.language %>% rename("language.pubs.share" = "pubs.share")
+
+corr.local.pubs.d <- subset(local.pubs.countries.d, select = c(country, pubs.share))
+corr.local.pubs.d <- corr.local.pubs.d %>% rename("pubs.pubs.share" = "pubs.share")
+
+corr.local.database <- subset(local.database.countries, select = c(country, pubs.share))
+corr.local.database <- corr.local.database %>% rename("database.pubs.share" = "pubs.share")
+
+corr.local.refs.d <- subset(local.refs.countries.d, select = c(country, pubs.share))
+corr.local.refs.d <- corr.local.refs.d %>% rename("refs.pubs.share" = "pubs.share")
+
+corr.local.cits.d <- subset(local.cits.countries.d, select = c(country, pubs.share))
+corr.local.cits.d <- corr.local.cits.d %>% rename("cits.pubs.share" = "pubs.share")
+
+corr.local.d <- Reduce(function(x, y) merge(x, y, by = "country", all = TRUE), list(corr.local.toponyms.d, corr.local.language, corr.local.pubs.d, corr.local.database, corr.local.refs.d, corr.local.cits.d))
+corr.local.d <- corr.local.d %>% rename("Tops prop" = "toponyms.pubs.share", "Eng pub" = "language.pubs.share", "Pub prop" = "pubs.pubs.share", "W/S index" = "database.pubs.share", "Ref prop" = "refs.pubs.share", "Cit prop" = "cits.pubs.share")
+
+corr.local.matrix.d <- cor(corr.local.d[, c("Tops prop", "Eng pub", "Pub prop", "W/S index", "Ref prop", "Cit prop")], use = "pairwise.complete.obs")
+
+ggcorrplot(corr.local.matrix.d,
+           type = "lower",
+           ggtheme = ggplot2::theme_minimal,
+           lab = TRUE) +
+  scale_fill_gradientn(colours = viridis(10, option = "plasma"))
+
+# regional level with 3ºQ data
 
 
 ### SAVE DATAFRAMES
