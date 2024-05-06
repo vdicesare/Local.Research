@@ -1093,7 +1093,18 @@ ggcorrplot(corr.local.matrix.d,
            lab = TRUE) +
   scale_fill_gradientn(colours = viridis(10, option = "plasma"))
 
-# regional level with 3ºQ data
+# regional level with 3ºQ data                             CONTINUAR DESARROLLANDO EL AGRUPAMIENTO DE PAÍSES POR REGIONES
+africa <- c("DZ", "AO", "BJ", "BW", "BF", "BI", "CV", "CM", "CF", "TD", "KM", "CG", "CI", "CD", "DJ", "EG", "GQ", "ER", "SZ", "ET", "GA", "GM", "GH", "GN", "GW", "KE", "LS", "LR", "LY", "MG", "MW", "ML", "MR", "MU", "MA", "MZ", "NA", "NE", "NG", "RW", "ST", "SN", "SC", "SL", "SO", "ZA", "SS", "SD", "TG", "TN", "UG", "TZ", "ZM", "ZW")
+asia.pacific <- c()
+eastern.europe <- c()
+latin.america.caribbean <- c()
+western.europe.others <- c()
+
+journals$field <- ifelse(journals$category.acronym %in% health.sciences, "Health Sciences",
+                         ifelse(journals$category.acronym %in% humanities, "Humanities",
+                                ifelse(journals$category.acronym %in% life.sciences, "Life Sciences",
+                                       ifelse(journals$category.acronym %in% physical.sciences, "Physical Sciences",
+                                              ifelse(journals$category.acronym %in% social.sciences, "Social Sciences", NA)))))
 
 
 ### SAVE DATAFRAMES
