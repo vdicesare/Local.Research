@@ -994,6 +994,7 @@ ggplot() +
 
 
 ### CASE STUDIES
+## toponyms approach
 # subset the necessary variables to work at country level within local journals and remove NA values
 case.toponyms <- df.journals.final[df.journals.final$journal.id %in% local.toponyms.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 case.toponyms <- case.toponyms[complete.cases(case.toponyms), ]
@@ -1014,9 +1015,112 @@ case.toponyms$pubs.share <- sprintf("%.2f", case.toponyms$pubs.share)
 # add a variable for the specific approach
 case.toponyms$approach <- rep("Toponyms", nrow(case.toponyms))
 
-##### repetir para todos los enfoques
+## languages approach
+# subset the necessary variables to work at country level within local journals and remove NA values
+case.language <- df.journals.final[df.journals.final$journal.id %in% local.language$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+case.language <- case.language[complete.cases(case.language), ]
 
+# add the variables with category and field information
+case.language <- merge(case.language, journals[, c("journal.id", "category.acronym", "field")], by = "journal.id", all.x = TRUE)
 
+# keep only the countries chosen for case study
+case.language <- case.language[case.language$country %in% c("US", "CN", "DE", "ID", "BR", "ZA"), ]
+
+# compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
+case.language <- aggregate(pubs ~ country + category.acronym + field, data = case.language, FUN = sum)
+case.language <- case.language %>%
+  left_join(total.pubs.country, by = "country") %>%
+  mutate(pubs.share = pubs / total.pubs)
+case.language$pubs.share <- sprintf("%.2f", case.language$pubs.share)
+
+# add a variable for the specific approach
+case.language$approach <- rep("Languages", nrow(case.language))
+
+## pubs approach
+# subset the necessary variables to work at country level within local journals and remove NA values
+case.pubs <- df.journals.final[df.journals.final$journal.id %in% local.pubs.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+case.pubs <- case.pubs[complete.cases(case.pubs), ]
+
+# add the variables with category and field information
+case.pubs <- merge(case.pubs, journals[, c("journal.id", "category.acronym", "field")], by = "journal.id", all.x = TRUE)
+
+# keep only the countries chosen for case study
+case.pubs <- case.pubs[case.pubs$country %in% c("US", "CN", "DE", "ID", "BR", "ZA"), ]
+
+# compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
+case.pubs <- aggregate(pubs ~ country + category.acronym + field, data = case.pubs, FUN = sum)
+case.pubs <- case.pubs %>%
+  left_join(total.pubs.country, by = "country") %>%
+  mutate(pubs.share = pubs / total.pubs)
+case.pubs$pubs.share <- sprintf("%.2f", case.pubs$pubs.share)
+
+# add a variable for the specific approach
+case.pubs$approach <- rep("Journals", nrow(case.pubs))
+
+## database approach
+# subset the necessary variables to work at country level within local journals and remove NA values
+case.database <- df.journals.final[df.journals.final$journal.id %in% local.database$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+case.database <- case.database[complete.cases(case.database), ]
+
+# add the variables with category and field information
+case.database <- merge(case.database, journals[, c("journal.id", "category.acronym", "field")], by = "journal.id", all.x = TRUE)
+
+# keep only the countries chosen for case study
+case.database <- case.database[case.database$country %in% c("US", "CN", "DE", "ID", "BR", "ZA"), ]
+
+# compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
+case.database <- aggregate(pubs ~ country + category.acronym + field, data = case.database, FUN = sum)
+case.database <- case.database %>%
+  left_join(total.pubs.country, by = "country") %>%
+  mutate(pubs.share = pubs / total.pubs)
+case.database$pubs.share <- sprintf("%.2f", case.database$pubs.share)
+
+# add a variable for the specific approach
+case.database$approach <- rep("Databases", nrow(case.database))
+
+## refs approach
+# subset the necessary variables to work at country level within local journals and remove NA values
+case.refs <- df.journals.final[df.journals.final$journal.id %in% local.refs.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+case.refs <- case.refs[complete.cases(case.refs), ]
+
+# add the variables with category and field information
+case.refs <- merge(case.refs, journals[, c("journal.id", "category.acronym", "field")], by = "journal.id", all.x = TRUE)
+
+# keep only the countries chosen for case study
+case.refs <- case.refs[case.refs$country %in% c("US", "CN", "DE", "ID", "BR", "ZA"), ]
+
+# compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
+case.refs <- aggregate(pubs ~ country + category.acronym + field, data = case.refs, FUN = sum)
+case.refs <- case.refs %>%
+  left_join(total.pubs.country, by = "country") %>%
+  mutate(pubs.share = pubs / total.pubs)
+case.refs$pubs.share <- sprintf("%.2f", case.refs$pubs.share)
+
+# add a variable for the specific approach
+case.refs$approach <- rep("References", nrow(case.refs))
+
+## cits approach
+# subset the necessary variables to work at country level within local journals and remove NA values
+case.cits <- df.journals.final[df.journals.final$journal.id %in% local.cits.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
+case.cits <- case.cits[complete.cases(case.cits), ]
+
+# add the variables with category and field information
+case.cits <- merge(case.cits, journals[, c("journal.id", "category.acronym", "field")], by = "journal.id", all.x = TRUE)
+
+# keep only the countries chosen for case study
+case.cits <- case.cits[case.cits$country %in% c("US", "CN", "DE", "ID", "BR", "ZA"), ]
+
+# compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
+case.cits <- aggregate(pubs ~ country + category.acronym + field, data = case.cits, FUN = sum)
+case.cits <- case.cits %>%
+  left_join(total.pubs.country, by = "country") %>%
+  mutate(pubs.share = pubs / total.pubs)
+case.cits$pubs.share <- sprintf("%.2f", case.cits$pubs.share)
+
+# add a variable for the specific approach
+case.cits$approach <- rep("Citations", nrow(case.cits))
+
+######################################################## MERGE ALL APPROACHES AND PLOT
 
 # plot the publication share per discipline per country within local research journals
 ggplot(case.studies, aes(x = pubs.share, y = discipline.acronym)) +
