@@ -770,6 +770,39 @@ print(journals %>% distinct(journal.id, .keep_all = TRUE) %>% summarise(sum(main
 
 print(sort(table(journals[!duplicated(journals[c("journal.id", "category")]), "category"]), decreasing = TRUE))
 
+
+
+# plot area-proportional diagram to represent the overlap of local journals between approaches        SEGUIR POR ACÁ, ORDENAR MEJOR EL CÓDIGO
+install.packages("GenSA", type = "binary")
+install.packages("RcppArmadillo", type = "binary")
+install.packages("eulerr", type = "binary")
+install.packages("eulerr")
+library(eulerr)
+local.journals <- euler(c("Toponyms" = 6572, "Languages" = 1514, "Journals" = 5571, "Databases" = 9517, "References" = 5811, "Citations" = 5923,
+               "Toponyms&Languages" = 286, "Toponyms&Journals" = 971, "Toponyms&Databases" = 2399, "Toponyms&References" = 1273, "Toponyms&Citations" = 1034,
+               "Languages&Journals" = 990, "Languages&Databases" = 1184, "Languages&References" = 289, "Languages&Citations" = 1120,
+               "Journals&Databases" = 4259, "Journals&References" = 1518, "Journals&Citations" = 3917,
+               "Databases&References" = 2204, "Databases&Citations" = 4441,
+               "References&Citations" = 1782,
+               "Toponyms&Languages&Journals" = 117, "Toponyms&Languages&Databases" = 224, "Toponyms&Languages&References" = 64, "Toponyms&Languages&Citations" = 158,
+               "Toponyms&Journals&Databases" = 747, "Toponyms&Journals&References" = 206, "Toponyms&Journals&Citations" = 543,
+               "Toponyms&Databases&References" = 481, "Toponyms&Databases&Citations" = 738,
+               "Languages&Journals&Databases" = 817, "Languages&Journals&References" = 206, "Languages&Journals&Citations" = 814,
+               "Languages&Databases&References" = 247, "Languages&Databases&Citations" = 908,
+               "Languages&References&Citations" = 224,
+               "Journals&Databases&References" = 1030, "Journals&Databases&Citations" = 3135,
+               "Journals&References&Citations" = 1130,
+               "Databases&References&Citations" = 1155))
+plot(local.journals,
+     fills = c("#0D0887", "#7201A8", "#BD3786", "#ED7953", "#FB9F3A", "#F0F921"),
+     edges = FALSE,
+     fontsize = 8,
+     legend = list(side = "right"),
+     quantities = list(fontsize = 8, type = "percent"))
+#################################### ESTÁ QUEDANDO MUY LINDO. INTENTAR REPRESENTAR LOS TOTALES DE CADA ENFOQUE CON COUNT Y LAS SUPERPOSICIONES CON %. MOSTRAR SOLO LAS SUPERPOSICIONES MÁS SIGNIFICATIVAS? AGREGAR APPROACH A LAS ETIQUETAS?
+
+
+
 # compute the mean distribution of journals per category, per variable: cits.prop, refs.prop, pubs.prop, toponyms.prop, mainstream.database and mainstream.language
 journals %>% 
   na.omit() %>%
@@ -1003,14 +1036,13 @@ case.toponyms <- case.toponyms[complete.cases(case.toponyms), ]
 case.toponyms <- merge(case.toponyms, journals[, c("journal.id", "category.acronym", "field")], by = "journal.id", all.x = TRUE)
 
 # keep only the countries chosen for case study
-case.toponyms <- case.toponyms[case.toponyms$country %in% c("US", "CN", "DE", "ID", "BR", "ZA"), ]
+case.toponyms <- case.toponyms[case.toponyms$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
 case.toponyms <- aggregate(pubs ~ country + category.acronym + field, data = case.toponyms, FUN = sum)
 case.toponyms <- case.toponyms %>%
   left_join(total.pubs.country, by = "country") %>%
   mutate(pubs.share = pubs / total.pubs)
-case.toponyms$pubs.share <- sprintf("%.2f", case.toponyms$pubs.share)
 
 # add a variable for the specific approach
 case.toponyms$approach <- rep("Toponyms", nrow(case.toponyms))
@@ -1024,14 +1056,13 @@ case.language <- case.language[complete.cases(case.language), ]
 case.language <- merge(case.language, journals[, c("journal.id", "category.acronym", "field")], by = "journal.id", all.x = TRUE)
 
 # keep only the countries chosen for case study
-case.language <- case.language[case.language$country %in% c("US", "CN", "DE", "ID", "BR", "ZA"), ]
+case.language <- case.language[case.language$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
 case.language <- aggregate(pubs ~ country + category.acronym + field, data = case.language, FUN = sum)
 case.language <- case.language %>%
   left_join(total.pubs.country, by = "country") %>%
   mutate(pubs.share = pubs / total.pubs)
-case.language$pubs.share <- sprintf("%.2f", case.language$pubs.share)
 
 # add a variable for the specific approach
 case.language$approach <- rep("Languages", nrow(case.language))
@@ -1045,14 +1076,13 @@ case.pubs <- case.pubs[complete.cases(case.pubs), ]
 case.pubs <- merge(case.pubs, journals[, c("journal.id", "category.acronym", "field")], by = "journal.id", all.x = TRUE)
 
 # keep only the countries chosen for case study
-case.pubs <- case.pubs[case.pubs$country %in% c("US", "CN", "DE", "ID", "BR", "ZA"), ]
+case.pubs <- case.pubs[case.pubs$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
 case.pubs <- aggregate(pubs ~ country + category.acronym + field, data = case.pubs, FUN = sum)
 case.pubs <- case.pubs %>%
   left_join(total.pubs.country, by = "country") %>%
   mutate(pubs.share = pubs / total.pubs)
-case.pubs$pubs.share <- sprintf("%.2f", case.pubs$pubs.share)
 
 # add a variable for the specific approach
 case.pubs$approach <- rep("Journals", nrow(case.pubs))
@@ -1066,14 +1096,13 @@ case.database <- case.database[complete.cases(case.database), ]
 case.database <- merge(case.database, journals[, c("journal.id", "category.acronym", "field")], by = "journal.id", all.x = TRUE)
 
 # keep only the countries chosen for case study
-case.database <- case.database[case.database$country %in% c("US", "CN", "DE", "ID", "BR", "ZA"), ]
+case.database <- case.database[case.database$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
 case.database <- aggregate(pubs ~ country + category.acronym + field, data = case.database, FUN = sum)
 case.database <- case.database %>%
   left_join(total.pubs.country, by = "country") %>%
   mutate(pubs.share = pubs / total.pubs)
-case.database$pubs.share <- sprintf("%.2f", case.database$pubs.share)
 
 # add a variable for the specific approach
 case.database$approach <- rep("Databases", nrow(case.database))
@@ -1087,14 +1116,13 @@ case.refs <- case.refs[complete.cases(case.refs), ]
 case.refs <- merge(case.refs, journals[, c("journal.id", "category.acronym", "field")], by = "journal.id", all.x = TRUE)
 
 # keep only the countries chosen for case study
-case.refs <- case.refs[case.refs$country %in% c("US", "CN", "DE", "ID", "BR", "ZA"), ]
+case.refs <- case.refs[case.refs$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
 case.refs <- aggregate(pubs ~ country + category.acronym + field, data = case.refs, FUN = sum)
 case.refs <- case.refs %>%
   left_join(total.pubs.country, by = "country") %>%
   mutate(pubs.share = pubs / total.pubs)
-case.refs$pubs.share <- sprintf("%.2f", case.refs$pubs.share)
 
 # add a variable for the specific approach
 case.refs$approach <- rep("References", nrow(case.refs))
@@ -1108,30 +1136,54 @@ case.cits <- case.cits[complete.cases(case.cits), ]
 case.cits <- merge(case.cits, journals[, c("journal.id", "category.acronym", "field")], by = "journal.id", all.x = TRUE)
 
 # keep only the countries chosen for case study
-case.cits <- case.cits[case.cits$country %in% c("US", "CN", "DE", "ID", "BR", "ZA"), ]
+case.cits <- case.cits[case.cits$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
 case.cits <- aggregate(pubs ~ country + category.acronym + field, data = case.cits, FUN = sum)
 case.cits <- case.cits %>%
   left_join(total.pubs.country, by = "country") %>%
   mutate(pubs.share = pubs / total.pubs)
-case.cits$pubs.share <- sprintf("%.2f", case.cits$pubs.share)
 
 # add a variable for the specific approach
 case.cits$approach <- rep("Citations", nrow(case.cits))
 
-######################################################## MERGE ALL APPROACHES AND PLOT
+# merge all case studies to plot
+case.studies <- rbind(case.toponyms, case.language, case.pubs, case.database, case.refs, case.cits)
 
-# plot the publication share per discipline per country within local research journals
-ggplot(case.studies, aes(x = pubs.share, y = discipline.acronym)) +
-  geom_bar(stat = "identity", aes(fill = pubs.country)) +  
-  facet_wrap(~ pubs.country, scales = "free_y", ncol = 2,
-             labeller = labeller(pubs.country = c("BR" = "Brazil", "CN" = "China", "DE" = "Germany", "ID" = "Indonesia", "US" = "United States", "ZA" = "South Africa"))) +
-  labs(x = "Publishing proportion", y = "Discipline") +
+
+########################################################################################################################
+# plot case studies per categories
+ggplot(case.studies, aes(x = approach, y = category.acronym, fill = pubs.share)) +
+  geom_tile() +
+  facet_wrap(~ country, ncol = 2,
+             labeller = labeller(pubs.country = c("BR" = "Brazil", "CN" = "China", "DE" = "Germany", "ES" = "España", "US" = "United States", "ZA" = "South Africa"))) +
+  scale_fill_viridis_c(name = "Publication share", na.value = "grey90", option = "plasma") +
+  labs(x = "Operational approach", y = "Category") +
   theme_minimal() +
-  theme(legend.position = "bottom") +
-  scale_fill_viridis_d(option = "plasma") +
-  guides(fill = FALSE)
+  theme(legend.position = "bottom")
+
+# lo mismo con ejes invertidos
+ggplot(case.studies, aes(x = category.acronym, y = approach, fill = pubs.share)) +
+  geom_tile() +
+  facet_wrap(~ country, ncol = 2,
+             labeller = labeller(pubs.country = c("BR" = "Brazil", "CN" = "China", "DE" = "Germany", "ES" = "España", "US" = "United States", "ZA" = "South Africa"))) +
+  scale_fill_viridis_c(name = "Publication share", na.value = "grey90", option = "plasma") +
+  labs(x = "Category", y = "Operational approach") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+# plot case studies per field
+case.studies.field <- aggregate(pubs.share ~ country + field, data = case.studies, FUN = sum)
+ggplot(case.studies.field, aes(x = approach, y = field, fill = pubs.share)) +
+  geom_tile() +
+  facet_wrap(~ country, ncol = 2,
+             labeller = labeller(pubs.country = c("BR" = "Brazil", "CN" = "China", "DE" = "Germany", "ES" = "España", "US" = "United States", "ZA" = "South Africa"))) +
+  scale_fill_viridis_c(name = "Publication share", na.value = "grey90", option = "plasma") +
+  labs(x = "Operational approach", y = "Field") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+########################################################################################################################
 
 
 ### CORRELATIONS
@@ -1194,19 +1246,6 @@ ggcorrplot(corr.local.matrix.q,
            #ggtheme = ggplot2::theme_minimal,
            #lab = TRUE) +
   #scale_fill_gradientn(colours = viridis(10, option = "plasma"))
-
-# regional level with 3ºQ data                        ¿CONTINUAR DESARROLLANDO EL AGRUPAMIENTO DE PAÍSES POR REGIONES?
-africa <- c("DZ", "AO", "BJ", "BW", "BF", "BI", "CV", "CM", "CF", "TD", "KM", "CG", "CI", "CD", "DJ", "EG", "GQ", "ER", "SZ", "ET", "GA", "GM", "GH", "GN", "GW", "KE", "LS", "LR", "LY", "MG", "MW", "ML", "MR", "MU", "MA", "MZ", "NA", "NE", "NG", "RW", "ST", "SN", "SC", "SL", "SO", "ZA", "SS", "SD", "TG", "TN", "UG", "TZ", "ZM", "ZW")
-asia.pacific <- c()
-eastern.europe <- c()
-latin.america.caribbean <- c()
-western.europe.others <- c()
-
-journals$field <- ifelse(journals$category.acronym %in% health.sciences, "Health Sciences",
-                         ifelse(journals$category.acronym %in% humanities, "Humanities",
-                                ifelse(journals$category.acronym %in% life.sciences, "Life Sciences",
-                                       ifelse(journals$category.acronym %in% physical.sciences, "Physical Sciences",
-                                              ifelse(journals$category.acronym %in% social.sciences, "Social Sciences", NA)))))
 
 
 ### SAVE DATAFRAMES
