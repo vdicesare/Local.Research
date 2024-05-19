@@ -786,7 +786,7 @@ journals %>%
   summarise(avg_mainstream_yes = mean(mainstream.language, na.rm = TRUE)) %>%
   print(n = Inf)
 
-# manually build mean.distribution dataframe for plotting
+# manually build mean distribution dataframe for plotting
 mean.distribution <- data.frame(approach = c("Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach",
                                              "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach",
                                              "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach",
@@ -817,22 +817,17 @@ mean.distribution <- data.frame(approach = c("Toponyms approach", "Toponyms appr
                                                "prop", "prop", "mean", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "prop", "mean",
                                                "prop", "prop", "mean", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "prop", "mean",
                                                "prop", "prop", "mean", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "prop", "mean"))
-                                
 
-# plot as geom_point facet_wrap by approach variable
-ggplot(mean.distribution, aes(x = values, y = fields, shape = value.type)) +
-  geom_point() +
-  #ggtitle("Ground living area partially explains sale price of apartments") +
+# plot mean distribution of journals per field, per approach
+ggplot(mean.distribution, aes(x = values, y = fields, shape = value.type, color = categories)) +
+  geom_point(size = 4) +
+  facet_wrap(~approach, ncol = 2) +
+  scale_color_viridis_d(option = "plasma", guide = "none") +
+  scale_shape_manual(name = "Value type", values = c(17, 16), labels = c("Mean", "Proportion")) +
   theme_minimal() +
-  ylab('Sale price (k$)') +
-  xlab('Ground living area')
-
-
-
-
-
-
-
+  theme(legend.position = "bottom") +
+  xlab("Value") +
+  ylab("Field")
 
 # plot Venn diagram to represent the overlap of local journals between approaches
 local.journals <- euler(c("Toponyms" = 6572, "Languages" = 1514, "Journals" = 5571, "Databases" = 9517, "References" = 5811, "Citations" = 5923,
