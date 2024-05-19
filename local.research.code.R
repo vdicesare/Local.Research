@@ -747,7 +747,7 @@ journals$field <- ifelse(journals$category.acronym %in% health.sciences, "Health
                                               ifelse(journals$category.acronym %in% social.sciences, "Social Sciences", NA)))))
 
 
-### JOURNAL LEVEL SUMMARY TABLES
+### JOURNAL LEVEL SUMMARY DATA
 # compute measures of central tendency, non-central position and variability in all continuous variables: cits.prop, refs.prop, pubs.prop and toponyms.prop
 journals$cits.prop <- round(journals$cits.prop, digits = 2)
 print(mean(journals$cits.prop, na.rm = TRUE))
@@ -818,9 +818,11 @@ mean.distribution <- data.frame(approach = c("Toponyms approach", "Toponyms appr
                                                "prop", "prop", "mean", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "prop", "mean",
                                                "prop", "prop", "mean", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "prop", "mean"))
 
+mean.distribution$approach <- factor(mean.distribution$approach, levels = c("Toponyms approach", "Languages approach", "Journals approach", "Databases approach", "References approach", "Citations approach"))
+
 # plot mean distribution of journals per field, per approach
 ggplot(mean.distribution, aes(x = values, y = fields, shape = value.type, color = categories)) +
-  geom_point(size = 4) +
+  geom_point(size = 3) +
   facet_wrap(~approach, ncol = 2) +
   scale_color_viridis_d(option = "plasma", guide = "none") +
   scale_shape_manual(name = "Value type", values = c(17, 16), labels = c("Mean", "Proportion")) +
@@ -853,7 +855,7 @@ plot(local.journals,
      quantities = list(type = "percent"))
 
 
-### COUNTRY LEVEL SUMMARY TABLE
+### COUNTRY LEVEL SUMMARY DATA
 # before working with country data in local journals, compute the total number of publications per country considering all journals
 total.pubs.country <- subset(df.journals.final, select = c(country, pubs))
 total.pubs.country <- total.pubs.country[complete.cases(total.pubs.country), ]
