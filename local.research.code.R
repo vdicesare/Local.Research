@@ -7,6 +7,7 @@ library(reshape2)
 library(readxl)
 library(ggplot2)
 library(ggcorrplot)
+library(eulerr)
 library(viridisLite)
 library(sf)
 library(countrycode)
@@ -770,39 +771,6 @@ print(journals %>% distinct(journal.id, .keep_all = TRUE) %>% summarise(sum(main
 
 print(sort(table(journals[!duplicated(journals[c("journal.id", "category")]), "category"]), decreasing = TRUE))
 
-
-
-# plot area-proportional diagram to represent the overlap of local journals between approaches        SEGUIR POR ACÁ, ORDENAR MEJOR EL CÓDIGO
-install.packages("GenSA", type = "binary")
-install.packages("RcppArmadillo", type = "binary")
-install.packages("eulerr", type = "binary")
-install.packages("eulerr")
-library(eulerr)
-local.journals <- euler(c("Toponyms" = 6572, "Languages" = 1514, "Journals" = 5571, "Databases" = 9517, "References" = 5811, "Citations" = 5923,
-               "Toponyms&Languages" = 286, "Toponyms&Journals" = 971, "Toponyms&Databases" = 2399, "Toponyms&References" = 1273, "Toponyms&Citations" = 1034,
-               "Languages&Journals" = 990, "Languages&Databases" = 1184, "Languages&References" = 289, "Languages&Citations" = 1120,
-               "Journals&Databases" = 4259, "Journals&References" = 1518, "Journals&Citations" = 3917,
-               "Databases&References" = 2204, "Databases&Citations" = 4441,
-               "References&Citations" = 1782,
-               "Toponyms&Languages&Journals" = 117, "Toponyms&Languages&Databases" = 224, "Toponyms&Languages&References" = 64, "Toponyms&Languages&Citations" = 158,
-               "Toponyms&Journals&Databases" = 747, "Toponyms&Journals&References" = 206, "Toponyms&Journals&Citations" = 543,
-               "Toponyms&Databases&References" = 481, "Toponyms&Databases&Citations" = 738,
-               "Languages&Journals&Databases" = 817, "Languages&Journals&References" = 206, "Languages&Journals&Citations" = 814,
-               "Languages&Databases&References" = 247, "Languages&Databases&Citations" = 908,
-               "Languages&References&Citations" = 224,
-               "Journals&Databases&References" = 1030, "Journals&Databases&Citations" = 3135,
-               "Journals&References&Citations" = 1130,
-               "Databases&References&Citations" = 1155))
-plot(local.journals,
-     fills = c("#0D0887", "#7201A8", "#BD3786", "#ED7953", "#FB9F3A", "#F0F921"),
-     edges = FALSE,
-     fontsize = 8,
-     legend = list(side = "right"),
-     quantities = list(fontsize = 8, type = "percent"))
-#################################### ESTÁ QUEDANDO MUY LINDO. INTENTAR REPRESENTAR LOS TOTALES DE CADA ENFOQUE CON COUNT Y LAS SUPERPOSICIONES CON %. MOSTRAR SOLO LAS SUPERPOSICIONES MÁS SIGNIFICATIVAS? AGREGAR APPROACH A LAS ETIQUETAS?
-
-
-
 # compute the mean distribution of journals per category, per variable: cits.prop, refs.prop, pubs.prop, toponyms.prop, mainstream.database and mainstream.language
 journals %>% 
   na.omit() %>%
@@ -817,6 +785,30 @@ journals %>%
   group_by(category.acronym) %>%
   summarise(avg_mainstream_yes = mean(mainstream.language, na.rm = TRUE)) %>%
   print(n = Inf)
+
+
+# plot Venn diagram to represent the overlap of local journals between approaches
+local.journals <- euler(c("Toponyms" = 6572, "Languages" = 1514, "Journals" = 5571, "Databases" = 9517, "References" = 5811, "Citations" = 5923,
+                          "Toponyms&Languages" = 286, "Toponyms&Journals" = 971, "Toponyms&Databases" = 2399, "Toponyms&References" = 1273, "Toponyms&Citations" = 1034,
+                          "Languages&Journals" = 990, "Languages&Databases" = 1184, "Languages&References" = 289, "Languages&Citations" = 1120,
+                          "Journals&Databases" = 4259, "Journals&References" = 1518, "Journals&Citations" = 3917,
+                          "Databases&References" = 2204, "Databases&Citations" = 4441,
+                          "References&Citations" = 1782,
+                          "Toponyms&Languages&Journals" = 117, "Toponyms&Languages&Databases" = 224, "Toponyms&Languages&References" = 64, "Toponyms&Languages&Citations" = 158,
+                          "Toponyms&Journals&Databases" = 747, "Toponyms&Journals&References" = 206, "Toponyms&Journals&Citations" = 543,
+                          "Toponyms&Databases&References" = 481, "Toponyms&Databases&Citations" = 738,
+                          "Languages&Journals&Databases" = 817, "Languages&Journals&References" = 206, "Languages&Journals&Citations" = 814,
+                          "Languages&Databases&References" = 247, "Languages&Databases&Citations" = 908,
+                          "Languages&References&Citations" = 224,
+                          "Journals&Databases&References" = 1030, "Journals&Databases&Citations" = 3135,
+                          "Journals&References&Citations" = 1130,
+                          "Databases&References&Citations" = 1155))
+
+plot(local.journals,
+     fills = c("#0D0887", "#7201A8", "#BD3786", "#ED7953", "#FB9F3A", "#F0F921"),
+     edges = FALSE,
+     legend = list(labels = c("Toponyms approach (n = 6572)", "Languages approach (n = 1514)", "Journals approach (n = 5571)", "Databases approach (n = 9517)", "References approach (n = 5811)", "Citations approach (n = 5923)"), side = "right"),
+     quantities = list(type = "percent"))
 
 
 ### COUNTRY LEVEL SUMMARY TABLE
