@@ -821,8 +821,8 @@ mean.distribution <- data.frame(approach = c("Toponyms approach", "Toponyms appr
 mean.distribution$approach <- factor(mean.distribution$approach, levels = c("Toponyms approach", "Languages approach", "Journals approach", "Databases approach", "References approach", "Citations approach"))
 
 # plot mean distribution of journals per field, per approach
-ggplot(mean.distribution, aes(x = values, y = fields, shape = value.type, color = categories)) +
-  geom_point(size = 3) +
+ggplot(mean.distribution, aes(x = values, y = fields, shape = value.type, color = fields)) +
+  geom_point(size = 2) +
   facet_wrap(~approach, ncol = 2) +
   scale_color_viridis_d(option = "plasma", guide = "none") +
   scale_shape_manual(name = "Value type", values = c(17, 16), labels = c("Mean", "Proportion")) +
@@ -830,6 +830,7 @@ ggplot(mean.distribution, aes(x = values, y = fields, shape = value.type, color 
   theme(legend.position = "bottom") +
   xlab("Value") +
   ylab("Field")
+ggsave("~/Desktop/Local.Research/Figure2.png", width = 6.27, height = 6.27, dpi = 300)
 
 # plot Venn diagram to represent the overlap of local journals between approaches
 local.journals <- euler(c("Toponyms" = 6572, "Languages" = 1514, "Journals" = 5571, "Databases" = 9517, "References" = 5811, "Citations" = 5923,
@@ -853,6 +854,8 @@ plot(local.journals,
      edges = FALSE,
      legend = list(labels = c("Toponyms approach (n = 6572)", "Languages approach (n = 1514)", "Journals approach (n = 5571)", "Databases approach (n = 9517)", "References approach (n = 5811)", "Citations approach (n = 5923)"), side = "right"),
      quantities = list(type = "percent"))
+dev.copy(png, "~/Desktop/Local.Research/Figure3.png", width = 6.27, height = 3.14, units = "in", res = 300)
+dev.off()
 
 
 ### COUNTRY LEVEL SUMMARY DATA
@@ -993,54 +996,55 @@ map.world <- st_read("~/Desktop/Local.Research/ne_110m_admin_0_countries/ne_110m
 
 # plot toponyms world map
 local.toponyms.map.q <- merge(map.world, local.toponyms.countries.q, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-local.toponyms.map.q <- local.toponyms.map.q[complete.cases(local.toponyms.map.q$pubs.share), ]
+#local.toponyms.map.q <- local.toponyms.map.q[complete.cases(local.toponyms.map.q$pubs.share), ]
 #local.toponyms.map.d <- merge(map.world, local.toponyms.countries.d, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
 #local.toponyms.map.d <- local.toponyms.map.d[complete.cases(local.toponyms.map.d$pubs.share), ]
 
 # plot language world map
 local.language.map <- merge(map.world, local.language.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-local.language.map <- local.language.map[complete.cases(local.language.map$pubs.share), ]
+#local.language.map <- local.language.map[complete.cases(local.language.map$pubs.share), ]
 
 # plot pubs world map
 local.pubs.map.q <- merge(map.world, local.pubs.countries.q, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-local.pubs.map.q <- local.pubs.map.q[complete.cases(local.pubs.map.q$pubs.share), ]
+#local.pubs.map.q <- local.pubs.map.q[complete.cases(local.pubs.map.q$pubs.share), ]
 #local.pubs.map.d <- merge(map.world, local.pubs.countries.d, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
 #local.pubs.map.d <- local.pubs.map.d[complete.cases(local.pubs.map.d$pubs.share), ]
 
 # plot database world map
 local.database.map <- merge(map.world, local.database.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-local.database.map <- local.database.map[complete.cases(local.database.map$pubs.share), ]
+#local.database.map <- local.database.map[complete.cases(local.database.map$pubs.share), ]
 
 # plot refs world map
 local.refs.map.q <- merge(map.world, local.refs.countries.q, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-local.refs.map.q <- local.refs.map.q[complete.cases(local.refs.map.q$pubs.share), ]
+#local.refs.map.q <- local.refs.map.q[complete.cases(local.refs.map.q$pubs.share), ]
 #local.refs.map.d <- merge(map.world, local.refs.countries.d, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
 #local.refs.map.d <- local.refs.map.d[complete.cases(local.refs.map.d$pubs.share), ]
 
 # plot cits world map
 local.cits.map.q <- merge(map.world, local.cits.countries.q, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-local.cits.map.q <- local.cits.map.q[complete.cases(local.cits.map.q$pubs.share), ]
+#local.cits.map.q <- local.cits.map.q[complete.cases(local.cits.map.q$pubs.share), ]
 #local.cits.map.d <- merge(map.world, local.cits.countries.d, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
 #local.cits.map.d <- local.cits.map.d[complete.cases(local.cits.map.d$pubs.share), ]
 
 ## 3ºQ
 # create one faceted plot with 6 maps and 1 common legend
-local.toponyms.map.q$variable <- "Toponyms proportion"
-local.language.map$variable <- "Non-English publishing"
-local.pubs.map.q$variable <- "Publishing proportion"
-local.database.map$variable <- "Non-mainstream indexing"
-local.refs.map.q$variable <- "Referenced proportion"
-local.cits.map.q$variable <- "Citing proportion"
+local.toponyms.map.q$approach <- "Toponyms approach"
+local.language.map$approach <- "Languages approach"
+local.pubs.map.q$approach <- "Journals approach"
+local.database.map$approach <- "Databases approach"
+local.refs.map.q$approach <- "References approach"
+local.cits.map.q$approach <- "Citations approach"
 
 map.q <- rbind(local.toponyms.map.q, local.language.map, local.pubs.map.q, local.database.map, local.refs.map.q, local.cits.map.q)
-map.q$variable <- factor(map.q$variable, levels = c("Toponyms proportion", "Non-English publishing", "Publishing proportion", "Non-mainstream indexing", "Referenced proportion", "Citing proportion"))
+map.q$approach <- factor(map.q$approach, levels = c("Toponyms approach", "Languages approach", "Journals approach", "Databases approach", "References approach", "Citations approach"))
 
 ggplot() +
   geom_sf(data = map.q, aes(fill = pubs.share)) +
-  scale_fill_viridis_c(name = "Publication share", na.value = "grey90", option = "plasma") +
-  facet_wrap(~variable, ncol = 2) +
+  scale_fill_viridis_c(name = "Publication share", na.value = "grey50", option = "plasma") +
+  facet_wrap(~approach, ncol = 2) +
   theme_minimal() +
   theme(legend.position = "bottom")
+ggsave("~/Desktop/Local.Research/Figure5.png", width = 6.27, height = 6.27, dpi = 300)
 
 ## 9ºD
 # create one faceted plot with 6 maps and 1 common legend
@@ -1187,6 +1191,7 @@ case.cits$approach <- rep("Citations", nrow(case.cits))
 case.studies <- rbind(case.toponyms, case.language, case.pubs, case.database, case.refs, case.cits)
 
 
+# SEGUIR POR ACÁ GRAFICANDO LOS CASE STUDIES (FIGURE 6)
 ########################################################################################################################
 # plot case studies per categories
 ggplot(case.studies, aes(x = approach, y = category.acronym, fill = pubs.share)) +
@@ -1251,7 +1256,9 @@ ggcorrplot(corr.local.matrix.q,
            type = "lower",
            ggtheme = ggplot2::theme_minimal,
            lab = TRUE) +
-  scale_fill_gradientn(colours = viridis(10, option = "plasma"))
+  scale_fill_gradientn(colours = viridis(10, option = "plasma")) +
+  labs(fill = "Value")
+ggsave("~/Desktop/Local.Research/Figure4.png", width = 6.27, height = 5.27, dpi = 300)
 
 # country level with 9ºD data
 #corr.local.toponyms.d <- subset(local.toponyms.countries.d, select = c(country, pubs.share))
