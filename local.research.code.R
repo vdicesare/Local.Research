@@ -7,7 +7,7 @@ library(reshape2)
 library(readxl)
 library(ggplot2)
 library(ggcorrplot)
-library(eulerr)
+library(UpSetR)
 library(viridisLite)
 library(sf)
 library(countrycode)
@@ -832,55 +832,51 @@ ggplot(mean.distribution, aes(x = values, y = fields, shape = value.type, color 
   ylab("Field")
 ggsave("~/Desktop/Local.Research/Figure2.png", width = 6.27, height = 6.27, dpi = 300)
 
-# plot Venn diagram to represent the overlap of local journals between approaches
-# PRUEBA 1
+# manually build journals overlap vector for plotting
+local.journals <- c("Toponyms" = 3056, "Languages" = 52, "Journals" = 233, "Databases" = 1964, "References" = 2158, "Citations" = 233,
+                    "Toponyms&Languages" = 27, "Toponyms&Journals" = 105, "Toponyms&Databases" = 1059, "Toponyms&References" = 676, "Toponyms&Citations" = 105,
+                    "Languages&Journals" = 30, "Languages&Databases" = 49, "Languages&References" = 7, "Languages&Citations" = 42, "Journals&Databases" = 533,
+                    "Journals&References" = 154, "Journals&Citations" = 274, "Databases&References" = 584, "Databases&Citations" = 584, "References&Citations" = 229,
+                    "Toponyms&Languages&Journals" = 0, "Toponyms&Languages&Databases" = 57, "Toponyms&Languages&References" = 2, "Toponyms&Languages&Citations" = 16,
+                    "Toponyms&Journals&Databases" = 251, "Toponyms&Journals&References" = 11, "Toponyms&Journals&Citations" = 64, "Toponyms&Databases&References" = 218,
+                    "Toponyms&Databases&Citations" = 176, "Toponyms&References&Citations" = 64, "Languages&Journals&Databases" = 93, "Languages&Journals&References" = 0,
+                    "Languages&Journals&Citations" = 113, "Languages&Databases&References" = 9, "Languages&Databases&Citations" = 160, "Languages&References&Citations" = 8,
+                    "Journals&Databases&References" = 157, "Journals&Databases&Citations" = 1548, "Journals&References&Citations" = 271, "Databases&References&Citations" = 231,
+                    "Toponyms&Languages&Journals&Databases" = 21, "Toponyms&Languages&Journals&References" = 0, "Toponyms&Languages&Journals&Citations" = 8,
+                    "Toponyms&Languages&Databases&References" = 15, "Toponyms&Languages&Databases&Citations" = 38, "Toponyms&Languages&References&Citations" = 3,
+                    "Toponyms&Journals&Databases&References" = 34, "Toponyms&Journals&Databases&Citations" = 261, "Toponyms&Journals&References&Citations" = 30,
+                    "Toponyms&Databases&References&Citations" = 78, "Languages&Journals&Databases&References" = 26, "Languages&Journals&Databases&Citations" = 464,
+                    "Languages&Journals&References&Citations" = 16, "Languages&Databases&References&Citations" = 28, "Journals&Databases&References&Citations" = 557,
+                    "Toponyms&Languages&Journals&Databases&References" = 6, "Toponyms&Languages&Journals&Databases&Citations" = 55,
+                    "Toponyms&Languages&Journals&References&Citations" = 6, "Toponyms&Languages&Databases&References&Citations" = 11,
+                    "Toponyms&Journals&Databases&References&Citations" = 98, "Languages&Journals&Databases&References&Citations" = 131,
+                    "Toponyms&Languages&Journals&Databases&References&Citations" = 21)
 
-
-
-
-plot(local.journals,
-     fills = c("#0D0887", "#7201A8", "#BD3786", "#ED7953", "#FB9F3A", "#F0F921"),
-     edges = FALSE,
-     legend = list(labels = c("Toponyms approach (n = 6572)", "Languages approach (n = 1514)", "Journals approach (n = 5571)", "Databases approach (n = 9517)", "References approach (n = 5811)", "Citations approach (n = 5923)"), side = "right"),
-     quantities = TRUE)
-dev.copy(png, "~/Desktop/Local.Research/Figure3B.png", width = 6.27, height = 3.14, units = "in", res = 300)
-dev.off()
-
-
-
-
-
-
-
-##### SEGUIR POR ACÁ!!!
-library(UpSetR)
-local.journals <- c("Toponyms" = 6572, "Languages" = 1514, "Journals" = 5571, "Databases" = 9517, "References" = 5811, "Citations" = 5923,
-                          "Toponyms&Languages" = 286, "Toponyms&Journals" = 971, "Toponyms&Databases" = 2399, "Toponyms&References" = 1273, "Toponyms&Citations" = 1034,
-                          "Languages&Journals" = 990, "Languages&Databases" = 1184, "Languages&References" = 289, "Languages&Citations" = 1120,
-                          "Journals&Databases" = 4259, "Journals&References" = 1518, "Journals&Citations" = 3917,
-                          "Databases&References" = 2204, "Databases&Citations" = 4441,
-                          "References&Citations" = 1782,
-                          "Toponyms&Languages&Journals" = 117, "Toponyms&Languages&Databases" = 224, "Toponyms&Languages&References" = 64, "Toponyms&Languages&Citations" = 158,
-                          "Toponyms&Journals&Databases" = 747, "Toponyms&Journals&References" = 206, "Toponyms&Journals&Citations" = 543,
-                          "Toponyms&Databases&References" = 481, "Toponyms&Databases&Citations" = 738,
-                          "Languages&Journals&Databases" = 817, "Languages&Journals&References" = 206, "Languages&Journals&Citations" = 814,
-                          "Languages&Databases&References" = 247, "Languages&Databases&Citations" = 908,
-                          "Languages&References&Citations" = 224,
-                          "Journals&Databases&References" = 1030, "Journals&Databases&Citations" = 3135,
-                          "Journals&References&Citations" = 1130,
-                          "Databases&References&Citations" = 1155)
-
-upset(fromExpression(local.journals), 
-      nintersects = 40, 
-      nsets = 6, 
+# plot intersections matrix to represent the overlap of local journals between approaches
+figure3 <- upset(fromExpression(local.journals),
+      nintersects = 63, 
+      nsets = 6,
+      sets = c("Toponyms", "Languages", "Journals", "Databases", "References", "Citations"),
+      mainbar.y.label = "Intersection size",
+      main.bar.color = "grey50",
+      sets.x.label = "Set size",
+      sets.bar.color = c("#F7FB00", "#7201A8", "#FBB518", "#BD3786", "#0D0887", "#ED7953"),
+      point.size = 1.5,
+      matrix.color = "grey50",
+      line.size = 0.5,
       order.by = "freq", 
-      decreasing = T, 
-      mb.ratio = c(0.6, 0.4),
-      number.angles = 0, 
-      text.scale = 1.1, 
-      point.size = 2.8, 
-      line.size = 1
-)
+      decreasing = T,
+      show.numbers = "no",
+      mb.ratio = c(0.5, 0.5),
+      queries = list(list(query = intersects, params = list("Toponyms"), color = "#7201A8", active = TRUE),
+                     list(query = intersects, params = list("References"), color = "#BD3786", active = TRUE),
+                     list(query = intersects, params = list("Databases"), color = "#F7FB00", active = TRUE),
+                     list(query = intersects, params = list("Journals"), color = "#0D0887", active = TRUE),
+                     list(query = intersects, params = list("Citations"), color = "#FBB518", active = TRUE),
+                     list(query = intersects, params = list("Languages"), color = "#ED7953", active = TRUE)))
+png(filename = "~/Desktop/Local.Research/Figure3.png", width = 6.27, height = 3.14, units = "in", res = 300)
+print(figure3)
+dev.off()
 
 
 ### COUNTRY LEVEL SUMMARY DATA
