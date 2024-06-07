@@ -888,6 +888,16 @@ total.pubs.country <- total.pubs.country %>%
   summarise(total.pubs = sum(pubs), .groups = 'drop') %>%
   as.data.frame()
 
+# before working with country data in local journals per disciplinary category, compute the total number of publications per country and per category considering all journals
+total.pubs.country.category <- subset(df.journals.final, select = c(journal.id, country, pubs))
+total.pubs.country.category <- total.pubs.country.category[complete.cases(total.pubs.country.category), ]
+total.pubs.country.category <- total.pubs.country.category %>% left_join(categories %>% select(journal.id, category), by = "journal.id", relationship = "many-to-many")
+total.pubs.country.category <- total.pubs.country.category %>%
+  group_by(country, category) %>% 
+  summarise(total.pubs = sum(pubs, na.rm = TRUE), .groups = 'drop') %>%
+  as.data.frame() %>%
+  na.omit()
+
 
 # isolate local research journals according to the toponyms approach (cut-off thresholds for trial >= 0.14 (3º quartile) & >= 0.30 (9º decile))
 local.toponyms.q <- subset(journals, select = c("journal.id", "journal.name", "toponyms.prop"), toponyms.prop >= 0.14)
@@ -1087,173 +1097,188 @@ ggsave("~/Desktop/Local.Research/Figure5.png", width = 6.27, height = 6.27, dpi 
   #theme(legend.position = "bottom")
 
 
-### CASE STUDIES CHEQUEAR LAS PROPORCIONES!! Y VOLVER A GRAFICAR
+### CASE STUDIES LAS PUBLICACIONES POR PAÍS + CATEGORÍA + EN REVISTAS LOCALES, SUPERAN EN OCASIONES A LAS PUBLICACIONES POR PAÍS + CATEGORÍA + EN REVISTAS TOTALES??!!
+total.pubs.country.category <- total.pubs.country.category[total.pubs.country.category$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
+
 ## toponyms approach
 # subset the necessary variables to work at country level within local journals and remove NA values
 case.toponyms <- df.journals.final[df.journals.final$journal.id %in% local.toponyms.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 
 # add the variables with category and field information
-case.toponyms <- merge(case.toponyms, journals[, c("journal.id", "category.acronym")], by = "journal.id", all.x = TRUE)
+case.toponyms <- merge(case.toponyms, journals[, c("journal.id", "category")], by = "journal.id", all.x = TRUE)
 
 # keep only the countries chosen for case study
 case.toponyms <- case.toponyms[case.toponyms$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
 
-# compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
-case.toponyms <- aggregate(pubs ~ country + category.acronym, data = case.toponyms, FUN = sum)
-case.toponyms <- case.toponyms %>%
-  left_join(total.pubs.country, by = "country") %>%
-  mutate(pubs.share = pubs / total.pubs)
+# compute each country's publication share in local journals per category = n pubs per country in local journals per category / N pubs per country in all journals per category
+case.toponyms <- aggregate(pubs ~ country + category, data = case.toponyms, FUN = sum)
+case.toponyms <- merge(case.toponyms, total.pubs.country.category, by = c("country", "category"))
+case.toponyms$pubs.share <- case.toponyms$pubs / case.toponyms$total.pubs
 case.toponyms$pubs.share <- sprintf("%.4f", case.toponyms$pubs.share)
 
 # add a variable for the specific approach
 case.toponyms$approach <- rep("Toponyms", nrow(case.toponyms))
+
 
 ## languages approach
 # subset the necessary variables to work at country level within local journals and remove NA values
 case.language <- df.journals.final[df.journals.final$journal.id %in% local.language$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 
 # add the variables with category and field information
-case.language <- merge(case.language, journals[, c("journal.id", "category.acronym")], by = "journal.id", all.x = TRUE)
+case.language <- merge(case.language, journals[, c("journal.id", "category")], by = "journal.id", all.x = TRUE)
 
 # keep only the countries chosen for case study
 case.language <- case.language[case.language$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
 
-# compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
-case.language <- aggregate(pubs ~ country + category.acronym, data = case.language, FUN = sum)
+# compute each country's publication share in local journals per category = n pubs per country in local journals per category / N pubs per country in all journals per category
+case.language <- aggregate(pubs ~ country + category, data = case.language, FUN = sum)
 case.language <- case.language %>%
-  left_join(total.pubs.country, by = "country") %>%
-  mutate(pubs.share = pubs / total.pubs)
+  left_join(total.pubs.country.category %>% select(country, category, total.pubs), 
+            by = c("country", "category"))
+case.language$pubs.share <- case.language$pubs / case.language$total.pubs
 case.language$pubs.share <- sprintf("%.4f", case.language$pubs.share)
 
 # add a variable for the specific approach
 case.language$approach <- rep("Languages", nrow(case.language))
+
 
 ## pubs approach
 # subset the necessary variables to work at country level within local journals and remove NA values
 case.pubs <- df.journals.final[df.journals.final$journal.id %in% local.pubs.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 
 # add the variables with category and field information
-case.pubs <- merge(case.pubs, journals[, c("journal.id", "category.acronym")], by = "journal.id", all.x = TRUE)
+case.pubs <- merge(case.pubs, journals[, c("journal.id", "category")], by = "journal.id", all.x = TRUE)
 
 # keep only the countries chosen for case study
 case.pubs <- case.pubs[case.pubs$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
 
-# compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
-case.pubs <- aggregate(pubs ~ country + category.acronym, data = case.pubs, FUN = sum)
+# compute each country's publication share in local journals per category = n pubs per country in local journals per category / N pubs per country in all journals per category
+case.pubs <- aggregate(pubs ~ country + category, data = case.pubs, FUN = sum)
 case.pubs <- case.pubs %>%
-  left_join(total.pubs.country, by = "country") %>%
-  mutate(pubs.share = pubs / total.pubs)
+  left_join(total.pubs.country.category %>% select(country, category, total.pubs), 
+            by = c("country", "category"))
+case.pubs$pubs.share <- case.pubs$pubs / case.pubs$total.pubs
 case.pubs$pubs.share <- sprintf("%.4f", case.pubs$pubs.share)
 
 # add a variable for the specific approach
 case.pubs$approach <- rep("Journals", nrow(case.pubs))
+
 
 ## database approach
 # subset the necessary variables to work at country level within local journals and remove NA values
 case.database <- df.journals.final[df.journals.final$journal.id %in% local.database$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 
 # add the variables with category and field information
-case.database <- merge(case.database, journals[, c("journal.id", "category.acronym")], by = "journal.id", all.x = TRUE)
+case.database <- merge(case.database, journals[, c("journal.id", "category")], by = "journal.id", all.x = TRUE)
 
 # keep only the countries chosen for case study
 case.database <- case.database[case.database$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
 
-# compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
-case.database <- aggregate(pubs ~ country + category.acronym, data = case.database, FUN = sum)
+# compute each country's publication share in local journals per category = n pubs per country in local journals per category / N pubs per country in all journals per category
+case.database <- aggregate(pubs ~ country + category, data = case.database, FUN = sum)
 case.database <- case.database %>%
-  left_join(total.pubs.country, by = "country") %>%
-  mutate(pubs.share = pubs / total.pubs)
+  left_join(total.pubs.country.category %>% select(country, category, total.pubs), 
+            by = c("country", "category"))
+case.database$pubs.share <- case.database$pubs / case.database$total.pubs
 case.database$pubs.share <- sprintf("%.4f", case.database$pubs.share)
 
 # add a variable for the specific approach
 case.database$approach <- rep("Databases", nrow(case.database))
+
 
 ## refs approach
 # subset the necessary variables to work at country level within local journals and remove NA values
 case.refs <- df.journals.final[df.journals.final$journal.id %in% local.refs.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 
 # add the variables with category and field information
-case.refs <- merge(case.refs, journals[, c("journal.id", "category.acronym")], by = "journal.id", all.x = TRUE)
+case.refs <- merge(case.refs, journals[, c("journal.id", "category")], by = "journal.id", all.x = TRUE)
 
 # keep only the countries chosen for case study
 case.refs <- case.refs[case.refs$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
 
-# compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
-case.refs <- aggregate(pubs ~ country + category.acronym, data = case.refs, FUN = sum)
+# compute each country's publication share in local journals per category = n pubs per country in local journals per category / N pubs per country in all journals per category
+case.refs <- aggregate(pubs ~ country + category, data = case.refs, FUN = sum)
 case.refs <- case.refs %>%
-  left_join(total.pubs.country, by = "country") %>%
-  mutate(pubs.share = pubs / total.pubs)
+  left_join(total.pubs.country.category %>% select(country, category, total.pubs), 
+            by = c("country", "category"))
+case.refs$pubs.share <- case.refs$pubs / case.refs$total.pubs
 case.refs$pubs.share <- sprintf("%.4f", case.refs$pubs.share)
 
 # add a variable for the specific approach
 case.refs$approach <- rep("References", nrow(case.refs))
+
 
 ## cits approach
 # subset the necessary variables to work at country level within local journals and remove NA values
 case.cits <- df.journals.final[df.journals.final$journal.id %in% local.cits.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 
 # add the variables with category and field information
-case.cits <- merge(case.cits, journals[, c("journal.id", "category.acronym")], by = "journal.id", all.x = TRUE)
+case.cits <- merge(case.cits, journals[, c("journal.id", "category")], by = "journal.id", all.x = TRUE)
 
 # keep only the countries chosen for case study
 case.cits <- case.cits[case.cits$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
 
-# compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
-case.cits <- aggregate(pubs ~ country + category.acronym, data = case.cits, FUN = sum)
+# compute each country's publication share in local journals per category = n pubs per country in local journals per category / N pubs per country in all journals per category
+case.cits <- aggregate(pubs ~ country + category, data = case.cits, FUN = sum)
 case.cits <- case.cits %>%
-  left_join(total.pubs.country, by = "country") %>%
-  mutate(pubs.share = pubs / total.pubs)
+  left_join(total.pubs.country.category %>% select(country, category, total.pubs), 
+            by = c("country", "category"))
+case.cits$pubs.share <- case.cits$pubs / case.cits$total.pubs
 case.cits$pubs.share <- sprintf("%.4f", case.cits$pubs.share)
 
 # add a variable for the specific approach
 case.cits$approach <- rep("Citations", nrow(case.cits))
+
 
 # merge all case studies to plot
 case.studies <- rbind(case.toponyms, case.language, case.pubs, case.database, case.refs, case.cits)
 
 # add missing observations
 case.studies <- rbind(case.studies, data.frame(country = c("CN", "CN", "ES", "ZA", "ZA", "ZA", "ZA", "ZA", "ZA", "ZA", "ZA", "ZA", "ZA"),
-                                               category.acronym = c("EnvironSci", "PhysSci", "EnvironSci", "ArtWrit", "HisHeritArch", "ChemSci", "InfCompSci", "MathSci", "PhysSci", "ComManTourServ", "Econ", "LawLegSci", "EnvironDes"),
+                                               category = c("Environmental Sciences", "Physical Sciences", "Environmental Sciences", "Creative Arts and Writing", "History, Heritage and Archaeology", "Chemical Sciences", "Information and Computing Sciences", "Mathematical Sciences", "Physical Sciences", "Commerce, Management, Tourism and Services", "Economics", "Law and Legal Studies", "Built Environment and Design"),
                                                pubs = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
                                                total.pubs = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
                                                pubs.share = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
                                                approach = c("Languages", "Languages", "Languages", "Languages", "Languages", "Languages", "Languages", "Languages", "Languages", "Languages", "Languages", "Languages", "Journals")))
 
-# add category + field variable for plotting purposes
-case.studies$category.acronym.field <- ifelse(case.studies$category.acronym == "BiomClinSci", "HS: BiomClinSci",
-                                              ifelse(case.studies$category.acronym == "HealthSci", "HS: HealthSci",
-                                                     ifelse(case.studies$category.acronym == "ArtWrit", "H: ArtWrit",
-                                                            ifelse(case.studies$category.acronym == "HisHeritArch", "H: HisHeritArch",
-                                                                   ifelse(case.studies$category.acronym == "LangCommCult", "H: LangCommCult",
-                                                                          ifelse(case.studies$category.acronym == "PhilReligStud", "H: PhilReligStud",
-                                                                                 ifelse(case.studies$category.acronym == "AgriVetFoodSci", "LS: AgriVetFoodSci",
-                                                                                        ifelse(case.studies$category.acronym == "BiolSci", "LS: BiolSci",
-                                                                                               ifelse(case.studies$category.acronym == "EarthSci", "LS: EarthSci",
-                                                                                                      ifelse(case.studies$category.acronym == "EnvironSci", "LS: EnvironSci",
-                                                                                                             ifelse(case.studies$category.acronym == "ChemSci", "PS: ChemSci",
-                                                                                                                    ifelse(case.studies$category.acronym == "Eng", "PS: Eng",
-                                                                                                                           ifelse(case.studies$category.acronym == "EnvironDes", "PS: EnvironDes",
-                                                                                                                                  ifelse(case.studies$category.acronym == "InfCompSci", "PS: InfCompSci",
-                                                                                                                                         ifelse(case.studies$category.acronym == "MathSci", "PS: MathSci",
-                                                                                                                                                ifelse(case.studies$category.acronym == "PhysSci", "PS: PhysSci",
-                                                                                                                                                       ifelse(case.studies$category.acronym == "ComManTourServ", "SS: ComManTourServ",
-                                                                                                                                                              ifelse(case.studies$category.acronym == "Econ", "SS: Econ",
-                                                                                                                                                                     ifelse(case.studies$category.acronym == "Edu", "SS: Edu",
-                                                                                                                                                                            ifelse(case.studies$category.acronym == "HumSoc", "SS: HumSoc",
-                                                                                                                                                                                   ifelse(case.studies$category.acronym == "LawLegSci", "SS: LawLegSci",
-                                                                                                                                                                                          ifelse(case.studies$category.acronym == "Psych", "SS: Psych", NA))))))))))))))))))))))
+# add field + category variable for plotting purposes
+case.studies$field.category <- ifelse(case.studies$category == "Biomedical and Clinical Sciences", "HS: BiomClinSci",
+                                              ifelse(case.studies$category == "Health Sciences", "HS: HealthSci",
+                                                     ifelse(case.studies$category == "Creative Arts and Writing", "H: ArtWrit",
+                                                            ifelse(case.studies$category == "History, Heritage and Archaeology", "H: HisHeritArch",
+                                                                   ifelse(case.studies$category == "Language, Communication and Culture", "H: LangCommCult",
+                                                                          ifelse(case.studies$category == "Philosophy and Religious Studies", "H: PhilReligStud",
+                                                                                 ifelse(case.studies$category == "Agricultural, Veterinary and Food Sciences", "LS: AgriVetFoodSci",
+                                                                                        ifelse(case.studies$category == "Biological Sciences", "LS: BiolSci",
+                                                                                               ifelse(case.studies$category == "Earth Sciences", "LS: EarthSci",
+                                                                                                      ifelse(case.studies$category == "Environmental Sciences", "LS: EnvironSci",
+                                                                                                             ifelse(case.studies$category == "Chemical Sciences", "PS: ChemSci",
+                                                                                                                    ifelse(case.studies$category == "Engineering", "PS: Eng",
+                                                                                                                           ifelse(case.studies$category == "Built Environment and Design", "PS: EnvironDes",
+                                                                                                                                  ifelse(case.studies$category == "Information and Computing Sciences", "PS: InfCompSci",
+                                                                                                                                         ifelse(case.studies$category == "Mathematical Sciences", "PS: MathSci",
+                                                                                                                                                ifelse(case.studies$category == "Physical Sciences", "PS: PhysSci",
+                                                                                                                                                       ifelse(case.studies$category == "Commerce, Management, Tourism and Services", "SS: ComManTourServ",
+                                                                                                                                                              ifelse(case.studies$category == "Economics", "SS: Econ",
+                                                                                                                                                                     ifelse(case.studies$category == "Education", "SS: Edu",
+                                                                                                                                                                            ifelse(case.studies$category == "Human Society", "SS: HumSoc",
+                                                                                                                                                                                   ifelse(case.studies$category == "Law and Legal Studies", "SS: LawLegSci",
+                                                                                                                                                                                          ifelse(case.studies$category == "Psychology", "SS: Psych", NA))))))))))))))))))))))
 
-# convert variables to factor in order to order the levels and customize how they appear in the plot
+# convert variables to factor to order the levels and customize how they appear in the plot
 case.studies$approach <- factor(case.studies$approach, levels = c("Toponyms", "Languages", "Journals", "Databases", "References", "Citations"))
-case.studies$category.acronym.field <- factor(case.studies$category.acronym.field, levels = c("HS: BiomClinSci", "HS: HealthSci", "H: ArtWrit", "H: HisHeritArch", "H: LangCommCult", "H: PhilReligStud", "LS: AgriVetFoodSci", "LS: BiolSci", "LS: EarthSci", "LS: EnvironSci", "PS: EnvironDes", "PS: ChemSci", "PS: Eng", "PS: InfCompSci", "PS: MathSci", "PS: PhysSci", "SS: ComManTourServ", "SS: Econ", "SS: Edu", "SS: HumSoc", "SS: LawLegSci", "SS: Psych"))
+case.studies$field.category <- factor(case.studies$field.category, levels = c("HS: BiomClinSci", "HS: HealthSci", "H: ArtWrit", "H: HisHeritArch", "H: LangCommCult", "H: PhilReligStud", "LS: AgriVetFoodSci", "LS: BiolSci", "LS: EarthSci", "LS: EnvironSci", "PS: EnvironDes", "PS: ChemSci", "PS: Eng", "PS: InfCompSci", "PS: MathSci", "PS: PhysSci", "SS: ComManTourServ", "SS: Econ", "SS: Edu", "SS: HumSoc", "SS: LawLegSci", "SS: Psych"))
+
+# convert variable to numeric
+case.studies$pubs.share <- as.numeric(case.studies$pubs.share)
 
 # plot case studies per categories
-ggplot(case.studies, aes(x = approach, y = category.acronym.field, fill = pubs.share)) +
+ggplot(case.studies, aes(x = approach, y = field.category, fill = pubs.share)) +
   geom_tile() +
   facet_wrap(~ country, ncol = 2,
              labeller = labeller(country = c("BR" = "Brazil", "CN" = "China", "DE" = "Germany", "ES" = "España", "US" = "United States", "ZA" = "South Africa"))) +
   scale_fill_viridis_c(name = "Publication share", na.value = "grey50", option = "plasma") +
-  labs(x = "Operational approach", y = "Category & Field") +
+  labs(x = "Operational approach", y = "Field & Category") +
   theme_minimal() +
   theme(legend.position = "bottom", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ggsave("~/Desktop/Local.Research/Figure6.png", width = 6.27, height = 9.27, dpi = 300)
