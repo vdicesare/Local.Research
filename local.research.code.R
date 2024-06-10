@@ -793,24 +793,24 @@ mean.distribution <- data.frame(approach = c("Toponyms approach", "Toponyms appr
                                              "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach",
                                              "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach",
                                              "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach"),
-                                fields = c("Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences",
-                                           "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences",
-                                           "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences",
-                                           "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences",
-                                           "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences",
-                                           "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences"),
+                                fields = c("Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Physical Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences",
+                                           "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Physical Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences",
+                                           "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Physical Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences",
+                                           "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Physical Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences",
+                                           "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Physical Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences",
+                                           "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Physical Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences"),
                                 categories = c("BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegSci", "Psych", "SSMean",
                                                "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegSci", "Psych", "SSMean",
                                                "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegSci", "Psych", "SSMean",
                                                "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegSci", "Psych", "SSMean",
                                                "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegSci", "Psych", "SSMean",
                                                "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegSci", "Psych", "SSMean"),
-                                values = c(0.07, 0.13, 0.10, 0.09, 0.24, 0.12, 0.08, 0.13, 0.16, 0.15, 0.12, 0.29, 0.24, 0.19, 0.01, 0.03, 0.04, 0.01, 0.02, 0.02, 0.14, 0.21, 0.09, 0.25, 0.17, 0.06, 0.15,
-                                           0.97, 0.96, 0.97, 0.93, 0.97, 0.95, 0.95, 0.95, 0.96, 0.98, 0.96, 0.98, 0.98, 0.97, 0.99, 0.98, 0.98, 0.99, 0.99, 0.99, 0.97, 0.97, 0.93, 0.95, 0.93, 0.96, 0.95,
-                                           0.51, 0.55, 0.53, 0.59, 0.52, 0.54, 0.55, 0.55, 0.52, 0.38, 0.48, 0.42, 0.40, 0.44, 0.37, 0.45, 0.42, 0.34, 0.35, 0.39, 0.48, 0.40, 0.62, 0.52, 0.58, 0.50, 0.52,
-                                           0.69, 0.69, 0.69, 0.56, 0.61, 0.53, 0.56, 0.57, 0.57, 0.83, 0.59, 0.75, 0.73, 0.70, 0.83, 0.70, 0.70, 0.79, 0.78, 0.76, 0.60, 0.75, 0.48, 0.64, 0.49, 0.72, 0.61,
-                                           0.30, 0.36, 0.33, 0.47, 0.43, 0.43, 0.48, 0.45, 0.25, 0.29, 0.30, 0.26, 0.24, 0.27, 0.24, 0.26, 0.32, 0.29, 0.25, 0.27, 0.37, 0.40, 0.48, 0.42, 0.46, 0.46, 0.43,
-                                           0.30, 0.36, 0.33, 0.45, 0.38, 0.42, 0.44, 0.42, 0.33, 0.26, 0.33, 0.30, 0.28, 0.30, 0.29, 0.34, 0.30, 0.28, 0.26, 0.29, 0.31, 0.28, 0.50, 0.38, 0.45, 0.36, 0.38),
+                                values = c(0.07, 0.13, 0.10, 0.09, 0.24, 0.12, 0.08, 0.13, 0.16, 0.15, 0.12, 0.29, 0.24, 0.21, 0.01, 0.03, 0.04, 0.01, 0.02, 0.04, 0.14, 0.21, 0.09, 0.25, 0.17, 0.06, 0.15,
+                                           0.97, 0.96, 0.97, 0.93, 0.97, 0.95, 0.95, 0.95, 0.96, 0.98, 0.96, 0.98, 0.98, 0.98, 0.99, 0.98, 0.98, 0.99, 0.99, 0.98, 0.97, 0.97, 0.93, 0.95, 0.93, 0.96, 0.95,
+                                           0.51, 0.55, 0.53, 0.59, 0.52, 0.54, 0.55, 0.55, 0.52, 0.38, 0.48, 0.42, 0.40, 0.43, 0.37, 0.45, 0.42, 0.34, 0.35, 0.40, 0.48, 0.40, 0.62, 0.52, 0.58, 0.50, 0.52,
+                                           0.69, 0.69, 0.69, 0.56, 0.61, 0.53, 0.56, 0.57, 0.57, 0.83, 0.59, 0.75, 0.73, 0.72, 0.83, 0.70, 0.70, 0.79, 0.78, 0.73, 0.60, 0.75, 0.48, 0.64, 0.49, 0.72, 0.61,
+                                           0.30, 0.36, 0.33, 0.47, 0.43, 0.43, 0.48, 0.45, 0.25, 0.29, 0.30, 0.26, 0.24, 0.26, 0.24, 0.26, 0.32, 0.29, 0.25, 0.28, 0.37, 0.40, 0.48, 0.42, 0.46, 0.46, 0.43,
+                                           0.30, 0.36, 0.33, 0.45, 0.38, 0.42, 0.44, 0.42, 0.33, 0.26, 0.33, 0.30, 0.28, 0.29, 0.29, 0.34, 0.30, 0.28, 0.26, 0.30, 0.31, 0.28, 0.50, 0.38, 0.45, 0.36, 0.38),
                                 value.type = c("prop", "prop", "mean", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "prop", "mean",
                                                "prop", "prop", "mean", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "prop", "mean",
                                                "prop", "prop", "mean", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "prop", "mean",
@@ -887,16 +887,6 @@ total.pubs.country <- total.pubs.country %>%
   group_by(country) %>% 
   summarise(total.pubs = sum(pubs), .groups = 'drop') %>%
   as.data.frame()
-
-# before working with country data in local journals per disciplinary category, compute the total number of publications per country and per category considering all journals
-total.pubs.country.category <- subset(df.journals.final, select = c(journal.id, country, pubs))
-total.pubs.country.category <- total.pubs.country.category[complete.cases(total.pubs.country.category), ]
-total.pubs.country.category <- total.pubs.country.category %>% left_join(categories %>% select(journal.id, category), by = "journal.id", relationship = "many-to-many")
-total.pubs.country.category <- total.pubs.country.category %>%
-  group_by(country, category) %>% 
-  summarise(total.pubs = sum(pubs, na.rm = TRUE), .groups = 'drop') %>%
-  as.data.frame() %>%
-  na.omit()
 
 
 # isolate local research journals according to the toponyms approach (cut-off thresholds for trial >= 0.14 (3º quartile) & >= 0.30 (9º decile))
@@ -1097,149 +1087,115 @@ ggsave("~/Desktop/Local.Research/Figure5.png", width = 6.27, height = 6.27, dpi 
   #theme(legend.position = "bottom")
 
 
-### CASE STUDIES LAS PUBLICACIONES POR PAÍS + CATEGORÍA + EN REVISTAS LOCALES, SUPERAN EN OCASIONES A LAS PUBLICACIONES POR PAÍS + CATEGORÍA + EN REVISTAS TOTALES??!!
-total.pubs.country.category <- total.pubs.country.category[total.pubs.country.category$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
+### CASE STUDIES
+df.journals.final <- df.journals.final %>% left_join(categories %>% select(journal.id, category), by = "journal.id", relationship = "many-to-many")
+
+case.all.journals <- subset(df.journals.final, select = c(journal.id, country, pubs, category))
+case.all.journals <- case.all.journals[case.all.journals$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
+case.all.journals <- case.all.journals %>%
+  group_by(country, category) %>%
+  summarise(all.total.pubs = sum(pubs, na.rm = TRUE), .groups = 'drop') %>%
+  as.data.frame() %>%
+  na.omit()
 
 ## toponyms approach
-# subset the necessary variables to work at country level within local journals and remove NA values
-case.toponyms <- df.journals.final[df.journals.final$journal.id %in% local.toponyms.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-
-# add the variables with category and field information
-case.toponyms <- merge(case.toponyms, journals[, c("journal.id", "category")], by = "journal.id", all.x = TRUE)
-
-# keep only the countries chosen for case study
-case.toponyms <- case.toponyms[case.toponyms$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
-
-# compute each country's publication share in local journals per category = n pubs per country in local journals per category / N pubs per country in all journals per category
-case.toponyms <- aggregate(pubs ~ country + category, data = case.toponyms, FUN = sum)
-case.toponyms <- merge(case.toponyms, total.pubs.country.category, by = c("country", "category"))
-case.toponyms$pubs.share <- case.toponyms$pubs / case.toponyms$total.pubs
-case.toponyms$pubs.share <- sprintf("%.4f", case.toponyms$pubs.share)
-
+case.toponyms.journals <- df.journals.final[df.journals.final$journal.id %in% local.toponyms.q$journal.id, c("journal.id", "country", "pubs", "category")]
+case.toponyms.journals <- case.toponyms.journals[case.toponyms.journals$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
+case.toponyms.journals <- case.toponyms.journals %>%
+  group_by(country, category) %>%
+  summarise(tops.total.pubs = sum(pubs, na.rm = TRUE), .groups = 'drop') %>%
+  as.data.frame() %>%
+  na.omit()
+case.toponyms.journals <- merge(case.toponyms.journals, case.all.journals, by = c("country", "category"))
+case.toponyms.journals$pubs.share <- case.toponyms.journals$tops.total.pubs / case.toponyms.journals$all.total.pubs
+case.toponyms.journals$pubs.share <- sprintf("%.4f", case.toponyms.journals$pubs.share)
 # add a variable for the specific approach
-case.toponyms$approach <- rep("Toponyms", nrow(case.toponyms))
+case.toponyms.journals$approach <- rep("Toponyms", nrow(case.toponyms.journals))
 
-
-## languages approach
-# subset the necessary variables to work at country level within local journals and remove NA values
-case.language <- df.journals.final[df.journals.final$journal.id %in% local.language$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-
-# add the variables with category and field information
-case.language <- merge(case.language, journals[, c("journal.id", "category")], by = "journal.id", all.x = TRUE)
-
-# keep only the countries chosen for case study
-case.language <- case.language[case.language$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
-
-# compute each country's publication share in local journals per category = n pubs per country in local journals per category / N pubs per country in all journals per category
-case.language <- aggregate(pubs ~ country + category, data = case.language, FUN = sum)
-case.language <- case.language %>%
-  left_join(total.pubs.country.category %>% select(country, category, total.pubs), 
-            by = c("country", "category"))
-case.language$pubs.share <- case.language$pubs / case.language$total.pubs
-case.language$pubs.share <- sprintf("%.4f", case.language$pubs.share)
-
+## language approach
+case.language.journals <- df.journals.final[df.journals.final$journal.id %in% local.language$journal.id, c("journal.id", "country", "pubs", "category")]
+case.language.journals <- case.language.journals[case.language.journals$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
+case.language.journals <- case.language.journals %>%
+  group_by(country, category) %>%
+  summarise(lang.total.pubs = sum(pubs, na.rm = TRUE), .groups = 'drop') %>%
+  as.data.frame() %>%
+  na.omit()
+case.language.journals <- merge(case.language.journals, case.all.journals, by = c("country", "category"))
+case.language.journals$pubs.share <- case.language.journals$lang.total.pubs / case.language.journals$all.total.pubs
+case.language.journals$pubs.share <- sprintf("%.4f", case.language.journals$pubs.share)
 # add a variable for the specific approach
-case.language$approach <- rep("Languages", nrow(case.language))
-
+case.language.journals$approach <- rep("Languages", nrow(case.language.journals))
 
 ## pubs approach
-# subset the necessary variables to work at country level within local journals and remove NA values
-case.pubs <- df.journals.final[df.journals.final$journal.id %in% local.pubs.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-
-# add the variables with category and field information
-case.pubs <- merge(case.pubs, journals[, c("journal.id", "category")], by = "journal.id", all.x = TRUE)
-
-# keep only the countries chosen for case study
-case.pubs <- case.pubs[case.pubs$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
-
-# compute each country's publication share in local journals per category = n pubs per country in local journals per category / N pubs per country in all journals per category
-case.pubs <- aggregate(pubs ~ country + category, data = case.pubs, FUN = sum)
-case.pubs <- case.pubs %>%
-  left_join(total.pubs.country.category %>% select(country, category, total.pubs), 
-            by = c("country", "category"))
-case.pubs$pubs.share <- case.pubs$pubs / case.pubs$total.pubs
-case.pubs$pubs.share <- sprintf("%.4f", case.pubs$pubs.share)
-
+case.pubs.journals <- df.journals.final[df.journals.final$journal.id %in% local.pubs.q$journal.id, c("journal.id", "country", "pubs", "category")]
+case.pubs.journals <- case.pubs.journals[case.pubs.journals$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
+case.pubs.journals <- case.pubs.journals %>%
+  group_by(country, category) %>%
+  summarise(pubs.total.pubs = sum(pubs, na.rm = TRUE), .groups = 'drop') %>%
+  as.data.frame() %>%
+  na.omit()
+case.pubs.journals <- merge(case.pubs.journals, case.all.journals, by = c("country", "category"))
+case.pubs.journals$pubs.share <- case.pubs.journals$pubs.total.pubs / case.pubs.journals$all.total.pubs
+case.pubs.journals$pubs.share <- sprintf("%.4f", case.pubs.journals$pubs.share)
 # add a variable for the specific approach
-case.pubs$approach <- rep("Journals", nrow(case.pubs))
-
+case.pubs.journals$approach <- rep("Journals", nrow(case.pubs.journals))
 
 ## database approach
-# subset the necessary variables to work at country level within local journals and remove NA values
-case.database <- df.journals.final[df.journals.final$journal.id %in% local.database$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-
-# add the variables with category and field information
-case.database <- merge(case.database, journals[, c("journal.id", "category")], by = "journal.id", all.x = TRUE)
-
-# keep only the countries chosen for case study
-case.database <- case.database[case.database$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
-
-# compute each country's publication share in local journals per category = n pubs per country in local journals per category / N pubs per country in all journals per category
-case.database <- aggregate(pubs ~ country + category, data = case.database, FUN = sum)
-case.database <- case.database %>%
-  left_join(total.pubs.country.category %>% select(country, category, total.pubs), 
-            by = c("country", "category"))
-case.database$pubs.share <- case.database$pubs / case.database$total.pubs
-case.database$pubs.share <- sprintf("%.4f", case.database$pubs.share)
-
+case.database.journals <- df.journals.final[df.journals.final$journal.id %in% local.database$journal.id, c("journal.id", "country", "pubs", "category")]
+case.database.journals <- case.database.journals[case.database.journals$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
+case.database.journals <- case.database.journals %>%
+  group_by(country, category) %>%
+  summarise(data.total.pubs = sum(pubs, na.rm = TRUE), .groups = 'drop') %>%
+  as.data.frame() %>%
+  na.omit()
+case.database.journals <- merge(case.database.journals, case.all.journals, by = c("country", "category"))
+case.database.journals$pubs.share <- case.database.journals$data.total.pubs / case.database.journals$all.total.pubs
+case.database.journals$pubs.share <- sprintf("%.4f", case.database.journals$pubs.share)
 # add a variable for the specific approach
-case.database$approach <- rep("Databases", nrow(case.database))
-
+case.database.journals$approach <- rep("Databases", nrow(case.database.journals))
 
 ## refs approach
-# subset the necessary variables to work at country level within local journals and remove NA values
-case.refs <- df.journals.final[df.journals.final$journal.id %in% local.refs.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-
-# add the variables with category and field information
-case.refs <- merge(case.refs, journals[, c("journal.id", "category")], by = "journal.id", all.x = TRUE)
-
-# keep only the countries chosen for case study
-case.refs <- case.refs[case.refs$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
-
-# compute each country's publication share in local journals per category = n pubs per country in local journals per category / N pubs per country in all journals per category
-case.refs <- aggregate(pubs ~ country + category, data = case.refs, FUN = sum)
-case.refs <- case.refs %>%
-  left_join(total.pubs.country.category %>% select(country, category, total.pubs), 
-            by = c("country", "category"))
-case.refs$pubs.share <- case.refs$pubs / case.refs$total.pubs
-case.refs$pubs.share <- sprintf("%.4f", case.refs$pubs.share)
-
+case.refs.journals <- df.journals.final[df.journals.final$journal.id %in% local.refs.q$journal.id, c("journal.id", "country", "pubs", "category")]
+case.refs.journals <- case.refs.journals[case.refs.journals$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
+case.refs.journals <- case.refs.journals %>%
+  group_by(country, category) %>%
+  summarise(refs.total.pubs = sum(pubs, na.rm = TRUE), .groups = 'drop') %>%
+  as.data.frame() %>%
+  na.omit()
+case.refs.journals <- merge(case.refs.journals, case.all.journals, by = c("country", "category"))
+case.refs.journals$pubs.share <- case.refs.journals$refs.total.pubs / case.refs.journals$all.total.pubs
+case.refs.journals$pubs.share <- sprintf("%.4f", case.refs.journals$pubs.share)
 # add a variable for the specific approach
-case.refs$approach <- rep("References", nrow(case.refs))
-
+case.refs.journals$approach <- rep("References", nrow(case.refs.journals))
 
 ## cits approach
-# subset the necessary variables to work at country level within local journals and remove NA values
-case.cits <- df.journals.final[df.journals.final$journal.id %in% local.cits.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-
-# add the variables with category and field information
-case.cits <- merge(case.cits, journals[, c("journal.id", "category")], by = "journal.id", all.x = TRUE)
-
-# keep only the countries chosen for case study
-case.cits <- case.cits[case.cits$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
-
-# compute each country's publication share in local journals per category = n pubs per country in local journals per category / N pubs per country in all journals per category
-case.cits <- aggregate(pubs ~ country + category, data = case.cits, FUN = sum)
-case.cits <- case.cits %>%
-  left_join(total.pubs.country.category %>% select(country, category, total.pubs), 
-            by = c("country", "category"))
-case.cits$pubs.share <- case.cits$pubs / case.cits$total.pubs
-case.cits$pubs.share <- sprintf("%.4f", case.cits$pubs.share)
-
+case.cits.journals <- df.journals.final[df.journals.final$journal.id %in% local.cits.q$journal.id, c("journal.id", "country", "pubs", "category")]
+case.cits.journals <- case.cits.journals[case.cits.journals$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
+case.cits.journals <- case.cits.journals %>%
+  group_by(country, category) %>%
+  summarise(cits.total.pubs = sum(pubs, na.rm = TRUE), .groups = 'drop') %>%
+  as.data.frame() %>%
+  na.omit()
+case.cits.journals <- merge(case.cits.journals, case.all.journals, by = c("country", "category"))
+case.cits.journals$pubs.share <- case.cits.journals$cits.total.pubs / case.cits.journals$all.total.pubs
+case.cits.journals$pubs.share <- sprintf("%.4f", case.cits.journals$pubs.share)
 # add a variable for the specific approach
-case.cits$approach <- rep("Citations", nrow(case.cits))
+case.cits.journals$approach <- rep("Citations", nrow(case.cits.journals))
 
 
 # merge all case studies to plot
-case.studies <- rbind(case.toponyms, case.language, case.pubs, case.database, case.refs, case.cits)
+case.studies <- rbind(case.toponyms.journals %>% select(country, category, pubs.share, approach),
+                      case.language.journals %>% select(country, category, pubs.share, approach),
+                      case.pubs.journals %>% select(country, category, pubs.share, approach),
+                      case.database.journals %>% select(country, category, pubs.share, approach),
+                      case.refs.journals %>% select(country, category, pubs.share, approach),
+                      case.cits.journals %>% select(country, category, pubs.share, approach))
 
-# add missing observations
-case.studies <- rbind(case.studies, data.frame(country = c("CN", "CN", "ES", "ZA", "ZA", "ZA", "ZA", "ZA", "ZA", "ZA", "ZA", "ZA", "ZA"),
-                                               category = c("Environmental Sciences", "Physical Sciences", "Environmental Sciences", "Creative Arts and Writing", "History, Heritage and Archaeology", "Chemical Sciences", "Information and Computing Sciences", "Mathematical Sciences", "Physical Sciences", "Commerce, Management, Tourism and Services", "Economics", "Law and Legal Studies", "Built Environment and Design"),
-                                               pubs = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-                                               total.pubs = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-                                               pubs.share = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA),
-                                               approach = c("Languages", "Languages", "Languages", "Languages", "Languages", "Languages", "Languages", "Languages", "Languages", "Languages", "Languages", "Languages", "Journals")))
+# add missing observation
+case.studies <- rbind(case.studies, data.frame(country = c("ZA"),
+                                               category = c("Mathematical Sciences"),
+                                               pubs.share = c(NA),
+                                               approach = c("Languages")))
 
 # add field + category variable for plotting purposes
 case.studies$field.category <- ifelse(case.studies$category == "Biomedical and Clinical Sciences", "HS: BiomClinSci",
@@ -1276,12 +1232,12 @@ case.studies$pubs.share <- as.numeric(case.studies$pubs.share)
 ggplot(case.studies, aes(x = approach, y = field.category, fill = pubs.share)) +
   geom_tile() +
   facet_wrap(~ country, ncol = 2,
-             labeller = labeller(country = c("BR" = "Brazil", "CN" = "China", "DE" = "Germany", "ES" = "España", "US" = "United States", "ZA" = "South Africa"))) +
+             labeller = labeller(country = c("BR" = "Brazil", "CN" = "China", "DE" = "Germany", "ES" = "Spain", "US" = "United States", "ZA" = "South Africa"))) +
   scale_fill_viridis_c(name = "Publication share", na.value = "grey50", option = "plasma") +
   labs(x = "Operational approach", y = "Field & Category") +
   theme_minimal() +
   theme(legend.position = "bottom", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-ggsave("~/Desktop/Local.Research/Figure6.png", width = 6.27, height = 9.27, dpi = 300)
+ggsave("~/Desktop/Local.Research/Figure6.png", width = 6.27, height = 10.27, dpi = 300)
 
 
 ### CORRELATIONS
