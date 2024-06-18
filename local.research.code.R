@@ -726,7 +726,7 @@ journals <- journals %>%
     category == "Human Society" ~ "HumSoc",
     category == "Information and Computing Sciences" ~ "InfCompSci",
     category == "Language, Communication and Culture" ~ "LangCommCult",
-    category == "Law and Legal Studies" ~ "LawLegSci",
+    category == "Law and Legal Studies" ~ "LawLegStud",
     category == "Mathematical Sciences" ~ "MathSci",
     category == "Philosophy and Religious Studies" ~ "PhilReligStud",
     category == "Physical Sciences" ~ "PhysSci",
@@ -738,7 +738,7 @@ health.sciences <- c("BiomClinSci", "HealthSci")
 humanities <- c("ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud")
 life.sciences <- c("AgriVetFoodSci", "BiolSci", "EarthSci", "EnvironSci")
 physical.sciences <- c("EnvironDes", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci")
-social.sciences <- c("ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegSci", "Psych")
+social.sciences <- c("ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych")
 
 journals$field <- ifelse(journals$category.acronym %in% health.sciences, "Health Sciences",
                          ifelse(journals$category.acronym %in% humanities, "Humanities",
@@ -799,16 +799,16 @@ mean.distribution <- data.frame(approach = c("Toponyms approach", "Toponyms appr
                                            "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Physical Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences",
                                            "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Physical Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences",
                                            "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Physical Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences"),
-                                categories = c("BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegSci", "Psych", "SSMean",
-                                               "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegSci", "Psych", "SSMean",
-                                               "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegSci", "Psych", "SSMean",
-                                               "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegSci", "Psych", "SSMean",
-                                               "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegSci", "Psych", "SSMean",
-                                               "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegSci", "Psych", "SSMean"),
+                                categories = c("BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych", "SSMean",
+                                               "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych", "SSMean",
+                                               "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych", "SSMean",
+                                               "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych", "SSMean",
+                                               "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych", "SSMean",
+                                               "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych", "SSMean"),
                                 values = c(0.07, 0.13, 0.10, 0.09, 0.24, 0.12, 0.08, 0.13, 0.16, 0.15, 0.12, 0.29, 0.24, 0.21, 0.01, 0.03, 0.04, 0.01, 0.02, 0.04, 0.14, 0.21, 0.09, 0.25, 0.17, 0.06, 0.15,
-                                           0.97, 0.96, 0.97, 0.93, 0.97, 0.95, 0.95, 0.95, 0.96, 0.98, 0.96, 0.98, 0.98, 0.98, 0.99, 0.98, 0.98, 0.99, 0.99, 0.98, 0.97, 0.97, 0.93, 0.95, 0.93, 0.96, 0.95,
+                                           0.03, 0.04, 0.03, 0.07, 0.03, 0.05, 0.05, 0.05, 0.04, 0.02, 0.04, 0.02, 0.02, 0.02, 0.01, 0.02, 0.02, 0.01, 0.01, 0.02, 0.03, 0.03, 0.07, 0.05, 0.07, 0.04, 0.05,
                                            0.51, 0.55, 0.53, 0.59, 0.52, 0.54, 0.55, 0.55, 0.52, 0.38, 0.48, 0.42, 0.40, 0.43, 0.37, 0.45, 0.42, 0.34, 0.35, 0.40, 0.48, 0.40, 0.62, 0.52, 0.58, 0.50, 0.52,
-                                           0.69, 0.69, 0.69, 0.56, 0.61, 0.53, 0.56, 0.57, 0.57, 0.83, 0.59, 0.75, 0.73, 0.72, 0.83, 0.70, 0.70, 0.79, 0.78, 0.73, 0.60, 0.75, 0.48, 0.64, 0.49, 0.72, 0.61,
+                                           0.31, 0.31, 0.31, 0.44, 0.39, 0.47, 0.44, 0.43, 0.43, 0.17, 0.41, 0.25, 0.27, 0.28, 0.17, 0.30, 0.30, 0.21, 0.22, 0.27, 0.40, 0.25, 0.52, 0.36, 0.51, 0.28, 0.39,
                                            0.30, 0.36, 0.33, 0.47, 0.43, 0.43, 0.48, 0.45, 0.25, 0.29, 0.30, 0.26, 0.24, 0.26, 0.24, 0.26, 0.32, 0.29, 0.25, 0.28, 0.37, 0.40, 0.48, 0.42, 0.46, 0.46, 0.43,
                                            0.30, 0.36, 0.33, 0.45, 0.38, 0.42, 0.44, 0.42, 0.33, 0.26, 0.33, 0.30, 0.28, 0.29, 0.29, 0.34, 0.30, 0.28, 0.26, 0.30, 0.31, 0.28, 0.50, 0.38, 0.45, 0.36, 0.38),
                                 value.type = c("prop", "prop", "mean", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "prop", "mean",
@@ -819,13 +819,14 @@ mean.distribution <- data.frame(approach = c("Toponyms approach", "Toponyms appr
                                                "prop", "prop", "mean", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "prop", "mean"))
 
 mean.distribution$approach <- factor(mean.distribution$approach, levels = c("Toponyms approach", "Languages approach", "Journals approach", "Databases approach", "References approach", "Citations approach"))
+mean.distribution$value.type <- factor(mean.distribution$value.type, levels = c("mean", "prop"))
 
 # plot mean distribution of journals per field, per approach
-ggplot(mean.distribution, aes(x = values, y = fields, shape = value.type, color = fields)) +
+ggplot(mean.distribution, aes(x = values, y = fields, shape = value.type, color = value.type)) +
   geom_point(size = 2) +
   facet_wrap(~approach, ncol = 2) +
-  scale_color_viridis_d(option = "plasma", guide = "none") +
-  scale_shape_manual(name = "Value type", values = c(17, 16), labels = c("Mean", "Proportion")) +
+  scale_color_manual(name = "Value type", values = c("mean" = "#ED7953", "prop" = "grey50"), labels = c("Mean", "Proportion")) +
+  scale_shape_manual(name = "Value type", values = c("mean" = 17, "prop" = 16), labels = c("Mean", "Proportion")) +
   theme_minimal() +
   theme(legend.position = "bottom") +
   xlab("Value") +
@@ -860,7 +861,6 @@ figure3 <- upset(fromExpression(local.journals),
       mainbar.y.label = "Intersection size",
       main.bar.color = "grey50",
       sets.x.label = "Set size",
-      sets.bar.color = c("#F7FB00", "#7201A8", "#FBB518", "#BD3786", "#0D0887", "#ED7953"),
       point.size = 1.5,
       matrix.color = "grey50",
       line.size = 0.5,
@@ -868,11 +868,11 @@ figure3 <- upset(fromExpression(local.journals),
       decreasing = T,
       show.numbers = "no",
       mb.ratio = c(0.5, 0.5),
-      queries = list(list(query = intersects, params = list("Toponyms"), color = "#7201A8", active = TRUE),
-                     list(query = intersects, params = list("References"), color = "#BD3786", active = TRUE),
-                     list(query = intersects, params = list("Databases"), color = "#F7FB00", active = TRUE),
-                     list(query = intersects, params = list("Journals"), color = "#0D0887", active = TRUE),
-                     list(query = intersects, params = list("Citations"), color = "#FBB518", active = TRUE),
+      queries = list(list(query = intersects, params = list("Toponyms"), color = "#ED7953", active = TRUE),
+                     list(query = intersects, params = list("References"), color = "#ED7953", active = TRUE),
+                     list(query = intersects, params = list("Databases"), color = "#ED7953", active = TRUE),
+                     list(query = intersects, params = list("Journals"), color = "#ED7953", active = TRUE),
+                     list(query = intersects, params = list("Citations"), color = "#ED7953", active = TRUE),
                      list(query = intersects, params = list("Languages"), color = "#ED7953", active = TRUE)))
 png(filename = "~/Desktop/Local.Research/Figure3.png", width = 6.27, height = 3.14, units = "in", res = 300)
 print(figure3)
@@ -891,23 +891,16 @@ total.pubs.country <- total.pubs.country %>%
 
 # isolate local research journals according to the toponyms approach (cut-off thresholds for trial >= 0.14 (3º quartile) & >= 0.30 (9º decile))
 local.toponyms.q <- subset(journals, select = c("journal.id", "journal.name", "toponyms.prop"), toponyms.prop >= 0.14)
-#local.toponyms.d <- subset(journals, select = c("journal.id", "journal.name", "toponyms.prop"), toponyms.prop >= 0.30)
 
 # subset the necessary variables to work at country level and remove NA values
 local.toponyms.countries.q <- df.journals.final[df.journals.final$journal.id %in% local.toponyms.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 local.toponyms.countries.q <- local.toponyms.countries.q[complete.cases(local.toponyms.countries.q), ]
-#local.toponyms.countries.d <- df.journals.final[df.journals.final$journal.id %in% local.toponyms.d$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-#local.toponyms.countries.d <- local.toponyms.countries.d[complete.cases(local.toponyms.countries.d), ]
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
 local.toponyms.countries.q <- aggregate(pubs ~ country, data = local.toponyms.countries.q, FUN = sum)
 local.toponyms.countries.q <- local.toponyms.countries.q %>%
   left_join(total.pubs.country, by = "country") %>%
   mutate(pubs.share = pubs / total.pubs)
-#local.toponyms.countries.d <- aggregate(pubs ~ country, data = local.toponyms.countries.d, FUN = sum)
-#local.toponyms.countries.d <- local.toponyms.countries.d %>%
-  #left_join(total.pubs.country, by = "country") %>%
-  #mutate(pubs.share = pubs / total.pubs)
 
 
 # isolate local research journals according to the languages approach (= 0)
@@ -926,23 +919,16 @@ local.language.countries <- local.language.countries %>%
 
 # isolate local research journals according to the journals approach (cut-off thresholds for trial >= 0.82 (3º quartile) & >= 0.95 (9º decile))
 local.pubs.q <- subset(journals, select = c("journal.id", "journal.name", "pubs.prop", "category.acronym", "category.prop", "field"), pubs.prop >= 0.82)
-#local.pubs.d <- subset(journals, select = c("journal.id", "journal.name", "pubs.prop", "category.acronym", "category.prop", "field"), pubs.prop >= 0.95)
 
 # subset the necessary variables to work at country level and remove NA values
 local.pubs.countries.q <- df.journals.final[df.journals.final$journal.id %in% local.pubs.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 local.pubs.countries.q <- local.pubs.countries.q[complete.cases(local.pubs.countries.q), ]
-#local.pubs.countries.d <- df.journals.final[df.journals.final$journal.id %in% local.pubs.d$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-#local.pubs.countries.d <- local.pubs.countries.d[complete.cases(local.pubs.countries.d), ]
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
 local.pubs.countries.q <- aggregate(pubs ~ country, data = local.pubs.countries.q, FUN = sum)
 local.pubs.countries.q <- local.pubs.countries.q %>%
   left_join(total.pubs.country, by = "country") %>%
   mutate(pubs.share = pubs / total.pubs)
-#local.pubs.countries.d <- aggregate(pubs ~ country, data = local.pubs.countries.d, FUN = sum)
-#local.pubs.countries.d <- local.pubs.countries.d %>%
-  #left_join(total.pubs.country, by = "country") %>%
-  #mutate(pubs.share = pubs / total.pubs)
 
 
 # isolate local research journals according to the databases approach (= 0)
@@ -961,44 +947,30 @@ local.database.countries <- local.database.countries %>%
 
 # isolate local research journals according to the references approach (cut-off thresholds for trial >= 0.40 (3º quartile) & >= 0.53 (9º decile))
 local.refs.q <- subset(journals, select = c("journal.id", "journal.name", "refs.prop", "category.acronym", "category.prop", "field"), refs.prop >= 0.40)
-#local.refs.d <- subset(journals, select = c("journal.id", "journal.name", "refs.prop", "category.acronym", "category.prop", "field"), refs.prop >= 0.53)
 
 # subset the necessary variables to work at country level and remove NA values
 local.refs.countries.q <- df.journals.final[df.journals.final$journal.id %in% local.refs.q$journal.id, c("journal.id", "journal.name", "country", "pubs", "category.acronym", "field")]
 local.refs.countries.q <- local.refs.countries.q[complete.cases(local.refs.countries.q), ]
-#local.refs.countries.d <- df.journals.final[df.journals.final$journal.id %in% local.refs.d$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-#local.refs.countries.d <- local.refs.countries.d[complete.cases(local.refs.countries.d), ]
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
 local.refs.countries.q <- aggregate(pubs ~ country, data = local.refs.countries.q, FUN = sum)
 local.refs.countries.q <- local.refs.countries.q %>%
   left_join(total.pubs.country, by = "country") %>%
   mutate(pubs.share = pubs / total.pubs)
-#local.refs.countries.d <- aggregate(pubs ~ country, data = local.refs.countries.d, FUN = sum)
-#local.refs.countries.d <- local.refs.countries.d %>%
-  #left_join(total.pubs.country, by = "country") %>%
-  #mutate(pubs.share = pubs / total.pubs)
 
 
 # isolate local research journals according to the citations approach (cut-off thresholds for trial >= 0.50 (3º quartile) & >= 0.86 (9º decile))
 local.cits.q <- subset(journals, select = c("journal.id", "journal.name", "cits.prop", "category.acronym", "category.prop", "field"), cits.prop >= 0.50)
-#local.cits.d <- subset(journals, select = c("journal.id", "journal.name", "cits.prop", "category.acronym", "category.prop", "field"), cits.prop >= 0.86)
 
 # subset the necessary variables to work at country level and remove NA values
 local.cits.countries.q <- df.journals.final[df.journals.final$journal.id %in% local.cits.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 local.cits.countries.q <- local.cits.countries.q[complete.cases(local.cits.countries.q), ]
-#local.cits.countries.d <- df.journals.final[df.journals.final$journal.id %in% local.cits.d$journal.id, c("journal.id", "journal.name", "country", "pubs")]
-#local.cits.countries.d <- local.cits.countries.d[complete.cases(local.cits.countries.d), ]
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
 local.cits.countries.q <- aggregate(pubs ~ country, data = local.cits.countries.q, FUN = sum)
 local.cits.countries.q <- local.cits.countries.q %>%
   left_join(total.pubs.country, by = "country") %>%
   mutate(pubs.share = pubs / total.pubs)
-#local.cits.countries.d <- aggregate(pubs ~ country, data = local.cits.countries.d, FUN = sum)
-#local.cits.countries.d <- local.cits.countries.d %>%
-  #left_join(total.pubs.country, by = "country") %>%
-  #mutate(pubs.share = pubs / total.pubs)
 
 
 # compute measures of central tendency, non-central position and variability in all approaches within local research journals, focusing on countries' publication share
@@ -1017,35 +989,21 @@ map.world <- st_read("~/Desktop/Local.Research/ne_110m_admin_0_countries/ne_110m
 
 # plot toponyms world map
 local.toponyms.map.q <- merge(map.world, local.toponyms.countries.q, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-#local.toponyms.map.q <- local.toponyms.map.q[complete.cases(local.toponyms.map.q$pubs.share), ]
-#local.toponyms.map.d <- merge(map.world, local.toponyms.countries.d, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-#local.toponyms.map.d <- local.toponyms.map.d[complete.cases(local.toponyms.map.d$pubs.share), ]
 
 # plot language world map
 local.language.map <- merge(map.world, local.language.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-#local.language.map <- local.language.map[complete.cases(local.language.map$pubs.share), ]
 
 # plot pubs world map
 local.pubs.map.q <- merge(map.world, local.pubs.countries.q, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-#local.pubs.map.q <- local.pubs.map.q[complete.cases(local.pubs.map.q$pubs.share), ]
-#local.pubs.map.d <- merge(map.world, local.pubs.countries.d, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-#local.pubs.map.d <- local.pubs.map.d[complete.cases(local.pubs.map.d$pubs.share), ]
 
 # plot database world map
 local.database.map <- merge(map.world, local.database.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-#local.database.map <- local.database.map[complete.cases(local.database.map$pubs.share), ]
 
 # plot refs world map
 local.refs.map.q <- merge(map.world, local.refs.countries.q, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-#local.refs.map.q <- local.refs.map.q[complete.cases(local.refs.map.q$pubs.share), ]
-#local.refs.map.d <- merge(map.world, local.refs.countries.d, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-#local.refs.map.d <- local.refs.map.d[complete.cases(local.refs.map.d$pubs.share), ]
 
 # plot cits world map
 local.cits.map.q <- merge(map.world, local.cits.countries.q, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-#local.cits.map.q <- local.cits.map.q[complete.cases(local.cits.map.q$pubs.share), ]
-#local.cits.map.d <- merge(map.world, local.cits.countries.d, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
-#local.cits.map.d <- local.cits.map.d[complete.cases(local.cits.map.d$pubs.share), ]
 
 ## 3ºQ
 # create one faceted plot with 6 maps and 1 common legend
@@ -1066,25 +1024,6 @@ ggplot() +
   theme_minimal() +
   theme(legend.position = "bottom")
 ggsave("~/Desktop/Local.Research/Figure5.png", width = 6.27, height = 6.27, dpi = 300)
-
-## 9ºD
-# create one faceted plot with 6 maps and 1 common legend
-#local.toponyms.map.d$variable <- "Toponyms proportion"
-#local.language.map$variable <- "Non-English publishing"
-#local.pubs.map.d$variable <- "Publishing proportion"
-#local.database.map$variable <- "Non-mainstream indexing"
-#local.refs.map.d$variable <- "Referenced proportion"
-#local.cits.map.d$variable <- "Citing proportion"
-
-#map.d <- rbind(local.toponyms.map.d, local.language.map, local.pubs.map.d, local.database.map, local.refs.map.d, local.cits.map.d)
-#map.d$variable <- factor(map.d$variable, levels = c("Toponyms proportion", "Non-English publishing", "Publishing proportion", "Non-mainstream indexing", "Referenced proportion", "Citing proportion"))
-
-#ggplot() +
-  #geom_sf(data = map.d, aes(fill = pubs.share)) +
-  #scale_fill_viridis_c(name = "Publication share", na.value = "grey90", option = "plasma") +
-  #facet_wrap(~variable, ncol = 2) +
-  #theme_minimal() +
-  #theme(legend.position = "bottom")
 
 
 ### CASE STUDIES
@@ -1218,12 +1157,12 @@ case.studies$field.category <- ifelse(case.studies$category == "Biomedical and C
                                                                                                                                                               ifelse(case.studies$category == "Economics", "SS: Econ",
                                                                                                                                                                      ifelse(case.studies$category == "Education", "SS: Edu",
                                                                                                                                                                             ifelse(case.studies$category == "Human Society", "SS: HumSoc",
-                                                                                                                                                                                   ifelse(case.studies$category == "Law and Legal Studies", "SS: LawLegSci",
+                                                                                                                                                                                   ifelse(case.studies$category == "Law and Legal Studies", "SS: LawLegStud",
                                                                                                                                                                                           ifelse(case.studies$category == "Psychology", "SS: Psych", NA))))))))))))))))))))))
 
 # convert variables to factor to order the levels and customize how they appear in the plot
 case.studies$approach <- factor(case.studies$approach, levels = c("Toponyms", "Languages", "Journals", "Databases", "References", "Citations"))
-case.studies$field.category <- factor(case.studies$field.category, levels = c("HS: BiomClinSci", "HS: HealthSci", "H: ArtWrit", "H: HisHeritArch", "H: LangCommCult", "H: PhilReligStud", "LS: AgriVetFoodSci", "LS: BiolSci", "LS: EarthSci", "LS: EnvironSci", "PS: EnvironDes", "PS: ChemSci", "PS: Eng", "PS: InfCompSci", "PS: MathSci", "PS: PhysSci", "SS: ComManTourServ", "SS: Econ", "SS: Edu", "SS: HumSoc", "SS: LawLegSci", "SS: Psych"))
+case.studies$field.category <- factor(case.studies$field.category, levels = c("HS: BiomClinSci", "HS: HealthSci", "H: ArtWrit", "H: HisHeritArch", "H: LangCommCult", "H: PhilReligStud", "LS: AgriVetFoodSci", "LS: BiolSci", "LS: EarthSci", "LS: EnvironSci", "PS: EnvironDes", "PS: ChemSci", "PS: Eng", "PS: InfCompSci", "PS: MathSci", "PS: PhysSci", "SS: ComManTourServ", "SS: Econ", "SS: Edu", "SS: HumSoc", "SS: LawLegStud", "SS: Psych"))
 
 # convert variable to numeric
 case.studies$pubs.share <- as.numeric(case.studies$pubs.share)
@@ -1261,9 +1200,9 @@ corr.local.cits.q <- subset(local.cits.countries.q, select = c(country, pubs.sha
 corr.local.cits.q <- corr.local.cits.q %>% rename("cits.pubs.share" = "pubs.share")
 
 corr.local.q <- Reduce(function(x, y) merge(x, y, by = "country", all = TRUE), list(corr.local.toponyms.q, corr.local.language, corr.local.pubs.q, corr.local.database, corr.local.refs.q, corr.local.cits.q))
-corr.local.q <- corr.local.q %>% rename("Tops prop" = "toponyms.pubs.share", "Eng pub" = "language.pubs.share", "Pub prop" = "pubs.pubs.share", "W/S index" = "database.pubs.share", "Ref prop" = "refs.pubs.share", "Cit prop" = "cits.pubs.share")
+corr.local.q <- corr.local.q %>% rename("Tops prop" = "toponyms.pubs.share", "Non-Eng pub" = "language.pubs.share", "Pub prop" = "pubs.pubs.share", "Non-W/S index" = "database.pubs.share", "Ref prop" = "refs.pubs.share", "Cit prop" = "cits.pubs.share")
 
-corr.local.matrix.q <- cor(corr.local.q[, c("Tops prop", "Eng pub", "Pub prop", "W/S index", "Ref prop", "Cit prop")], use = "pairwise.complete.obs")
+corr.local.matrix.q <- cor(corr.local.q[, c("Tops prop", "Non-Eng pub", "Pub prop", "Non-W/S index", "Ref prop", "Cit prop")], use = "pairwise.complete.obs")
 
 ggcorrplot(corr.local.matrix.q,
            type = "lower",
@@ -1272,36 +1211,6 @@ ggcorrplot(corr.local.matrix.q,
   scale_fill_gradientn(colours = viridis(10, option = "plasma")) +
   labs(fill = "Value")
 ggsave("~/Desktop/Local.Research/Figure4.png", width = 6.27, height = 5.27, dpi = 300)
-
-# country level with 9ºD data
-#corr.local.toponyms.d <- subset(local.toponyms.countries.d, select = c(country, pubs.share))
-#corr.local.toponyms.d <- corr.local.toponyms.d %>% rename("toponyms.pubs.share" = "pubs.share")
-
-#corr.local.language <- subset(local.language.countries, select = c(country, pubs.share))
-#corr.local.language <- corr.local.language %>% rename("language.pubs.share" = "pubs.share")
-
-#corr.local.pubs.d <- subset(local.pubs.countries.d, select = c(country, pubs.share))
-#corr.local.pubs.d <- corr.local.pubs.d %>% rename("pubs.pubs.share" = "pubs.share")
-
-#corr.local.database <- subset(local.database.countries, select = c(country, pubs.share))
-#corr.local.database <- corr.local.database %>% rename("database.pubs.share" = "pubs.share")
-
-#corr.local.refs.d <- subset(local.refs.countries.d, select = c(country, pubs.share))
-#corr.local.refs.d <- corr.local.refs.d %>% rename("refs.pubs.share" = "pubs.share")
-
-#corr.local.cits.d <- subset(local.cits.countries.d, select = c(country, pubs.share))
-#corr.local.cits.d <- corr.local.cits.d %>% rename("cits.pubs.share" = "pubs.share")
-
-#corr.local.d <- Reduce(function(x, y) merge(x, y, by = "country", all = TRUE), list(corr.local.toponyms.d, corr.local.language, corr.local.pubs.d, corr.local.database, corr.local.refs.d, corr.local.cits.d))
-#corr.local.d <- corr.local.d %>% rename("Tops prop" = "toponyms.pubs.share", "Eng pub" = "language.pubs.share", "Pub prop" = "pubs.pubs.share", "W/S index" = "database.pubs.share", "Ref prop" = "refs.pubs.share", "Cit prop" = "cits.pubs.share")
-
-#corr.local.matrix.d <- cor(corr.local.d[, c("Tops prop", "Eng pub", "Pub prop", "W/S index", "Ref prop", "Cit prop")], use = "pairwise.complete.obs")
-
-#ggcorrplot(corr.local.matrix.d,
-           #type = "lower",
-           #ggtheme = ggplot2::theme_minimal,
-           #lab = TRUE) +
-  #scale_fill_gradientn(colours = viridis(10, option = "plasma"))
 
 
 ### SAVE DATAFRAMES
