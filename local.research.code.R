@@ -825,6 +825,7 @@ local.toponyms.categories <- local.toponyms.categories %>%
   summarise(sum = n()) %>%
   mutate(total = sum(sum))
 local.toponyms.categories$prop <- round(local.toponyms.categories$sum / local.toponyms.categories$total, 2)
+local.toponyms.categories$approach <- "Toponyms approach"
 
 local.language.categories <- unique(merge(local.language["journal.id"], categories[, c("journal.id", "category")], by = "journal.id"))
 local.language.categories <- local.language.categories %>%
@@ -832,6 +833,7 @@ local.language.categories <- local.language.categories %>%
   summarise(sum = n()) %>%
   mutate(total = sum(sum))
 local.language.categories$prop <- round(local.language.categories$sum / local.language.categories$total, 2)
+local.language.categories$approach <- "Languages approach"
 
 local.pubs.categories <- unique(merge(local.pubs.q["journal.id"], categories[, c("journal.id", "category")], by = "journal.id"))
 local.pubs.categories <- local.pubs.categories %>%
@@ -839,6 +841,7 @@ local.pubs.categories <- local.pubs.categories %>%
   summarise(sum = n()) %>%
   mutate(total = sum(sum))
 local.pubs.categories$prop <- round(local.pubs.categories$sum / local.pubs.categories$total, 2)
+local.pubs.categories$approach <- "Journals approach"
 
 local.database.categories <- unique(merge(local.database["journal.id"], categories[, c("journal.id", "category")], by = "journal.id"))
 local.database.categories <- local.database.categories %>%
@@ -846,6 +849,7 @@ local.database.categories <- local.database.categories %>%
   summarise(sum = n()) %>%
   mutate(total = sum(sum))
 local.database.categories$prop <- round(local.database.categories$sum / local.database.categories$total, 2)
+local.database.categories$approach <- "Databases approach"
 
 local.refs.categories <- unique(merge(local.refs.q["journal.id"], categories[, c("journal.id", "category")], by = "journal.id"))
 local.refs.categories <- local.refs.categories %>%
@@ -853,6 +857,7 @@ local.refs.categories <- local.refs.categories %>%
   summarise(sum = n()) %>%
   mutate(total = sum(sum))
 local.refs.categories$prop <- round(local.refs.categories$sum / local.refs.categories$total, 2)
+local.refs.categories$approach <- "References approach"
 
 local.cits.categories <- unique(merge(local.cits.q["journal.id"], categories[, c("journal.id", "category")], by = "journal.id"))
 local.cits.categories <- local.cits.categories %>%
@@ -860,44 +865,59 @@ local.cits.categories <- local.cits.categories %>%
   summarise(sum = n()) %>%
   mutate(total = sum(sum))
 local.cits.categories$prop <- round(local.cits.categories$sum / local.cits.categories$total, 2)
+local.cits.categories$approach <- "Citations approach"
 
-# manually build mean distribution dataframe for plotting
-mean.distribution <- data.frame(approach = c("Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach",
-                                             "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach",
-                                             "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach",
-                                             "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach",
-                                             "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach", "References approach",
-                                             "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach"),
-                                fields = c("Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Physical Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences",
-                                           "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Physical Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences",
-                                           "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Physical Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences",
-                                           "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Physical Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences",
-                                           "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Physical Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences",
-                                           "Health Sciences", "Health Sciences", "Health Sciences", "Humanities", "Humanities", "Humanities", "Humanities", "Humanities", "Life Sciences", "Life Sciences", "Physical Sciences", "Life Sciences", "Life Sciences", "Life Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Physical Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences", "Social Sciences"),
-                                categories = c("BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych", "SSMean",
-                                               "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych", "SSMean",
-                                               "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych", "SSMean",
-                                               "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych", "SSMean",
-                                               "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych", "SSMean",
-                                               "BiomClinSci", "HealthSci", "HSMean", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud", "HMean", "AgriVetFoodSci", "BiolSci", "EnvironDes", "EarthSci", "EnvironSci", "LSMean", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "PSMean", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych", "SSMean"),
-                                values = c(0.13, 0.07, 0.10, 0.01, 0.04, 0.06, 0.02, 0.03, 0.06, 0.08, 0.06, 0.03, 0.06, 0.00, 0.02, 0.01, 0.01, 0.00, 0.00, 0.00, 0.09, 0.04, 0.04, 0.18, 0.03, 0.01, 0.07,
-                                           0.15, 0.06, 0.11, 0.03, 0.02, 0.08, 0.08, 0.05, 0.04, 0.03, 0.02, 0.01, 0.03, 0.01, 0.05, 0.01, 0.03, 0.01, 0.00, 0.02, 0.05, 0.01, 0.13, 0.11, 0.04, 0.03, 0.06,
-                                           0.22, 0.07, 0.15, 0.02, 0.02, 0.07, 0.05, 0.04, 0.05, 0.03, 0.02, 0.01, 0.03, 0.01, 0.08, 0.01, 0.04, 0.01, 0.01, 0.03, 0.06, 0.01, 0.10, 0.08, 0.03, 0.03, 0.05,
-                                           0.20, 0.05, 0.13, 0.02, 0.02, 0.08, 0.06, 0.05, 0.04, 0.03, 0.02, 0.01, 0.03, 0.01, 0.08, 0.01, 0.04, 0.02, 0.01, 0.03, 0.07, 0.01, 0.08, 0.09, 0.03, 0.03, 0.05,
-                                           0.10, 0.07, 0.09, 0.03, 0.03, 0.09, 0.07, 0.06, 0.02, 0.03, 0.01, 0.00, 0.02, 0.00, 0.04, 0.01, 0.04, 0.02, 0.00, 0.02, 0.08, 0.03, 0.10, 0.13, 0.02, 0.09, 0.08,
-                                           0.13, 0.06, 0.10, 0.03, 0.03, 0.09, 0.08, 0.06, 0.04, 0.02, 0.02, 0.01, 0.02, 0.01, 0.08, 0.01, 0.03, 0.01, 0.01, 0.03, 0.06, 0.01, 0.12, 0.10, 0.03, 0.03, 0.06),
-                                value.type = c("prop", "prop", "mean", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "prop", "mean",
-                                               "prop", "prop", "mean", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "prop", "mean",
-                                               "prop", "prop", "mean", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "prop", "mean",
-                                               "prop", "prop", "mean", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "prop", "mean",
-                                               "prop", "prop", "mean", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "prop", "mean",
-                                               "prop", "prop", "mean", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "mean", "prop", "prop", "prop", "prop", "prop", "prop", "mean"))
+# build all approaches dataframe with average share of local journals by disciplinary category and field
+local.approaches.categories <- rbind(local.toponyms.categories, local.language.categories, local.pubs.categories, local.database.categories, local.refs.categories, local.cits.categories)
+local.approaches.categories <- local.approaches.categories %>% select(-sum, -total)
+local.approaches.categories <- local.approaches.categories %>% rename(value = prop)
 
-mean.distribution$approach <- factor(mean.distribution$approach, levels = c("Toponyms approach", "Languages approach", "Journals approach", "Databases approach", "References approach", "Citations approach"))
-mean.distribution$value.type <- factor(mean.distribution$value.type, levels = c("mean", "prop"))
+# add new variables to the local.approaches.categories dataframe
+local.approaches.categories$value.type <- "prop"
+local.approaches.categories$field <- ifelse(local.approaches.categories$category %in% c("Biomedical and Clinical Sciences", "Health Sciences"), "Health Sciences",
+                                            ifelse(local.approaches.categories$category %in% c("Creative Arts and Writing", "History, Heritage and Archaeology", "Language, Communication and Culture", "Philosophy and Religious Studies"), "Humanities",
+                                                   ifelse(local.approaches.categories$category %in% c("Agricultural, Veterinary and Food Sciences", "Biological Sciences", "Earth Sciences", "Environmental Sciences"), "Life Sciences",
+                                                          ifelse(local.approaches.categories$category %in% c("Built Environment and Design", "Chemical Sciences", "Engineering", "Information and Computing Sciences", "Mathematical Sciences", "Physical Sciences"), "Physical Sciences",
+                                                                 ifelse(local.approaches.categories$category %in% c("Commerce, Management, Tourism and Services", "Economics", "Education", "Human Society", "Law and Legal Studies", "Psychology"), "Social Sciences", NA)))))
+
+# manually add mean values to the local.approaches.categories dataframe
+local.approaches.categories.mean.values <- data.frame(approach = c("Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach",
+                                                       "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach",
+                                                       "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach",
+                                                       "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach",
+                                                       "References approach", "References approach", "References approach", "References approach", "References approach",
+                                                       "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach"),
+                                          field = c("Health Sciences", "Humanities", "Life Sciences", "Physical Sciences", "Social Sciences",
+                                                     "Health Sciences", "Humanities", "Life Sciences", "Physical Sciences", "Social Sciences",
+                                                     "Health Sciences", "Humanities", "Life Sciences", "Physical Sciences", "Social Sciences",
+                                                     "Health Sciences", "Humanities", "Life Sciences", "Physical Sciences", "Social Sciences",
+                                                     "Health Sciences", "Humanities", "Life Sciences", "Physical Sciences", "Social Sciences",
+                                                     "Health Sciences", "Humanities", "Life Sciences", "Physical Sciences", "Social Sciences"),
+                                          category = c("HSMean", "HMean", "LSMean", "PSMean", "SSMean",
+                                                         "HSMean", "HMean", "LSMean", "PSMean", "SSMean",
+                                                         "HSMean", "HMean", "LSMean", "PSMean", "SSMean",
+                                                         "HSMean", "HMean", "LSMean", "PSMean", "SSMean",
+                                                         "HSMean", "HMean", "LSMean", "PSMean", "SSMean",
+                                                         "HSMean", "HMean", "LSMean", "PSMean", "SSMean"),
+                                          value = c(0.10, 0.03, 0.06, 0.01, 0.07,
+                                                     0.11, 0.05, 0.03, 0.02, 0.06,
+                                                     0.15, 0.04, 0.03, 0.03, 0.05,
+                                                     0.13, 0.05, 0.03, 0.03, 0.05,
+                                                     0.09, 0.06, 0.02, 0.02, 0.08,
+                                                     0.10, 0.06, 0.02, 0.03, 0.06),
+                                          value.type = c("mean", "mean", "mean", "mean", "mean",
+                                                         "mean", "mean", "mean", "mean", "mean",
+                                                         "mean", "mean", "mean", "mean", "mean",
+                                                         "mean", "mean", "mean", "mean", "mean",
+                                                         "mean", "mean", "mean", "mean", "mean",
+                                                         "mean", "mean", "mean", "mean", "mean"))
+local.approaches.categories <- rbind(local.approaches.categories, local.approaches.categories.mean.values)
+
+local.approaches.categories$approach <- factor(local.approaches.categories$approach, levels = c("Toponyms approach", "Languages approach", "Journals approach", "Databases approach", "References approach", "Citations approach"))
+local.approaches.categories$value.type <- factor(local.approaches.categories$value.type, levels = c("mean", "prop"))
 
 # plot mean distribution of journals per field, per approach
-ggplot(mean.distribution, aes(x = values, y = fields, shape = value.type, color = value.type)) +
+ggplot(local.approaches.categories, aes(x = value, y = field, shape = value.type, color = value.type)) +
   geom_point(size = 2) +
   facet_wrap(~approach, ncol = 2) +
   scale_color_manual(name = "Value type", values = c("mean" = "#ED7953", "prop" = "grey50"), labels = c("Mean", "Proportion")) +
@@ -906,7 +926,7 @@ ggplot(mean.distribution, aes(x = values, y = fields, shape = value.type, color 
   theme(legend.position = "bottom") +
   xlab("Value") +
   ylab("Field")
-ggsave("~/Desktop/Local.Research/Figure3.png", width = 6.27, height = 6.27, dpi = 300)
+ggsave("~/Desktop/Local.Research/Figure3A.png", width = 6.27, height = 6.27, dpi = 300)
 
 
 ### COUNTRY LEVEL SUMMARY DATA
