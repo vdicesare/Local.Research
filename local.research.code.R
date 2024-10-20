@@ -794,7 +794,7 @@ local.journals <- c("Toponyms" = 3056, "Languages" = 52, "Journals" = 233, "Data
                     "Toponyms&Languages&Journals&Databases&References&Citations" = 21)
 
 # plot intersections matrix to represent the overlap of local journals between approaches
-figure2 <- upset(fromExpression(local.journals),
+figure1 <- upset(fromExpression(local.journals),
                  nintersects = 63, 
                  nsets = 6,
                  sets = c("Toponyms", "Languages", "Journals", "Databases", "References", "Citations"),
@@ -814,8 +814,8 @@ figure2 <- upset(fromExpression(local.journals),
                                 list(query = intersects, params = list("Journals"), color = "#ED7953", active = TRUE),
                                 list(query = intersects, params = list("Citations"), color = "#ED7953", active = TRUE),
                                 list(query = intersects, params = list("Languages"), color = "#ED7953", active = TRUE)))
-png(filename = "~/Desktop/Local.Research/Figure2.png", width = 6.27, height = 3.14, units = "in", res = 300)
-print(figure2)
+png(filename = "~/Desktop/Local.Research/Figure1.png", width = 6.27, height = 3.14, units = "in", res = 300)
+print(figure1)
 dev.off()
 
 # compute the distribution of local journals per disciplinary category and approach
@@ -915,6 +915,7 @@ local.approaches.categories <- rbind(local.approaches.categories, local.approach
 
 local.approaches.categories$approach <- factor(local.approaches.categories$approach, levels = c("Toponyms approach", "Languages approach", "Journals approach", "Databases approach", "References approach", "Citations approach"))
 local.approaches.categories$value.type <- factor(local.approaches.categories$value.type, levels = c("mean", "prop"))
+local.approaches.categories$field <- factor(local.approaches.categories$field, levels = c("Physical Sciences", "Life Sciences", "Health Sciences", "Social Sciences", "Humanities"))
 
 # plot mean distribution of journals per field, per approach
 ggplot(local.approaches.categories, aes(x = value, y = field, shape = value.type, color = value.type)) +
@@ -926,7 +927,7 @@ ggplot(local.approaches.categories, aes(x = value, y = field, shape = value.type
   theme(legend.position = "bottom") +
   xlab("Value") +
   ylab("Field")
-ggsave("~/Desktop/Local.Research/Figure3A.png", width = 6.27, height = 6.27, dpi = 300)
+ggsave("~/Desktop/Local.Research/Figure2.png", width = 6.27, height = 6.27, dpi = 300)
 
 
 ### COUNTRY LEVEL SUMMARY DATA
@@ -1073,7 +1074,7 @@ ggplot() +
   facet_wrap(~approach, ncol = 2) +
   theme_minimal() +
   theme(legend.position = "bottom")
-ggsave("~/Desktop/Local.Research/Figure5.png", width = 6.27, height = 6.27, dpi = 300)
+ggsave("~/Desktop/Local.Research/Figure4.png", width = 6.27, height = 6.27, dpi = 300)
 
 
 ### CASE STUDIES
@@ -1212,7 +1213,7 @@ case.studies$field.category <- ifelse(case.studies$category == "Biomedical and C
 
 # convert variables to factor to order the levels and customize how they appear in the plot
 case.studies$approach <- factor(case.studies$approach, levels = c("Toponyms", "Languages", "Journals", "Databases", "References", "Citations"))
-case.studies$field.category <- factor(case.studies$field.category, levels = c("HS: BiomClinSci", "HS: HealthSci", "H: ArtWrit", "H: HisHeritArch", "H: LangCommCult", "H: PhilReligStud", "LS: AgriVetFoodSci", "LS: BiolSci", "LS: EarthSci", "LS: EnvironSci", "PS: EnvironDes", "PS: ChemSci", "PS: Eng", "PS: InfCompSci", "PS: MathSci", "PS: PhysSci", "SS: ComManTourServ", "SS: Econ", "SS: Edu", "SS: HumSoc", "SS: LawLegStud", "SS: Psych"))
+case.studies$field.category <- factor(case.studies$field.category, levels = c("PS: EnvironDes", "PS: ChemSci", "PS: Eng", "PS: InfCompSci", "PS: MathSci", "PS: PhysSci", "LS: AgriVetFoodSci", "LS: BiolSci", "LS: EarthSci", "LS: EnvironSci", "HS: BiomClinSci", "HS: HealthSci", "SS: ComManTourServ", "SS: Econ", "SS: Edu", "SS: HumSoc", "SS: LawLegStud", "SS: Psych", "H: ArtWrit", "H: HisHeritArch", "H: LangCommCult", "H: PhilReligStud"))
 
 # convert variable to numeric
 case.studies$pubs.share <- as.numeric(case.studies$pubs.share)
@@ -1226,7 +1227,7 @@ ggplot(case.studies, aes(x = approach, y = field.category, fill = pubs.share)) +
   labs(x = "Operational approach", y = "Field & Category") +
   theme_minimal() +
   theme(legend.position = "bottom", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-ggsave("~/Desktop/Local.Research/Figure6.png", width = 6.27, height = 10.27, dpi = 300)
+ggsave("~/Desktop/Local.Research/Figure5.png", width = 6.27, height = 10.27, dpi = 300)
 
 
 ### CORRELATIONS
@@ -1260,7 +1261,7 @@ ggcorrplot(corr.local.matrix.q,
            lab = TRUE) +
   scale_fill_gradientn(colours = viridis(10, option = "plasma")) +
   labs(fill = "Value")
-ggsave("~/Desktop/Local.Research/Figure4.png", width = 6.27, height = 5.27, dpi = 300)
+ggsave("~/Desktop/Local.Research/Figure3.png", width = 6.27, height = 5.27, dpi = 300)
 
 
 ### SAVE DATAFRAMES
