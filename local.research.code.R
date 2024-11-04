@@ -921,13 +921,13 @@ local.approaches.categories$field <- factor(local.approaches.categories$field, l
 ggplot(local.approaches.categories, aes(x = value, y = field, shape = value.type, color = value.type)) +
   geom_point(size = 2) +
   facet_wrap(~approach, ncol = 2) +
-  scale_color_manual(name = "Value type", values = c("mean" = "#ED7953", "prop" = "grey50"), labels = c("Mean", "Proportion")) +
-  scale_shape_manual(name = "Value type", values = c("mean" = 17, "prop" = 16), labels = c("Mean", "Proportion")) +
+  scale_color_manual(name = "", values = c("mean" = "#ED7953", "prop" = "grey50"), labels = c("Field mean", "Disciplinary category proportion")) +
+  scale_shape_manual(name = "", values = c("mean" = 17, "prop" = 16), labels = c("Field mean", "Disciplinary category proportion")) +
   theme_minimal() +
   theme(legend.position = "bottom") +
-  xlab("Value") +
+  xlab("Share of local journals") +
   ylab("Field")
-ggsave("~/Desktop/Local.Research/Figure2.png", width = 6.27, height = 6.27, dpi = 300)
+ggsave("~/Desktop/Local.Research/Figure2.png", width = 6.27, height = 6.27, dpi = 300, bg = "white")
 
 
 ### COUNTRY LEVEL SUMMARY DATA
@@ -1074,7 +1074,7 @@ ggplot() +
   facet_wrap(~approach, ncol = 2) +
   theme_minimal() +
   theme(legend.position = "bottom")
-ggsave("~/Desktop/Local.Research/Figure4.png", width = 6.27, height = 6.27, dpi = 300)
+ggsave("~/Desktop/Local.Research/Figure4.png", width = 6.27, height = 6.27, dpi = 300, bg = "white")
 
 
 ### CASE STUDIES
@@ -1227,7 +1227,7 @@ ggplot(case.studies, aes(x = approach, y = field.category, fill = pubs.share)) +
   labs(x = "Operational approach", y = "Field & Category") +
   theme_minimal() +
   theme(legend.position = "bottom", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-ggsave("~/Desktop/Local.Research/Figure5.png", width = 6.27, height = 10.27, dpi = 300)
+ggsave("~/Desktop/Local.Research/Figure5.png", width = 6.27, height = 10.27, dpi = 300, bg = "white")
 
 
 ### CORRELATIONS
@@ -1261,7 +1261,7 @@ ggcorrplot(corr.local.matrix.q,
            lab = TRUE) +
   scale_fill_gradientn(colours = viridis(10, option = "plasma")) +
   labs(fill = "Value")
-ggsave("~/Desktop/Local.Research/Figure3.png", width = 6.27, height = 5.27, dpi = 300)
+ggsave("~/Desktop/Local.Research/Figure3.png", width = 6.27, height = 5.27, dpi = 300, bg = "white")
 
 
 ### SAVE DATAFRAMES
