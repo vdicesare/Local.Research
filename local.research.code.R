@@ -2,6 +2,7 @@ library(parallel)
 library(tidyverse)
 library(dplyr)
 library(tidyr)
+library(tibble)
 library(stringr)
 library(reshape2)
 library(readxl)
@@ -12,6 +13,8 @@ library(viridisLite)
 library(sf)
 library(countrycode)
 library(cld2)
+library("FactoMineR")
+library("factoextra")
 load("~/Desktop/Local.Research/local.research.data.RData")
 
 
@@ -119,14 +122,10 @@ n_rows <- nrow(toponyms)
 chunk_size <- ceiling(n_rows / 10)
 toponyms.parts <- list()
 
-for (i in 1:10) {
-  start_index <- (i - 1) * chunk_size + 1
+for (i in 1:10) {start_index <- (i - 1) * chunk_size + 1
   end_index <- min(i * chunk_size, n_rows)
-  
   current_chunk <- toponyms[start_index:end_index, ]
-  
-  toponyms.parts[[i]] <- current_chunk
-}
+  toponyms.parts[[i]] <- current_chunk}
 
 # identify languages present in papers' titles
 current_chunk <- toponyms.parts[[1]]
@@ -224,8 +223,7 @@ toponyms.part10$toponym <- unlist(toponyms.part10$toponym)
 
 # create a function for the translation of all toponyms into english language
 translate_country <- function(countries) { translated_countries <- character(length(countries))
-  for (i in seq_along(countries)) {
-    if (countries[i] %in% c("Afganistán", "Afeganistão", "Afganistan", "アフガニスタン", "Afghanistan")) { translated_countries[i] <- "Afghanistan"
+  for (i in seq_along(countries)) {if (countries[i] %in% c("Afganistán", "Afeganistão", "Afganistan", "アフガニスタン", "Afghanistan")) { translated_countries[i] <- "Afghanistan"
     } else if (countries[i] %in% c("Albanien", "Albanie", "アルバニア", "Albania")) { translated_countries[i] <- "Albania"
     } else if (countries[i] %in% c("Algérie", "Algerien", "Argelia", "Argélia", "Алжир", "Aljazair", "アルジェリア", "Algeria")) { translated_countries[i] <- "Algeria"
     } else if (countries[i] %in% c("Ангола", "アンゴラ", "Angola")) { translated_countries[i] <- "Angola"
@@ -405,80 +403,70 @@ translate_country <- function(countries) { translated_countries <- character(len
   return(translated_countries)}
 
 # apply the translation function to each smaller part of the toponyms dataframe, convert the resulting toponym.english variable into character format and clean vectors
-toponyms.part1 <- toponyms.part1 %>%
-  mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part1 <- toponyms.part1 %>% mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
 toponyms.part1$toponym.english <- as.character(toponyms.part1$toponym.english)
 
 toponyms.part1$toponym.english <- gsub('c\\("', '', toponyms.part1$toponym.english)
 toponyms.part1$toponym.english <- gsub('"\\)', '', toponyms.part1$toponym.english)
 toponyms.part1$toponym.english <- gsub('", "', ', ', toponyms.part1$toponym.english)
 
-toponyms.part2 <- toponyms.part2 %>%
-  mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part2 <- toponyms.part2 %>% mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
 toponyms.part2$toponym.english <- as.character(toponyms.part2$toponym.english)
 
 toponyms.part2$toponym.english <- gsub('c\\("', '', toponyms.part2$toponym.english)
 toponyms.part2$toponym.english <- gsub('"\\)', '', toponyms.part2$toponym.english)
 toponyms.part2$toponym.english <- gsub('", "', ', ', toponyms.part2$toponym.english)
 
-toponyms.part3 <- toponyms.part3 %>%
-  mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part3 <- toponyms.part3 %>% mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
 toponyms.part3$toponym.english <- as.character(toponyms.part3$toponym.english)
 
 toponyms.part3$toponym.english <- gsub('c\\("', '', toponyms.part3$toponym.english)
 toponyms.part3$toponym.english <- gsub('"\\)', '', toponyms.part3$toponym.english)
 toponyms.part3$toponym.english <- gsub('", "', ', ', toponyms.part3$toponym.english)
 
-toponyms.part4 <- toponyms.part4 %>%
-  mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part4 <- toponyms.part4 %>% mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
 toponyms.part4$toponym.english <- as.character(toponyms.part4$toponym.english)
 
 toponyms.part4$toponym.english <- gsub('c\\("', '', toponyms.part4$toponym.english)
 toponyms.part4$toponym.english <- gsub('"\\)', '', toponyms.part4$toponym.english)
 toponyms.part4$toponym.english <- gsub('", "', ', ', toponyms.part4$toponym.english)
 
-toponyms.part5 <- toponyms.part5 %>%
-  mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part5 <- toponyms.part5 %>% mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
 toponyms.part5$toponym.english <- as.character(toponyms.part5$toponym.english)
 
 toponyms.part5$toponym.english <- gsub('c\\("', '', toponyms.part5$toponym.english)
 toponyms.part5$toponym.english <- gsub('"\\)', '', toponyms.part5$toponym.english)
 toponyms.part5$toponym.english <- gsub('", "', ', ', toponyms.part5$toponym.english)
 
-toponyms.part6 <- toponyms.part6 %>%
-  mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part6 <- toponyms.part6 %>% mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
 toponyms.part6$toponym.english <- as.character(toponyms.part6$toponym.english)
 
 toponyms.part6$toponym.english <- gsub('c\\("', '', toponyms.part6$toponym.english)
 toponyms.part6$toponym.english <- gsub('"\\)', '', toponyms.part6$toponym.english)
 toponyms.part6$toponym.english <- gsub('", "', ', ', toponyms.part6$toponym.english)
 
-toponyms.part7 <- toponyms.part7 %>%
-  mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part7 <- toponyms.part7 %>% mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
 toponyms.part7$toponym.english <- as.character(toponyms.part7$toponym.english)
 
 toponyms.part7$toponym.english <- gsub('c\\("', '', toponyms.part7$toponym.english)
 toponyms.part7$toponym.english <- gsub('"\\)', '', toponyms.part7$toponym.english)
 toponyms.part7$toponym.english <- gsub('", "', ', ', toponyms.part7$toponym.english)
 
-toponyms.part8 <- toponyms.part8 %>%
-  mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part8 <- toponyms.part8 %>% mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
 toponyms.part8$toponym.english <- as.character(toponyms.part8$toponym.english)
 
 toponyms.part8$toponym.english <- gsub('c\\("', '', toponyms.part8$toponym.english)
 toponyms.part8$toponym.english <- gsub('"\\)', '', toponyms.part8$toponym.english)
 toponyms.part8$toponym.english <- gsub('", "', ', ', toponyms.part8$toponym.english)
 
-toponyms.part9 <- toponyms.part9 %>%
-  mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part9 <- toponyms.part9 %>% mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
 toponyms.part9$toponym.english <- as.character(toponyms.part9$toponym.english)
 
 toponyms.part9$toponym.english <- gsub('c\\("', '', toponyms.part9$toponym.english)
 toponyms.part9$toponym.english <- gsub('"\\)', '', toponyms.part9$toponym.english)
 toponyms.part9$toponym.english <- gsub('", "', ', ', toponyms.part9$toponym.english)
 
-toponyms.part10 <- toponyms.part10 %>%
-  mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
+toponyms.part10 <- toponyms.part10 %>% mutate(toponym.english = sapply(strsplit(toponym, ", "), function(x) translate_country(x)))
 toponyms.part10$toponym.english <- as.character(toponyms.part10$toponym.english)
 
 toponyms.part10$toponym.english <- gsub('c\\("', '', toponyms.part10$toponym.english)
@@ -545,10 +533,8 @@ toponyms$with.toponym <- ifelse(is.na(toponyms$toponym.english), 0, 1)
 # group the toponyms dataframe per journal.id, counting the number of total papers and papers with toponyms
 toponyms.counts <- subset(toponyms, select = c("journal.id", "paper.id", "with.toponym"))
 toponyms.counts <- distinct(toponyms.counts, paper.id, .keep_all = TRUE)
-toponyms.counts <- toponyms.counts %>%
-  group_by(journal.id) %>%
-  summarise(paper.total = n(),
-            paper.with.top = sum(with.toponym))
+toponyms.counts <- toponyms.counts %>% group_by(journal.id) %>%
+  summarise(paper.total = n(), paper.with.top = sum(with.toponym))
 
 # compute the proportion of toponyms per journal
 toponyms.counts$toponyms.prop <- toponyms.counts$paper.with.top / toponyms.counts$paper.total
@@ -568,12 +554,9 @@ WOS$journal.name <- toupper(WOS$journal.name)
 databases <- merge(Scopus, WOS, by = "journal.name", all = TRUE)
 
 # transform all empty cells into NA values
-replace_empty_with_na <- function(x) {
-  x[x == ""] <- NA
-  return(x)
-}
-databases <- databases %>%
-  mutate(across(everything(), replace_empty_with_na))
+replace_empty_with_na <- function(x) {x[x == ""] <- NA
+  return(x)}
+databases <- databases %>% mutate(across(everything(), replace_empty_with_na))
 
 # convert journal.name in journals dataframe to uppercase for case-insensitive comparison with databases
 journals$journal.name <- toupper(journals$journal.name)
@@ -590,17 +573,14 @@ DOAJ <- DOAJ %>% rename("journal.name" = "Journal.title",
 DOAJ$journal.name <- toupper(DOAJ$journal.name)
 
 # apply the function to transform all empty cells into NA values to DOAJ before merging
-DOAJ <- DOAJ %>%
-  mutate(across(everything(), replace_empty_with_na))
+DOAJ <- DOAJ %>% mutate(across(everything(), replace_empty_with_na))
 
 # merge DOAJ to Scopus and WOS journals data already combined in databases dataframe
 databases <- merge(databases, DOAJ[, c("journal.name", "language.z")], by = "journal.name", all = TRUE)
 
 # replace ISO codes with languages full names in Scopus data within databases dataframe
-databases$language.x <- sapply(databases$language.x, function(iso_codes) {
-  languages <- unlist(strsplit(iso_codes, "; "))
-  full_names <- sapply(languages, function(lang) {
-    switch(lang,
+databases$language.x <- sapply(databases$language.x, function(iso_codes) {languages <- unlist(strsplit(iso_codes, "; "))
+  full_names <- sapply(languages, function(lang) {switch(lang,
            "JPN" = "Japanese", "ENG" = "English", "FRE" = "French", "CAT" = "Catalan", "SPA" = "Spanish", "POR" = "Portuguese",
            "GER" = "German", "ITA" = "Italian", "RUS" = "Russian", "CHI" = "Chinese", "DAN" = "Danish", "SLV" = "Slovenian",
            "LIT" = "Lithuanian", "AFR" = "Afrikaans", "SLO" = "Slovak", "HUN" = "Hungarian", "POL" = "Polish", "CZE" = "Czech",
@@ -610,8 +590,7 @@ databases$language.x <- sapply(databases$language.x, function(iso_codes) {
            "HEB" = "Hebrew", "BAQ" = "Basque", "GLE" = "Irish", "BEL" = "Belarusian", "UKR" = "Ukrainian", "THA" = "Thai",
            "GLG" = "Galician", "GEO" = "Georgian", "ICE" = "Icelandic", "BOS" = "Bosnian", "MAC" = "Macedonian", "MAO" = "Maori",
            "ARM" = "Armenian", "ALB" = "Albanian", lang)})
-  return(paste(full_names, collapse = ", "))
-})
+  return(paste(full_names, collapse = ", "))})
 
 # convert NA characters to NA values in language.x variable
 databases$language.x[databases$language.x == "NA"] <- NA
@@ -621,7 +600,6 @@ databases$language <- apply(databases, 1, function(row) {
   language_x <- row["language.x"]
   language_y <- row["language.y"]
   language_z <- row["language.z"]
-  
   if (!is.na(language_x) && !is.na(language_y) && !is.na(language_z)) {
     paste(language_x, language_y, language_z, sep = ", ")
   } else if (!is.na(language_x) && !is.na(language_y)) {
@@ -637,24 +615,20 @@ databases$language <- apply(databases, 1, function(row) {
   } else if (!is.na(language_z)) {
     language_z
   } else {
-    NA
-  }
-})
+    NA}})
 
 # remove duplicate languages from the language variable
 databases$language <- sapply(databases$language, function(lang_string) {
   unique_languages <- unique(unlist(strsplit(lang_string, ", ")))
   cleaned_language <- paste(unique_languages, collapse = ", ")
-  return(cleaned_language)
-})
+  return(cleaned_language)})
 
 # add language variable to journals dataframe and remove duplicates
 journals <- left_join(journals, databases[, c("journal.name", "language")], by = "journal.name", keep = FALSE)
 journals <- journals[!duplicated(journals), ]
 
 # apply the function to transform all empty cells into NA values, convert NA characters to NA values in language variable
-journals <- journals %>%
-  mutate(across(everything(), replace_empty_with_na))
+journals <- journals %>% mutate(across(everything(), replace_empty_with_na))
 journals$language[journals$language == "NA"] <- NA
 
 # isolate NA rows from journals dataframe in order to complete only those empty cases with language data from papers' titles
@@ -681,8 +655,7 @@ toponyms.language$title.language <- sapply(toponyms.language$title.language, fun
   "kk" = "Kazakh", "hi" = "Hindi", "pa" = "Punjabi", "si" = "Sinhala", "gu" = "Gujarati", "hy" = "Armenian", NA)})
 
 # group by journal.id and concatenate languages into a single cell separated by ", "
-toponyms.language <- toponyms.language %>%
-  group_by(journal.id) %>%
+toponyms.language <- toponyms.language %>% group_by(journal.id) %>%
   summarise(language = paste(unique(title.language), collapse = ", "))
 
 # merge both subsets in order to keep only the languages of the journals presenting NA values in journals dataframe
@@ -694,8 +667,7 @@ journals <- left_join(journals, journals.toponyms.language, by = "journal.id") %
   select(-language.x, -language.y)
 
 # create a new binary variable mainstream.language to separate English and Multi-Language (1 = mainstream) from the rest (0 = not mainstream)
-journals <- journals %>%
-  mutate(mainstream.language = ifelse(
+journals <- journals %>% mutate(mainstream.language = ifelse(
     grepl("English|Multi-Language", language, ignore.case = TRUE), 1, 0))
 
 
@@ -707,8 +679,7 @@ categories <- read_excel("~/Desktop/Local.Research/journal-for-division.xlsx")
 journals <- left_join(journals, categories, by = "journal.id")
 
 # add a variable for categories acronyms
-journals <- journals %>% 
-  mutate(category.acronym = case_when(
+journals <- journals %>% mutate(category.acronym = case_when(
     category == "Agricultural, Veterinary and Food Sciences" ~ "AgriVetFoodSci",
     category == "Biological Sciences" ~ "BiolSci",
     category == "Biomedical and Clinical Sciences" ~ "BiomClinSci",
@@ -820,48 +791,42 @@ dev.off()
 
 # compute the distribution of local journals per disciplinary category and approach
 local.toponyms.categories <- unique(merge(local.toponyms.q["journal.id"], categories[, c("journal.id", "category")], by = "journal.id"))
-local.toponyms.categories <- local.toponyms.categories %>%
-  group_by(category) %>%
+local.toponyms.categories <- local.toponyms.categories %>% group_by(category) %>%
   summarise(sum = n()) %>%
   mutate(total = sum(sum))
 local.toponyms.categories$prop <- round(local.toponyms.categories$sum / local.toponyms.categories$total, 2)
 local.toponyms.categories$approach <- "Toponyms approach"
 
 local.language.categories <- unique(merge(local.language["journal.id"], categories[, c("journal.id", "category")], by = "journal.id"))
-local.language.categories <- local.language.categories %>%
-  group_by(category) %>%
+local.language.categories <- local.language.categories %>% group_by(category) %>%
   summarise(sum = n()) %>%
   mutate(total = sum(sum))
 local.language.categories$prop <- round(local.language.categories$sum / local.language.categories$total, 2)
 local.language.categories$approach <- "Languages approach"
 
 local.pubs.categories <- unique(merge(local.pubs.q["journal.id"], categories[, c("journal.id", "category")], by = "journal.id"))
-local.pubs.categories <- local.pubs.categories %>%
-  group_by(category) %>%
+local.pubs.categories <- local.pubs.categories %>% group_by(category) %>%
   summarise(sum = n()) %>%
   mutate(total = sum(sum))
 local.pubs.categories$prop <- round(local.pubs.categories$sum / local.pubs.categories$total, 2)
 local.pubs.categories$approach <- "Journals approach"
 
 local.database.categories <- unique(merge(local.database["journal.id"], categories[, c("journal.id", "category")], by = "journal.id"))
-local.database.categories <- local.database.categories %>%
-  group_by(category) %>%
+local.database.categories <- local.database.categories %>% group_by(category) %>%
   summarise(sum = n()) %>%
   mutate(total = sum(sum))
 local.database.categories$prop <- round(local.database.categories$sum / local.database.categories$total, 2)
 local.database.categories$approach <- "Databases approach"
 
 local.refs.categories <- unique(merge(local.refs.q["journal.id"], categories[, c("journal.id", "category")], by = "journal.id"))
-local.refs.categories <- local.refs.categories %>%
-  group_by(category) %>%
+local.refs.categories <- local.refs.categories %>% group_by(category) %>%
   summarise(sum = n()) %>%
   mutate(total = sum(sum))
 local.refs.categories$prop <- round(local.refs.categories$sum / local.refs.categories$total, 2)
 local.refs.categories$approach <- "References approach"
 
 local.cits.categories <- unique(merge(local.cits.q["journal.id"], categories[, c("journal.id", "category")], by = "journal.id"))
-local.cits.categories <- local.cits.categories %>%
-  group_by(category) %>%
+local.cits.categories <- local.cits.categories %>% group_by(category) %>%
   summarise(sum = n()) %>%
   mutate(total = sum(sum))
 local.cits.categories$prop <- round(local.cits.categories$sum / local.cits.categories$total, 2)
@@ -917,17 +882,50 @@ local.approaches.categories$approach <- factor(local.approaches.categories$appro
 local.approaches.categories$value.type <- factor(local.approaches.categories$value.type, levels = c("mean", "prop"))
 local.approaches.categories$field <- factor(local.approaches.categories$field, levels = c("Physical Sciences", "Life Sciences", "Health Sciences", "Social Sciences", "Humanities"))
 
-# plot mean distribution of journals per field, per approach
-ggplot(local.approaches.categories, aes(x = value, y = field, shape = value.type, color = value.type)) +
-  geom_point(size = 2) +
-  facet_wrap(~approach, ncol = 2) +
-  scale_color_manual(name = "", values = c("mean" = "#ED7953", "prop" = "grey50"), labels = c("Field mean", "Disciplinary category proportion")) +
-  scale_shape_manual(name = "", values = c("mean" = 17, "prop" = 16), labels = c("Field mean", "Disciplinary category proportion")) +
+# reduce category variable for plotting purposes
+local.approaches.categories$category <- ifelse(local.approaches.categories$category == "Biomedical and Clinical Sciences", "BiomClinSci",
+                                      ifelse(local.approaches.categories$category == "Health Sciences", "HealthSci",
+                                             ifelse(local.approaches.categories$category == "Creative Arts and Writing", "ArtWrit",
+                                                    ifelse(local.approaches.categories$category == "History, Heritage and Archaeology", "HisHeritArch",
+                                                           ifelse(local.approaches.categories$category == "Language, Communication and Culture", "LangCommCult",
+                                                                  ifelse(local.approaches.categories$category == "Philosophy and Religious Studies", "PhilReligStud",
+                                                                         ifelse(local.approaches.categories$category == "Agricultural, Veterinary and Food Sciences", "AgriVetFoodSci",
+                                                                                ifelse(local.approaches.categories$category == "Biological Sciences", "BiolSci",
+                                                                                       ifelse(local.approaches.categories$category == "Earth Sciences", "EarthSci",
+                                                                                              ifelse(local.approaches.categories$category == "Environmental Sciences", "EnvironSci",
+                                                                                                     ifelse(local.approaches.categories$category == "Chemical Sciences", "ChemSci",
+                                                                                                            ifelse(local.approaches.categories$category == "Engineering", "Eng",
+                                                                                                                   ifelse(local.approaches.categories$category == "Built Environment and Design", "EnvironDes",
+                                                                                                                          ifelse(local.approaches.categories$category == "Information and Computing Sciences", "InfCompSci",
+                                                                                                                                 ifelse(local.approaches.categories$category == "Mathematical Sciences", "MathSci",
+                                                                                                                                        ifelse(local.approaches.categories$category == "Physical Sciences", "PhysSci",
+                                                                                                                                               ifelse(local.approaches.categories$category == "Commerce, Management, Tourism and Services", "ComManTourServ",
+                                                                                                                                                      ifelse(local.approaches.categories$category == "Economics", "Econ",
+                                                                                                                                                             ifelse(local.approaches.categories$category == "Education", "Edu",
+                                                                                                                                                                    ifelse(local.approaches.categories$category == "Human Society", "HumSoc",
+                                                                                                                                                                           ifelse(local.approaches.categories$category == "Law and Legal Studies", "LawLegStud",
+                                                                                                                                                                                  ifelse(local.approaches.categories$category == "Psychology", "Psych", NA))))))))))))))))))))))
+
+# convert variables to factor to order the levels and customize how they appear in the plot
+local.approaches.categories$category <- factor(local.approaches.categories$category, levels = c("ArtWrit", "HisHeritArch", "PhilReligStud", "LangCommCult", "Econ", "LawLegStud", "Psych", "ComManTourServ", "Edu", "HumSoc", "HealthSci", "BiomClinSci", "EnvironSci", "EarthSci", "AgriVetFoodSci", "BiolSci", "PhysSci", "ChemSci", "EnvironDes", "MathSci", "InfCompSci", "Eng"))
+local.approaches.categories$field <- factor(local.approaches.categories$field, levels = c("Humanities", "Social Sciences", "Health Sciences", "Life Sciences", "Physical Sciences"))
+
+# plot proportions distributions per categories
+local.approaches.categories %>% filter(value.type == "prop") %>%
+  ggplot(aes(x = approach, y = category, fill = value)) +
+  geom_tile() +
+  scale_x_discrete(labels = c("Toponyms approach" = "Toponyms",
+    "Languages approach" = "Languages",
+    "Journals approach" = "Authors",
+    "Databases approach" = "Databases",
+    "References approach" = "References",
+    "Citations approach" = "Citations")) +
+  scale_fill_viridis_c(name = "Publication share", na.value = "grey50", option = "plasma") +
+  labs(x = "Operational approach", y = "Field & Category") +
+  facet_grid(field ~ ., scales = "free_y", space = "free_y", switch = "y") +
   theme_minimal() +
-  theme(legend.position = "bottom") +
-  xlab("Share of local journals") +
-  ylab("Field")
-ggsave("~/Desktop/Local.Research/Figure2.png", width = 6.27, height = 6.27, dpi = 300, bg = "white")
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 0, vjust = 0.5, hjust = 0.5), strip.placement = "outside", strip.text.y.left = element_text(angle = 0, face = "bold"))
+ggsave("~/Desktop/Local.Research/Figure2.png", width = 6.7, height = 6.27, dpi = 300, bg = "white")
 
 
 ### COUNTRY LEVEL SUMMARY DATA
@@ -939,6 +937,339 @@ total.pubs.country <- total.pubs.country %>%
   summarise(total.pubs = sum(pubs), .groups = 'drop') %>%
   as.data.frame()
 
+# include full country names
+total.pubs.country <- total.pubs.country %>% left_join(map.q %>%
+                                                         st_drop_geometry() %>%
+                                                         select(ISO_A2_EH, NAME),
+                                                       by = c("country" = "ISO_A2_EH")) %>%
+                                              rename(full.name = NAME)
+total.pubs.country <- total.pubs.country %>% distinct(country, total.pubs, full.name, .keep_all = TRUE)
+
+missing_countries <- tribble(~country, ~full.name,
+  "AD", "Andorra",
+  "AG", "Antigua and Barbuda",
+  "AI", "Anguilla",
+  "AN", "Netherlands Antilles",
+  "AW", "Aruba",
+  "AX", "Åland Islands",
+  "BB", "Barbados",
+  "BH", "Bahrain",
+  "BL", "Saint Barthélemy",
+  "BM", "Bermuda",
+  "BQ", "Bonaire, Sint Eustatius and Saba",
+  "CC", "Cocos (Keeling) Islands",
+  "CK", "Cook Islands",
+  "CS", "Serbia and Montenegro",
+  "CV", "Cabo Verde",
+  "CW", "Curaçao",
+  "CX", "Christmas Island",
+  "DM", "Dominica",
+  "EH", "Western Sahara",
+  "FM", "Micronesia (Federated States of)",
+  "FO", "Faroe Islands",
+  "GD", "Grenada",
+  "GF", "French Guiana",
+  "GG", "Guernsey",
+  "GI", "Gibraltar",
+  "GP", "Guadeloupe",
+  "GS", "South Georgia and the South Sandwich Islands",
+  "IM", "Isle of Man",
+  "IO", "British Indian Ocean Territory",
+  "JE", "Jersey",
+  "KI", "Kiribati",
+  "KM", "Comoros",
+  "KN", "Saint Kitts and Nevis",
+  "KY", "Cayman Islands",
+  "LC", "Saint Lucia",
+  "LI", "Liechtenstein",
+  "MC", "Monaco",
+  "MF", "Saint Martin (French part)",
+  "MH", "Marshall Islands",
+  "MQ", "Martinique",
+  "MS", "Montserrat",
+  "MT", "Malta",
+  "MU", "Mauritius",
+  "MV", "Maldives",
+  "NF", "Norfolk Island",
+  "NR", "Nauru",
+  "NU", "Niue",
+  "PF", "French Polynesia",
+  "PN", "Pitcairn Islands",
+  "PW", "Palau",
+  "RE", "Réunion",
+  "SC", "Seychelles",
+  "SG", "Singapore",
+  "SH", "Saint Helena, Ascension and Tristan da Cunha",
+  "SJ", "Svalbard and Jan Mayen",
+  "SM", "San Marino",
+  "ST", "São Tomé and Príncipe",
+  "SX", "Sint Maarten (Dutch part)",
+  "TC", "Turks and Caicos Islands",
+  "TF", "French Southern Territories",
+  "TK", "Tokelau",
+  "TO", "Tonga",
+  "TV", "Tuvalu",
+  "VA", "Vatican City",
+  "VC", "Saint Vincent and the Grenadines",
+  "VG", "British Virgin Islands",
+  "WF", "Wallis and Futuna",
+  "WS", "Samoa",
+  "YT", "Mayotte")
+
+total.pubs.country <- total.pubs.country %>%
+  rows_update(missing_countries, by = "country", unmatched = "ignore") %>%
+  bind_rows(anti_join(missing_countries, total.pubs.country, by = "country"))
+
+iso_to_country <- tribble(~country, ~final.country,
+  "AD", "Andorra",
+  "AE", "United Arab Emirates",
+  "AF", "Afghanistan",
+  "AL", "Albania",
+  "AM", "Armenia",
+  "AO", "Angola",
+  "AR", "Argentina",
+  "AT", "Austria",
+  "AU", "Australia",
+  "AZ", "Azerbaijan",
+  "BA", "Bosnia and Herzegovina",
+  "BD", "Bangladesh",
+  "BE", "Belgium",
+  "BF", "Burkina Faso",
+  "BG", "Bulgaria",
+  "BI", "Burundi",
+  "BJ", "Benin",
+  "BN", "Brunei",
+  "BO", "Bolivia",
+  "BR", "Brazil",
+  "BS", "Bahamas",
+  "BT", "Bhutan",
+  "BW", "Botswana",
+  "BY", "Belarus",
+  "BZ", "Belize",
+  "CA", "Canada",
+  "CD", "Democratic Republic of the Congo",
+  "CF", "Central African Republic",
+  "CG", "Republic of the Congo",
+  "CH", "Switzerland",
+  "CI", "Ivory Coast",
+  "CL", "Chile",
+  "CM", "Cameroon",
+  "CN", "China",
+  "CO", "Colombia",
+  "CR", "Costa Rica",
+  "CU", "Cuba",
+  "CY", "Cyprus",
+  "CZ", "Czechia",
+  "DE", "Germany",
+  "DJ", "Djibouti",
+  "DK", "Denmark",
+  "DO", "Dominican Republic",
+  "DZ", "Algeria",
+  "EC", "Ecuador",
+  "EE", "Estonia",
+  "EG", "Egypt",
+  "ER", "Eritrea",
+  "ES", "Spain",
+  "ET", "Ethiopia",
+  "FI", "Finland",
+  "FJ", "Fiji",
+  "FR", "France",
+  "GA", "Gabon",
+  "GB", "United Kingdom",
+  "GD", "Grenada",
+  "GE", "Georgia",
+  "GH", "Ghana",
+  "GM", "Gambia",
+  "GN", "Guinea",
+  "GQ", "Equatorial Guinea",
+  "GR", "Greece",
+  "GT", "Guatemala",
+  "GW", "Guinea-Bissau",
+  "GY", "Guyana",
+  "HN", "Honduras",
+  "HR", "Croatia",
+  "HT", "Haiti",
+  "HU", "Hungary",
+  "ID", "Indonesia",
+  "IE", "Ireland",
+  "IL", "Israel",
+  "IN", "India",
+  "IQ", "Iraq",
+  "IR", "Iran",
+  "IS", "Iceland",
+  "IT", "Italy",
+  "JM", "Jamaica",
+  "JO", "Jordan",
+  "JP", "Japan",
+  "KE", "Kenya",
+  "KG", "Kyrgyzstan",
+  "KH", "Cambodia",
+  "KP", "North Korea",
+  "KR", "South Korea",
+  "KW", "Kuwait",
+  "KZ", "Kazakhstan",
+  "LA", "Laos",
+  "LB", "Lebanon",
+  "LK", "Sri Lanka",
+  "LR", "Liberia",
+  "LS", "Lesotho",
+  "LT", "Lithuania",
+  "LU", "Luxembourg",
+  "LV", "Latvia",
+  "LY", "Libya",
+  "MA", "Morocco",
+  "MD", "Moldova",
+  "ME", "Montenegro",
+  "MG", "Madagascar",
+  "MK", "North Macedonia",
+  "ML", "Mali",
+  "MM", "Myanmar",
+  "MN", "Mongolia",
+  "MR", "Mauritania",
+  "MT", "Malta",
+  "MU", "Mauritius",
+  "MV", "Maldives",
+  "MW", "Malawi",
+  "MX", "Mexico",
+  "MY", "Malaysia",
+  "MZ", "Mozambique",
+  "NA", "Namibia",
+  "NE", "Niger",
+  "NG", "Nigeria",
+  "NI", "Nicaragua",
+  "NL", "Netherlands",
+  "NO", "Norway",
+  "NP", "Nepal",
+  "NZ", "New Zealand",
+  "OM", "Oman",
+  "PA", "Panama",
+  "PE", "Peru",
+  "PG", "Papua New Guinea",
+  "PH", "Philippines",
+  "PK", "Pakistan",
+  "PL", "Poland",
+  "PS", "Palestine",
+  "PT", "Portugal",
+  "PY", "Paraguay",
+  "QA", "Qatar",
+  "RO", "Romania",
+  "RS", "Serbia",
+  "RU", "Russia",
+  "RW", "Rwanda",
+  "SA", "Saudi Arabia",
+  "SB", "Solomon Islands",
+  "SD", "Sudan",
+  "SE", "Sweden",
+  "SG", "Singapore",
+  "SI", "Slovenia",
+  "SK", "Slovakia",
+  "SL", "Sierra Leone",
+  "SM", "San Marino",
+  "SN", "Senegal",
+  "SO", "Somalia",
+  "SR", "Suriname",
+  "SS", "South Sudan",
+  "SV", "El Salvador",
+  "SY", "Syria",
+  "SZ", "Eswatini",
+  "TD", "Chad",
+  "TG", "Togo",
+  "TH", "Thailand",
+  "TJ", "Tajikistan",
+  "TL", "Timor-Leste",
+  "TM", "Turkmenistan",
+  "TN", "Tunisia",
+  "TR", "Turkey",
+  "TT", "Trinidad and Tobago",
+  "TW", "Taiwan",
+  "TZ", "Tanzania",
+  "UA", "Ukraine",
+  "UG", "Uganda",
+  "US", "United States",
+  "UY", "Uruguay",
+  "UZ", "Uzbekistan",
+  "VE", "Venezuela",
+  "VN", "Vietnam",
+  "VU", "Vanuatu",
+  "WS", "Samoa",
+  "YE", "Yemen",
+  "ZA", "South Africa",
+  "ZM", "Zambia",
+  "ZW", "Zimbabwe",
+  "VA", "Vatican City",
+  "XK", "Kosovo",
+  "AG", "Antigua and Barbuda",
+  "AI", "United Kingdom",
+  "AN", "Netherlands",
+  "AW", "Netherlands",
+  "AX", "Finland",
+  "BB", "Barbados",
+  "BH", "Bahrain",
+  "BL", "France",
+  "BM", "United Kingdom",
+  "BQ", "Netherlands",
+  "CC", "Australia",
+  "CK", "New Zealand",
+  "CS", "Serbia",
+  "CV", "Cabo Verde",
+  "CW", "Netherlands",
+  "CX", "Australia",
+  "DM", "Dominica",
+  "EH", "Morocco",
+  "FK", "United Kingdom",
+  "FM", "Micronesia",
+  "FO", "Denmark",
+  "GF", "France",
+  "GG", "United Kingdom",
+  "GI", "United Kingdom",
+  "GL", "Denmark",
+  "GP", "France",
+  "GS", "United Kingdom",
+  "GU", "United States",
+  "HK", "China",
+  "IM", "United Kingdom",
+  "IO", "United Kingdom",
+  "JE", "United Kingdom",
+  "KI", "Kiribati",
+  "KM", "Comoros",
+  "KN", "Saint Kitts and Nevis",
+  "KY", "United Kingdom",
+  "LC", "Saint Lucia",
+  "LI", "Liechtenstein",
+  "MC", "Monaco",
+  "MF", "France",
+  "MH", "Marshall Islands",
+  "MQ", "France",
+  "MS", "United Kingdom",
+  "NC", "France",
+  "NF", "Australia",
+  "NR", "Nauru",
+  "NU", "New Zealand",
+  "PF", "France",
+  "PN", "United Kingdom",
+  "PW", "Palau",
+  "RE", "France",
+  "SC", "Seychelles",
+  "SG", "Singapore",
+  "SH", "United Kingdom",
+  "SJ", "Norway",
+  "SM", "San Marino",
+  "ST", "São Tomé and Príncipe",
+  "SX", "Netherlands",
+  "TC", "United Kingdom",
+  "TF", "France",
+  "TK", "New Zealand",
+  "TO", "Tonga",
+  "TV", "Tuvalu",
+  "VC", "Saint Vincent and the Grenadines",
+  "VG", "United Kingdom",
+  "WF", "France",
+  "YT", "France")
+
+total.pubs.country <- total.pubs.country %>% left_join(iso_to_country, by = "country")
+total.pubs.country <- total.pubs.country %>% group_by(final.country) %>%
+                                             summarise(total.pubs = sum(total.pubs, na.rm = TRUE)) %>%
+                                             ungroup()
 
 # isolate local research journals according to the toponyms approach (cut-off thresholds for trial >= 0.14 (3º quartile) & >= 0.30 (9º decile))
 local.toponyms.q <- subset(journals, select = c("journal.id", "journal.name", "toponyms.prop"), toponyms.prop >= 0.14)
@@ -947,10 +1278,13 @@ local.toponyms.q <- subset(journals, select = c("journal.id", "journal.name", "t
 local.toponyms.countries.q <- df.journals.final[df.journals.final$journal.id %in% local.toponyms.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 local.toponyms.countries.q <- local.toponyms.countries.q[complete.cases(local.toponyms.countries.q), ]
 
+# add nation to which territories belong
+local.toponyms.countries.q <- local.toponyms.countries.q %>% left_join(iso_to_country, by = "country")
+
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
-local.toponyms.countries.q <- aggregate(pubs ~ country, data = local.toponyms.countries.q, FUN = sum)
+local.toponyms.countries.q <- aggregate(pubs ~ final.country, data = local.toponyms.countries.q, FUN = sum)
 local.toponyms.countries.q <- local.toponyms.countries.q %>%
-  left_join(total.pubs.country, by = "country") %>%
+  left_join(total.pubs.country, by = "final.country") %>%
   mutate(pubs.share = pubs / total.pubs)
 
 
@@ -961,10 +1295,13 @@ local.language <- subset(journals, select = c("journal.id", "journal.name", "mai
 local.language.countries <- df.journals.final[df.journals.final$journal.id %in% local.language$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 local.language.countries <- local.language.countries[complete.cases(local.language.countries), ]
 
+# add nation to which territories belong
+local.language.countries <- local.language.countries %>% left_join(iso_to_country, by = "country")
+
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
-local.language.countries <- aggregate(pubs ~ country, data = local.language.countries, FUN = sum)
+local.language.countries <- aggregate(pubs ~ final.country, data = local.language.countries, FUN = sum)
 local.language.countries <- local.language.countries %>%
-  left_join(total.pubs.country, by = "country") %>%
+  left_join(total.pubs.country, by = "final.country") %>%
   mutate(pubs.share = pubs / total.pubs)
 
 
@@ -975,10 +1312,13 @@ local.pubs.q <- subset(journals, select = c("journal.id", "journal.name", "pubs.
 local.pubs.countries.q <- df.journals.final[df.journals.final$journal.id %in% local.pubs.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 local.pubs.countries.q <- local.pubs.countries.q[complete.cases(local.pubs.countries.q), ]
 
+# add nation to which territories belong
+local.pubs.countries.q <- local.pubs.countries.q %>% left_join(iso_to_country, by = "country")
+
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
-local.pubs.countries.q <- aggregate(pubs ~ country, data = local.pubs.countries.q, FUN = sum)
+local.pubs.countries.q <- aggregate(pubs ~ final.country, data = local.pubs.countries.q, FUN = sum)
 local.pubs.countries.q <- local.pubs.countries.q %>%
-  left_join(total.pubs.country, by = "country") %>%
+  left_join(total.pubs.country, by = "final.country") %>%
   mutate(pubs.share = pubs / total.pubs)
 
 
@@ -989,10 +1329,13 @@ local.database <- subset(journals, select = c("journal.id", "journal.name", "mai
 local.database.countries <- df.journals.final[df.journals.final$journal.id %in% local.database$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 local.database.countries <- local.database.countries[complete.cases(local.database.countries), ]
 
+# add nation to which territories belong
+local.database.countries <- local.database.countries %>% left_join(iso_to_country, by = "country")
+
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
-local.database.countries <- aggregate(pubs ~ country, data = local.database.countries, FUN = sum)
+local.database.countries <- aggregate(pubs ~ final.country, data = local.database.countries, FUN = sum)
 local.database.countries <- local.database.countries %>%
-  left_join(total.pubs.country, by = "country") %>%
+  left_join(total.pubs.country, by = "final.country") %>%
   mutate(pubs.share = pubs / total.pubs)
 
 
@@ -1003,10 +1346,13 @@ local.refs.q <- subset(journals, select = c("journal.id", "journal.name", "refs.
 local.refs.countries.q <- df.journals.final[df.journals.final$journal.id %in% local.refs.q$journal.id, c("journal.id", "journal.name", "country", "pubs", "category.acronym", "field")]
 local.refs.countries.q <- local.refs.countries.q[complete.cases(local.refs.countries.q), ]
 
+# add nation to which territories belong
+local.refs.countries.q <- local.refs.countries.q %>% left_join(iso_to_country, by = "country")
+
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
-local.refs.countries.q <- aggregate(pubs ~ country, data = local.refs.countries.q, FUN = sum)
+local.refs.countries.q <- aggregate(pubs ~ final.country, data = local.refs.countries.q, FUN = sum)
 local.refs.countries.q <- local.refs.countries.q %>%
-  left_join(total.pubs.country, by = "country") %>%
+  left_join(total.pubs.country, by = "final.country") %>%
   mutate(pubs.share = pubs / total.pubs)
 
 
@@ -1017,10 +1363,13 @@ local.cits.q <- subset(journals, select = c("journal.id", "journal.name", "cits.
 local.cits.countries.q <- df.journals.final[df.journals.final$journal.id %in% local.cits.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 local.cits.countries.q <- local.cits.countries.q[complete.cases(local.cits.countries.q), ]
 
+# add nation to which territories belong
+local.cits.countries.q <- local.cits.countries.q %>% left_join(iso_to_country, by = "country")
+
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
-local.cits.countries.q <- aggregate(pubs ~ country, data = local.cits.countries.q, FUN = sum)
+local.cits.countries.q <- aggregate(pubs ~ final.country, data = local.cits.countries.q, FUN = sum)
 local.cits.countries.q <- local.cits.countries.q %>%
-  left_join(total.pubs.country, by = "country") %>%
+  left_join(total.pubs.country, by = "final.country") %>%
   mutate(pubs.share = pubs / total.pubs)
 
 
@@ -1056,7 +1405,6 @@ local.refs.map.q <- merge(map.world, local.refs.countries.q, by.x = "ISO_A2_EH",
 # plot cits world map
 local.cits.map.q <- merge(map.world, local.cits.countries.q, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
 
-## 3ºQ
 # create one faceted plot with 6 maps and 1 common legend
 local.toponyms.map.q$approach <- "Toponyms approach"
 local.language.map$approach <- "Languages approach"
@@ -1232,25 +1580,25 @@ ggsave("~/Desktop/Local.Research/Figure5.png", width = 6.27, height = 10.27, dpi
 
 ### CORRELATIONS
 # country level with 3ºQ data
-corr.local.toponyms.q <- subset(local.toponyms.countries.q, select = c(country, pubs.share))
+corr.local.toponyms.q <- subset(local.toponyms.countries.q, select = c(final.country, pubs.share))
 corr.local.toponyms.q <- corr.local.toponyms.q %>% rename("toponyms.pubs.share" = "pubs.share")
 
-corr.local.language <- subset(local.language.countries, select = c(country, pubs.share))
+corr.local.language <- subset(local.language.countries, select = c(final.country, pubs.share))
 corr.local.language <- corr.local.language %>% rename("language.pubs.share" = "pubs.share")
 
-corr.local.pubs.q <- subset(local.pubs.countries.q, select = c(country, pubs.share))
+corr.local.pubs.q <- subset(local.pubs.countries.q, select = c(final.country, pubs.share))
 corr.local.pubs.q <- corr.local.pubs.q %>% rename("pubs.pubs.share" = "pubs.share")
 
-corr.local.database <- subset(local.database.countries, select = c(country, pubs.share))
+corr.local.database <- subset(local.database.countries, select = c(final.country, pubs.share))
 corr.local.database <- corr.local.database %>% rename("database.pubs.share" = "pubs.share")
 
-corr.local.refs.q <- subset(local.refs.countries.q, select = c(country, pubs.share))
+corr.local.refs.q <- subset(local.refs.countries.q, select = c(final.country, pubs.share))
 corr.local.refs.q <- corr.local.refs.q %>% rename("refs.pubs.share" = "pubs.share")
 
-corr.local.cits.q <- subset(local.cits.countries.q, select = c(country, pubs.share))
+corr.local.cits.q <- subset(local.cits.countries.q, select = c(final.country, pubs.share))
 corr.local.cits.q <- corr.local.cits.q %>% rename("cits.pubs.share" = "pubs.share")
 
-corr.local.q <- Reduce(function(x, y) merge(x, y, by = "country", all = TRUE), list(corr.local.toponyms.q, corr.local.language, corr.local.pubs.q, corr.local.database, corr.local.refs.q, corr.local.cits.q))
+corr.local.q <- Reduce(function(x, y) merge(x, y, by = "final.country", all = TRUE), list(corr.local.toponyms.q, corr.local.language, corr.local.pubs.q, corr.local.database, corr.local.refs.q, corr.local.cits.q))
 corr.local.q <- corr.local.q %>% rename("Tops prop" = "toponyms.pubs.share", "Non-Eng pub" = "language.pubs.share", "Pub prop" = "pubs.pubs.share", "Non-W/S index" = "database.pubs.share", "Ref prop" = "refs.pubs.share", "Cit prop" = "cits.pubs.share")
 
 corr.local.matrix.q <- cor(corr.local.q[, c("Tops prop", "Non-Eng pub", "Pub prop", "Non-W/S index", "Ref prop", "Cit prop")], use = "pairwise.complete.obs")
@@ -1264,5 +1612,341 @@ ggcorrplot(corr.local.matrix.q,
 ggsave("~/Desktop/Local.Research/Figure3.png", width = 6.27, height = 5.27, dpi = 300, bg = "white")
 
 
+### PCA
+# Filter out incomplete cases and countries with less than 500 publications in the period
+complete_cases_df <- corr.local.q %>% filter(complete.cases(select(., -final.country))) %>%
+                                      semi_join(total.pubs.country %>% filter(total.pubs >= 3000), by = "final.country")
+
+# Select numeric variables only
+pca_data <- complete_cases_df %>% select(-final.country)
+
+# Run PCA
+pca_result <- prcomp(pca_data, scale. = TRUE)
+
+# See % variance explained by each PC
+summary(pca_result)
+
+# Check loadings (variable contributions)
+pca_result$rotation
+
+# Extract scores and attach countries (matching lengths)
+pca_scores <- as.data.frame(pca_result$x) %>% mutate(country = complete_cases_df$final.country)
+
+# Visualize loadings (variable importance)
+loadings_df <- as.data.frame(pca_result$rotation) %>% rownames_to_column(var = "variable")
+
+# Reshape for plotting
+loadings_df_long <- loadings_df %>% pivot_longer(cols = starts_with("PC"), names_to = "PC", values_to = "loading")
+
+# Plot loadings for PC1, PC2, and PC3
+ggplot(loadings_df_long %>% filter(PC %in% c("PC1", "PC2", "PC3")),
+       aes(x = variable, y = loading, fill = PC)) +
+  geom_col(position = "dodge") +
+  theme_minimal() +
+  labs(title = "Variable Loadings on PC1, PC2, and PC3",
+       x = "Variable", y = "Loading") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("steelblue", "darkorange", "seagreen"))
+
+# Correlation circle
+# Select numeric variables only
+pca_vars <- complete_cases_df[, c("Tops prop", "Non-Eng pub", "Pub prop", 
+                                  "Non-W/S index", "Ref prop", "Cit prop")]
+
+pca_result <- PCA(pca_vars, scale.unit = TRUE, graph = FALSE)
+
+fviz_pca_var(pca_result, 
+             col.var = "cos2",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE)
+
+pca_coords <- as.data.frame(pca_result$ind$coord)
+pca_coords$country <- complete_cases_df$final.country
+
+# add clustering
+set.seed(123)  # For reproducibility
+# Run k-means clustering on the PCA scores (e.g., first 2 dimensions)
+km_res <- kmeans(pca_coords[, c("Dim.1", "Dim.2")], centers = 5, nstart = 25)  # Change 'centers' as needed
+
+# Add cluster assignment to pca_coords
+pca_coords$cluster <- factor(km_res$cluster)
+
+# Extract variable loadings
+loadings <- as.data.frame(pca_result$var$coord)
+loadings$varname <- rownames(loadings)
+
+# Scale arrows for visibility
+arrow_scale <- 3
+
+ggplot() +
+  # Plot countries colored by cluster
+  geom_point(data = pca_coords, aes(x = Dim.1, y = Dim.2, color = cluster), size = 3) +
+  geom_text(data = pca_coords, aes(x = Dim.1, y = Dim.2, label = country, color = cluster), vjust = -0.5, size = 3) +
+  
+  # Plot variable arrows
+  geom_segment(data = loadings, aes(x = 0, y = 0, xend = Dim.1 * arrow_scale, yend = Dim.2 * arrow_scale),
+               arrow = arrow(length = unit(0.2, "cm")), color = "darkred") +
+  
+  # Add variable names at arrow tips
+  geom_text(data = loadings, aes(x = Dim.1 * arrow_scale, y = Dim.2 * arrow_scale, label = varname),
+            color = "darkred", size = 3, vjust = -0.5) +
+  
+  theme_minimal() +
+  labs(title = "PCA Biplot: Countries clustered with variable loadings",
+       x = "Dimension 1",
+       y = "Dimension 2") +
+  scale_color_manual(values = c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3", "#FC4E07"))
+
+
+
+
+
 ### SAVE DATAFRAMES
 save.image("~/Desktop/Local.Research/local.research.data.RData")
+
+
+### REVIEW
+## Methods to identify and justify the election of a threshold
+# Elbow method for cits.prop
+sorted_cits <- sort(journals$cits.prop, decreasing = TRUE)
+rank <- 1:length(sorted_cits)
+cits_df <- data.frame(rank = rank, cits.prop = sorted_cits)
+quartiles <- quantile(journals$cits.prop, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
+percentiles <- quantile(journals$cits.prop, probs = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), na.rm = TRUE)
+
+elbow_point <- function(x, y) {
+  line_start <- c(x[1], y[1])
+  line_end <- c(x[length(x)], y[length(y)])
+  distances <- sapply(1:length(x), function(i) {
+    numerator <- abs((line_end[2] - line_start[2]) * x[i] -
+                       (line_end[1] - line_start[1]) * y[i] +
+                       line_end[1]*line_start[2] -
+                       line_end[2]*line_start[1])
+    denominator <- sqrt((line_end[2] - line_start[2])^2 + 
+                          (line_end[1] - line_start[1])^2)
+    numerator / denominator})
+  which.max(distances)}
+elbow_idx <- elbow_point(rank, sorted_cits)
+elbow_value <- sorted_cits[elbow_idx]
+
+ggplot(cits_df, aes(x = rank, y = cits.prop)) +
+  geom_line(color = "darkgreen", linewidth = 1) +
+  annotate("point", x = elbow_idx, y = elbow_value, color = "red", size = 3) +
+  geom_hline(yintercept = percentiles,
+             linetype = "dashed",
+             color = "gray60") +
+  annotate("text",
+           x = max(cits_df$rank) * 0.97,
+           y = percentiles,
+           label = names(percentiles),
+           hjust = 1.1,
+           size = 3.5,
+           color = "gray60") +
+  geom_hline(yintercept = quartiles,
+             linetype = "dashed",
+             color = c("blue", "purple", "orange")) +
+  annotate("text",
+           x = max(cits_df$rank) * 0.92,
+           y = quartiles,
+           label = c("Q1", "Median", "Q3"),
+           hjust = 1.1,
+           size = 3.8,
+           color = c("blue", "purple", "orange")) +
+  labs(title = "cits.prop Distribution with Elbow, Percentiles, and Quartiles",
+       subtitle = paste("Elbow at rank", elbow_idx, "with value", round(elbow_value, 3)),
+       x = "Ranked Journals",
+       y = "cits.prop") +
+  theme_minimal()
+
+# Elbow method for pubs.prop
+sorted_pubs <- sort(journals$pubs.prop, decreasing = TRUE)
+rank <- 1:length(sorted_pubs)
+pubs_df <- data.frame(rank = rank, pubs.prop = sorted_pubs)
+quartiles <- quantile(journals$pubs.prop, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
+percentiles <- quantile(journals$pubs.prop, probs = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), na.rm = TRUE)
+
+elbow_idx <- elbow_point(rank, sorted_pubs)
+elbow_value <- sorted_pubs[elbow_idx]
+
+ggplot(pubs_df, aes(x = rank, y = pubs.prop)) +
+  geom_line(color = "darkgreen", linewidth = 1) +
+  annotate("point", x = elbow_idx, y = elbow_value, color = "red", size = 3) +
+  geom_hline(yintercept = percentiles,
+             linetype = "dashed",
+             color = "gray60") +
+  annotate("text",
+           x = max(pubs_df$rank) * 0.97,
+           y = percentiles,
+           label = names(percentiles),
+           hjust = 1.1,
+           size = 3.5,
+           color = "gray60") +
+  geom_hline(yintercept = quartiles,
+             linetype = "dashed",
+             color = c("blue", "purple", "orange")) +
+  annotate("text",
+           x = max(pubs_df$rank) * 0.92,
+           y = quartiles,
+           label = c("Q1", "Median", "Q3"),
+           hjust = 1.1,
+           size = 3.8,
+           color = c("blue", "purple", "orange")) +
+  labs(title = "pubs.prop Distribution with Elbow, Percentiles, and Quartiles",
+       subtitle = paste("Elbow at rank", elbow_idx, "with value", round(elbow_value, 3)),
+       x = "Ranked Journals",
+       y = "pubs.prop") +
+  theme_minimal()
+
+# Elbow method for refs.prop
+sorted_refs <- sort(journals$refs.prop, decreasing = TRUE)
+rank <- 1:length(sorted_refs)
+refs_df <- data.frame(rank = rank, refs.prop = sorted_refs)
+quartiles <- quantile(journals$refs.prop, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
+percentiles <- quantile(journals$refs.prop, probs = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), na.rm = TRUE)
+
+elbow_idx <- elbow_point(rank, sorted_refs)
+elbow_value <- sorted_refs[elbow_idx]
+
+ggplot(refs_df, aes(x = rank, y = refs.prop)) +
+  geom_line(color = "darkgreen", linewidth = 1) +
+  annotate("point", x = elbow_idx, y = elbow_value, color = "red", size = 3) +
+  geom_hline(yintercept = percentiles,
+             linetype = "dashed",
+             color = "gray60") +
+  annotate("text",
+           x = max(refs_df$rank) * 0.97,
+           y = percentiles,
+           label = names(percentiles),
+           hjust = 1.1,
+           size = 3.5,
+           color = "gray60") +
+  geom_hline(yintercept = quartiles,
+             linetype = "dashed",
+             color = c("blue", "purple", "orange")) +
+  annotate("text",
+           x = max(refs_df$rank) * 0.92,
+           y = quartiles,
+           label = c("Q1", "Median", "Q3"),
+           hjust = 1.1,
+           size = 3.8,
+           color = c("blue", "purple", "orange")) +
+  labs(title = "refs.prop Distribution with Elbow, Percentiles, and Quartiles",
+       subtitle = paste("Elbow at rank", elbow_idx, "with value", round(elbow_value, 3)),
+       x = "Ranked Journals",
+       y = "refs.prop") +
+  theme_minimal()
+
+# Elbow method for toponyms.prop
+sorted_tops <- sort(journals$toponyms.prop, decreasing = TRUE)
+rank <- 1:length(sorted_tops)
+tops_df <- data.frame(rank = rank, tops.prop = sorted_tops)
+quartiles <- quantile(journals$toponyms.prop, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
+percentiles <- quantile(journals$toponyms.prop, probs = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), na.rm = TRUE)
+
+elbow_idx <- elbow_point(rank, sorted_tops)
+elbow_value <- sorted_tops[elbow_idx]
+
+ggplot(tops_df, aes(x = rank, y = tops.prop)) +
+  geom_line(color = "darkgreen", linewidth = 1) +
+  annotate("point", x = elbow_idx, y = elbow_value, color = "red", size = 3) +
+  geom_hline(yintercept = percentiles,
+             linetype = "dashed",
+             color = "gray60") +
+  annotate("text",
+           x = max(tops_df$rank) * 0.97,
+           y = percentiles,
+           label = names(percentiles),
+           hjust = 1.1,
+           size = 3.5,
+           color = "gray60") +
+  geom_hline(yintercept = quartiles,
+             linetype = "dashed",
+             color = c("blue", "purple", "orange")) +
+  annotate("text",
+           x = max(tops_df$rank) * 0.92,
+           y = quartiles,
+           label = c("Q1", "Median", "Q3"),
+           hjust = 1.1,
+           size = 3.8,
+           color = c("blue", "purple", "orange")) +
+  labs(title = "tops.prop Distribution with Elbow, Percentiles, and Quartiles",
+       subtitle = paste("Elbow at rank", elbow_idx, "with value", round(elbow_value, 3)),
+       x = "Ranked Journals",
+       y = "tops.prop") +
+  theme_minimal()
+
+# Boxplot and violin plot for cits.prop
+ggplot(journals, aes(x = "", y = cits.prop)) +
+  geom_violin(fill = "lightgreen", color = "darkgreen", alpha = 0.5) +
+  geom_boxplot(width = 0.1, fill = "white", outlier.shape = NA) +
+  geom_hline(yintercept = percentiles, linetype = "dashed", color = "gray60") +
+  annotate("text", x = 1.2, y = percentiles, label = names(percentiles),
+           color = "gray60", size = 3.5, hjust = 0) +
+  geom_hline(yintercept = quartiles, linetype = "dashed", color = c("blue", "purple", "orange")) +
+  annotate("text", x = 1.3, y = quartiles, label = c("Q1", "Median", "Q3"),
+           color = c("blue", "purple", "orange"), size = 3.8, hjust = 0) +
+  geom_hline(yintercept = elbow_value, linetype = "dotted", color = "red", linewidth = 1) +
+  annotate("text", x = 1.15, y = elbow_value, label = paste("Elbow =", round(elbow_value, 3)),
+           color = "red", size = 3.5, hjust = 0) +
+  labs(title = "Distribution of cits.prop with Elbow, Quartiles, and Percentiles",
+       x = "",
+       y = "cits.prop") +
+  theme_minimal() +
+  coord_flip()
+
+# Boxplot and violin plot for pubs.prop
+ggplot(journals, aes(x = "", y = pubs.prop)) +
+  geom_violin(fill = "lightgreen", color = "darkgreen", alpha = 0.5) +
+  geom_boxplot(width = 0.1, fill = "white", outlier.shape = NA) +
+  geom_hline(yintercept = percentiles, linetype = "dashed", color = "gray60") +
+  annotate("text", x = 1.2, y = percentiles, label = names(percentiles),
+           color = "gray60", size = 3.5, hjust = 0) +
+  geom_hline(yintercept = quartiles, linetype = "dashed", color = c("blue", "purple", "orange")) +
+  annotate("text", x = 1.3, y = quartiles, label = c("Q1", "Median", "Q3"),
+           color = c("blue", "purple", "orange"), size = 3.8, hjust = 0) +
+  geom_hline(yintercept = elbow_value, linetype = "dotted", color = "red", linewidth = 1) +
+  annotate("text", x = 1.15, y = elbow_value, label = paste("Elbow =", round(elbow_value, 3)),
+           color = "red", size = 3.5, hjust = 0) +
+  labs(title = "Distribution of pubs.prop with Elbow, Quartiles, and Percentiles",
+       x = "",
+       y = "pubs.prop") +
+  theme_minimal() +
+  coord_flip()
+
+# Boxplot and violin plot for refs.prop
+ggplot(journals, aes(x = "", y = refs.prop)) +
+  geom_violin(fill = "lightgreen", color = "darkgreen", alpha = 0.5) +
+  geom_boxplot(width = 0.1, fill = "white", outlier.shape = NA) +
+  geom_hline(yintercept = percentiles, linetype = "dashed", color = "gray60") +
+  annotate("text", x = 1.2, y = percentiles, label = names(percentiles),
+           color = "gray60", size = 3.5, hjust = 0) +
+  geom_hline(yintercept = quartiles, linetype = "dashed", color = c("blue", "purple", "orange")) +
+  annotate("text", x = 1.3, y = quartiles, label = c("Q1", "Median", "Q3"),
+           color = c("blue", "purple", "orange"), size = 3.8, hjust = 0) +
+  geom_hline(yintercept = elbow_value, linetype = "dotted", color = "red", linewidth = 1) +
+  annotate("text", x = 1.15, y = elbow_value, label = paste("Elbow =", round(elbow_value, 3)),
+           color = "red", size = 3.5, hjust = 0) +
+  labs(title = "Distribution of refs.prop with Elbow, Quartiles, and Percentiles",
+       x = "",
+       y = "refs.prop") +
+  theme_minimal() +
+  coord_flip()
+
+# Boxplot and violin plot for tops.prop
+ggplot(journals, aes(x = "", y = toponyms.prop)) +
+  geom_violin(fill = "lightgreen", color = "darkgreen", alpha = 0.5) +
+  geom_boxplot(width = 0.1, fill = "white", outlier.shape = NA) +
+  geom_hline(yintercept = percentiles, linetype = "dashed", color = "gray60") +
+  annotate("text", x = 1.2, y = percentiles, label = names(percentiles),
+           color = "gray60", size = 3.5, hjust = 0) +
+  geom_hline(yintercept = quartiles, linetype = "dashed", color = c("blue", "purple", "orange")) +
+  annotate("text", x = 1.3, y = quartiles, label = c("Q1", "Median", "Q3"),
+           color = c("blue", "purple", "orange"), size = 3.8, hjust = 0) +
+  geom_hline(yintercept = elbow_value, linetype = "dotted", color = "red", linewidth = 1) +
+  annotate("text", x = 1.15, y = elbow_value, label = paste("Elbow =", round(elbow_value, 3)),
+           color = "red", size = 3.5, hjust = 0) +
+  labs(title = "Distribution of tops.prop with Elbow, Quartiles, and Percentiles",
+       x = "",
+       y = "tops.prop") +
+  theme_minimal() +
+  coord_flip()
