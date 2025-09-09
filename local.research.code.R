@@ -745,30 +745,30 @@ print(sort(table(journals[!duplicated(journals[c("journal.id", "category")]), "c
 
 ### LOCAL JOURNALS SUMMARY DATA
 # manually build journals overlap vector for plotting
-local.journals <- c("Toponyms" = 3056, "Languages" = 52, "Journals" = 233, "Databases" = 1964, "References" = 2158, "Citations" = 233,
-                    "Toponyms&Languages" = 27, "Toponyms&Journals" = 105, "Toponyms&Databases" = 1059, "Toponyms&References" = 676, "Toponyms&Citations" = 105,
-                    "Languages&Journals" = 30, "Languages&Databases" = 49, "Languages&References" = 7, "Languages&Citations" = 42, "Journals&Databases" = 533,
-                    "Journals&References" = 154, "Journals&Citations" = 274, "Databases&References" = 584, "Databases&Citations" = 584, "References&Citations" = 229,
-                    "Toponyms&Languages&Journals" = 0, "Toponyms&Languages&Databases" = 57, "Toponyms&Languages&References" = 2, "Toponyms&Languages&Citations" = 16,
-                    "Toponyms&Journals&Databases" = 251, "Toponyms&Journals&References" = 11, "Toponyms&Journals&Citations" = 64, "Toponyms&Databases&References" = 218,
-                    "Toponyms&Databases&Citations" = 176, "Toponyms&References&Citations" = 64, "Languages&Journals&Databases" = 93, "Languages&Journals&References" = 0,
-                    "Languages&Journals&Citations" = 113, "Languages&Databases&References" = 9, "Languages&Databases&Citations" = 160, "Languages&References&Citations" = 8,
-                    "Journals&Databases&References" = 157, "Journals&Databases&Citations" = 1548, "Journals&References&Citations" = 271, "Databases&References&Citations" = 231,
-                    "Toponyms&Languages&Journals&Databases" = 21, "Toponyms&Languages&Journals&References" = 0, "Toponyms&Languages&Journals&Citations" = 8,
+local.journals <- c("Toponyms" = 3056, "Languages" = 52, "Authors" = 233, "Databases" = 1964, "References" = 2158, "Citations" = 233,
+                    "Toponyms&Languages" = 27, "Toponyms&Authors" = 105, "Toponyms&Databases" = 1059, "Toponyms&References" = 676, "Toponyms&Citations" = 105,
+                    "Languages&Authors" = 30, "Languages&Databases" = 49, "Languages&References" = 7, "Languages&Citations" = 42, "Authors&Databases" = 533,
+                    "Authors&References" = 154, "Authors&Citations" = 274, "Databases&References" = 584, "Databases&Citations" = 584, "References&Citations" = 229,
+                    "Toponyms&Languages&Authors" = 0, "Toponyms&Languages&Databases" = 57, "Toponyms&Languages&References" = 2, "Toponyms&Languages&Citations" = 16,
+                    "Toponyms&Authors&Databases" = 251, "Toponyms&Authors&References" = 11, "Toponyms&Authors&Citations" = 64, "Toponyms&Databases&References" = 218,
+                    "Toponyms&Databases&Citations" = 176, "Toponyms&References&Citations" = 64, "Languages&Authors&Databases" = 93, "Languages&Authors&References" = 0,
+                    "Languages&Authors&Citations" = 113, "Languages&Databases&References" = 9, "Languages&Databases&Citations" = 160, "Languages&References&Citations" = 8,
+                    "Authors&Databases&References" = 157, "Authors&Databases&Citations" = 1548, "Authors&References&Citations" = 271, "Databases&References&Citations" = 231,
+                    "Toponyms&Languages&Authors&Databases" = 21, "Toponyms&Languages&Authors&References" = 0, "Toponyms&Languages&Authors&Citations" = 8,
                     "Toponyms&Languages&Databases&References" = 15, "Toponyms&Languages&Databases&Citations" = 38, "Toponyms&Languages&References&Citations" = 3,
-                    "Toponyms&Journals&Databases&References" = 34, "Toponyms&Journals&Databases&Citations" = 261, "Toponyms&Journals&References&Citations" = 30,
-                    "Toponyms&Databases&References&Citations" = 78, "Languages&Journals&Databases&References" = 26, "Languages&Journals&Databases&Citations" = 464,
-                    "Languages&Journals&References&Citations" = 16, "Languages&Databases&References&Citations" = 28, "Journals&Databases&References&Citations" = 557,
-                    "Toponyms&Languages&Journals&Databases&References" = 6, "Toponyms&Languages&Journals&Databases&Citations" = 55,
-                    "Toponyms&Languages&Journals&References&Citations" = 6, "Toponyms&Languages&Databases&References&Citations" = 11,
-                    "Toponyms&Journals&Databases&References&Citations" = 98, "Languages&Journals&Databases&References&Citations" = 131,
-                    "Toponyms&Languages&Journals&Databases&References&Citations" = 21)
+                    "Toponyms&Authors&Databases&References" = 34, "Toponyms&Authors&Databases&Citations" = 261, "Toponyms&Authors&References&Citations" = 30,
+                    "Toponyms&Databases&References&Citations" = 78, "Languages&Authors&Databases&References" = 26, "Languages&Authors&Databases&Citations" = 464,
+                    "Languages&Authors&References&Citations" = 16, "Languages&Databases&References&Citations" = 28, "Authors&Databases&References&Citations" = 557,
+                    "Toponyms&Languages&Authors&Databases&References" = 6, "Toponyms&Languages&Authors&Databases&Citations" = 55,
+                    "Toponyms&Languages&Authors&References&Citations" = 6, "Toponyms&Languages&Databases&References&Citations" = 11,
+                    "Toponyms&Authors&Databases&References&Citations" = 98, "Languages&Authors&Databases&References&Citations" = 131,
+                    "Toponyms&Languages&Authors&Databases&References&Citations" = 21)
 
 # plot intersections matrix to represent the overlap of local journals between approaches
 figure1 <- upset(fromExpression(local.journals),
                  nintersects = 63, 
                  nsets = 6,
-                 sets = c("Toponyms", "Languages", "Journals", "Databases", "References", "Citations"),
+                 sets = c("Toponyms", "Languages", "Authors", "Databases", "References", "Citations"),
                  mainbar.y.label = "Intersection size",
                  main.bar.color = "grey50",
                  sets.x.label = "Set size",
@@ -782,7 +782,7 @@ figure1 <- upset(fromExpression(local.journals),
                  queries = list(list(query = intersects, params = list("Toponyms"), color = "#ED7953", active = TRUE),
                                 list(query = intersects, params = list("References"), color = "#ED7953", active = TRUE),
                                 list(query = intersects, params = list("Databases"), color = "#ED7953", active = TRUE),
-                                list(query = intersects, params = list("Journals"), color = "#ED7953", active = TRUE),
+                                list(query = intersects, params = list("Authors"), color = "#ED7953", active = TRUE),
                                 list(query = intersects, params = list("Citations"), color = "#ED7953", active = TRUE),
                                 list(query = intersects, params = list("Languages"), color = "#ED7953", active = TRUE)))
 png(filename = "~/Desktop/Local.Research/Figure1.png", width = 6.27, height = 3.14, units = "in", res = 300)
@@ -809,7 +809,7 @@ local.pubs.categories <- local.pubs.categories %>% group_by(category) %>%
   summarise(sum = n()) %>%
   mutate(total = sum(sum))
 local.pubs.categories$prop <- round(local.pubs.categories$sum / local.pubs.categories$total, 2)
-local.pubs.categories$approach <- "Journals approach"
+local.pubs.categories$approach <- "Authors approach"
 
 local.database.categories <- unique(merge(local.database["journal.id"], categories[, c("journal.id", "category")], by = "journal.id"))
 local.database.categories <- local.database.categories %>% group_by(category) %>%
@@ -848,7 +848,7 @@ local.approaches.categories$field <- ifelse(local.approaches.categories$category
 # manually add mean values to the local.approaches.categories dataframe
 local.approaches.categories.mean.values <- data.frame(approach = c("Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach", "Toponyms approach",
                                                        "Languages approach", "Languages approach", "Languages approach", "Languages approach", "Languages approach",
-                                                       "Journals approach", "Journals approach", "Journals approach", "Journals approach", "Journals approach",
+                                                       "Authors approach", "Authors approach", "Authors approach", "Authors approach", "Authors approach",
                                                        "Databases approach", "Databases approach", "Databases approach", "Databases approach", "Databases approach",
                                                        "References approach", "References approach", "References approach", "References approach", "References approach",
                                                        "Citations approach", "Citations approach", "Citations approach", "Citations approach", "Citations approach"),
@@ -878,7 +878,7 @@ local.approaches.categories.mean.values <- data.frame(approach = c("Toponyms app
                                                          "mean", "mean", "mean", "mean", "mean"))
 local.approaches.categories <- rbind(local.approaches.categories, local.approaches.categories.mean.values)
 
-local.approaches.categories$approach <- factor(local.approaches.categories$approach, levels = c("Toponyms approach", "Languages approach", "Journals approach", "Databases approach", "References approach", "Citations approach"))
+local.approaches.categories$approach <- factor(local.approaches.categories$approach, levels = c("Toponyms approach", "Languages approach", "Authors approach", "Databases approach", "References approach", "Citations approach"))
 local.approaches.categories$value.type <- factor(local.approaches.categories$value.type, levels = c("mean", "prop"))
 local.approaches.categories$field <- factor(local.approaches.categories$field, levels = c("Physical Sciences", "Life Sciences", "Health Sciences", "Social Sciences", "Humanities"))
 
@@ -916,7 +916,7 @@ local.approaches.categories %>% filter(value.type == "prop") %>%
   geom_tile() +
   scale_x_discrete(labels = c("Toponyms approach" = "Toponyms",
     "Languages approach" = "Languages",
-    "Journals approach" = "Authors",
+    "Authors approach" = "Authors",
     "Databases approach" = "Databases",
     "References approach" = "References",
     "Citations approach" = "Citations")) +
@@ -932,8 +932,7 @@ ggsave("~/Desktop/Local.Research/Figure2.png", width = 6.7, height = 6.27, dpi =
 # before working with country data in local journals, compute the total number of publications per country considering all journals
 total.pubs.country <- subset(df.journals.final, select = c(country, pubs))
 total.pubs.country <- total.pubs.country[complete.cases(total.pubs.country), ]
-total.pubs.country <- total.pubs.country %>%
-  group_by(country) %>% 
+total.pubs.country <- total.pubs.country %>% group_by(country) %>% 
   summarise(total.pubs = sum(pubs), .groups = 'drop') %>%
   as.data.frame()
 
@@ -1016,8 +1015,7 @@ missing_countries <- tribble(~country, ~full.name,
   "WS", "Samoa",
   "YT", "Mayotte")
 
-total.pubs.country <- total.pubs.country %>%
-  rows_update(missing_countries, by = "country", unmatched = "ignore") %>%
+total.pubs.country <- total.pubs.country %>% rows_update(missing_countries, by = "country", unmatched = "ignore") %>%
   bind_rows(anti_join(missing_countries, total.pubs.country, by = "country"))
 
 iso_to_country <- tribble(~country, ~final.country,
@@ -1271,7 +1269,7 @@ total.pubs.country <- total.pubs.country %>% group_by(final.country) %>%
                                              summarise(total.pubs = sum(total.pubs, na.rm = TRUE)) %>%
                                              ungroup()
 
-# isolate local research journals according to the toponyms approach (cut-off thresholds for trial >= 0.14 (3º quartile) & >= 0.30 (9º decile))
+# isolate local research journals according to the toponyms approach (cut-off thresholds for trial >= 0.14 (3º quartile))
 local.toponyms.q <- subset(journals, select = c("journal.id", "journal.name", "toponyms.prop"), toponyms.prop >= 0.14)
 
 # subset the necessary variables to work at country level and remove NA values
@@ -1283,8 +1281,7 @@ local.toponyms.countries.q <- local.toponyms.countries.q %>% left_join(iso_to_co
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
 local.toponyms.countries.q <- aggregate(pubs ~ final.country, data = local.toponyms.countries.q, FUN = sum)
-local.toponyms.countries.q <- local.toponyms.countries.q %>%
-  left_join(total.pubs.country, by = "final.country") %>%
+local.toponyms.countries.q <- local.toponyms.countries.q %>% left_join(total.pubs.country, by = "final.country") %>%
   mutate(pubs.share = pubs / total.pubs)
 
 
@@ -1300,12 +1297,11 @@ local.language.countries <- local.language.countries %>% left_join(iso_to_countr
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
 local.language.countries <- aggregate(pubs ~ final.country, data = local.language.countries, FUN = sum)
-local.language.countries <- local.language.countries %>%
-  left_join(total.pubs.country, by = "final.country") %>%
+local.language.countries <- local.language.countries %>% left_join(total.pubs.country, by = "final.country") %>%
   mutate(pubs.share = pubs / total.pubs)
 
 
-# isolate local research journals according to the journals approach (cut-off thresholds for trial >= 0.82 (3º quartile) & >= 0.95 (9º decile))
+# isolate local research journals according to the authors approach (cut-off thresholds for trial >= 0.82 (3º quartile))
 local.pubs.q <- subset(journals, select = c("journal.id", "journal.name", "pubs.prop", "category.acronym", "category.prop", "field"), pubs.prop >= 0.82)
 
 # subset the necessary variables to work at country level and remove NA values
@@ -1317,8 +1313,7 @@ local.pubs.countries.q <- local.pubs.countries.q %>% left_join(iso_to_country, b
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
 local.pubs.countries.q <- aggregate(pubs ~ final.country, data = local.pubs.countries.q, FUN = sum)
-local.pubs.countries.q <- local.pubs.countries.q %>%
-  left_join(total.pubs.country, by = "final.country") %>%
+local.pubs.countries.q <- local.pubs.countries.q %>% left_join(total.pubs.country, by = "final.country") %>%
   mutate(pubs.share = pubs / total.pubs)
 
 
@@ -1334,16 +1329,15 @@ local.database.countries <- local.database.countries %>% left_join(iso_to_countr
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
 local.database.countries <- aggregate(pubs ~ final.country, data = local.database.countries, FUN = sum)
-local.database.countries <- local.database.countries %>%
-  left_join(total.pubs.country, by = "final.country") %>%
+local.database.countries <- local.database.countries %>% left_join(total.pubs.country, by = "final.country") %>%
   mutate(pubs.share = pubs / total.pubs)
 
 
-# isolate local research journals according to the references approach (cut-off thresholds for trial >= 0.40 (3º quartile) & >= 0.53 (9º decile))
+# isolate local research journals according to the references approach (cut-off thresholds for trial >= 0.40 (3º quartile))
 local.refs.q <- subset(journals, select = c("journal.id", "journal.name", "refs.prop", "category.acronym", "category.prop", "field"), refs.prop >= 0.40)
 
 # subset the necessary variables to work at country level and remove NA values
-local.refs.countries.q <- df.journals.final[df.journals.final$journal.id %in% local.refs.q$journal.id, c("journal.id", "journal.name", "country", "pubs", "category.acronym", "field")]
+local.refs.countries.q <- df.journals.final[df.journals.final$journal.id %in% local.refs.q$journal.id, c("journal.id", "journal.name", "country", "pubs")]
 local.refs.countries.q <- local.refs.countries.q[complete.cases(local.refs.countries.q), ]
 
 # add nation to which territories belong
@@ -1351,12 +1345,11 @@ local.refs.countries.q <- local.refs.countries.q %>% left_join(iso_to_country, b
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
 local.refs.countries.q <- aggregate(pubs ~ final.country, data = local.refs.countries.q, FUN = sum)
-local.refs.countries.q <- local.refs.countries.q %>%
-  left_join(total.pubs.country, by = "final.country") %>%
+local.refs.countries.q <- local.refs.countries.q %>% left_join(total.pubs.country, by = "final.country") %>%
   mutate(pubs.share = pubs / total.pubs)
 
 
-# isolate local research journals according to the citations approach (cut-off thresholds for trial >= 0.50 (3º quartile) & >= 0.86 (9º decile))
+# isolate local research journals according to the citations approach (cut-off thresholds for trial >= 0.50 (3º quartile))
 local.cits.q <- subset(journals, select = c("journal.id", "journal.name", "cits.prop", "category.acronym", "category.prop", "field"), cits.prop >= 0.50)
 
 # subset the necessary variables to work at country level and remove NA values
@@ -1368,8 +1361,7 @@ local.cits.countries.q <- local.cits.countries.q %>% left_join(iso_to_country, b
 
 # compute each country's publication share in local journals = n pubs per country in local journals / N pubs per country in all journals
 local.cits.countries.q <- aggregate(pubs ~ final.country, data = local.cits.countries.q, FUN = sum)
-local.cits.countries.q <- local.cits.countries.q %>%
-  left_join(total.pubs.country, by = "final.country") %>%
+local.cits.countries.q <- local.cits.countries.q %>% left_join(total.pubs.country, by = "final.country") %>%
   mutate(pubs.share = pubs / total.pubs)
 
 
@@ -1388,33 +1380,51 @@ print(sd(local.cits.countries.q$pubs.share, na.rm = TRUE))
 map.world <- st_read("~/Desktop/Local.Research/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp")
 
 # plot toponyms world map
-local.toponyms.map.q <- merge(map.world, local.toponyms.countries.q, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+local.toponyms.countries.q$ISO_A2_EH <- countrycode(local.toponyms.countries.q$final.country, origin = "country.name", destination = "iso2c")
+local.toponyms.countries.q$ISO_A2_EH[local.toponyms.countries.q$final.country == "Kosovo"] <- "XK"
+local.toponyms.countries.q$ISO_A2_EH[local.toponyms.countries.q$final.country == "Micronesia"] <- "FM"
+local.toponyms.map.q <- merge(map.world, local.toponyms.countries.q, by.x = "ISO_A2_EH", by.y = "ISO_A2_EH", all.x = TRUE)
 
 # plot language world map
-local.language.map <- merge(map.world, local.language.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+local.language.countries$ISO_A2_EH <- countrycode(local.language.countries$final.country, origin = "country.name", destination = "iso2c")
+local.language.countries$ISO_A2_EH[local.language.countries$final.country == "Kosovo"] <- "XK"
+local.language.countries$ISO_A2_EH[local.language.countries$final.country == "Micronesia"] <- "FM"
+local.language.map <- merge(map.world, local.language.countries, by.x = "ISO_A2_EH", by.y = "ISO_A2_EH", all.x = TRUE)
 
 # plot pubs world map
-local.pubs.map.q <- merge(map.world, local.pubs.countries.q, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+local.pubs.countries.q$ISO_A2_EH <- countrycode(local.pubs.countries.q$final.country, origin = "country.name", destination = "iso2c")
+local.pubs.countries.q$ISO_A2_EH[local.pubs.countries.q$final.country == "Kosovo"] <- "XK"
+local.pubs.countries.q$ISO_A2_EH[local.pubs.countries.q$final.country == "Micronesia"] <- "FM"
+local.pubs.map.q <- merge(map.world, local.pubs.countries.q, by.x = "ISO_A2_EH", by.y = "ISO_A2_EH", all.x = TRUE)
 
 # plot database world map
-local.database.map <- merge(map.world, local.database.countries, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+local.database.countries$ISO_A2_EH <- countrycode(local.database.countries$final.country, origin = "country.name", destination = "iso2c")
+local.database.countries$ISO_A2_EH[local.database.countries$final.country == "Kosovo"] <- "XK"
+local.database.countries$ISO_A2_EH[local.database.countries$final.country == "Micronesia"] <- "FM"
+local.database.map <- merge(map.world, local.database.countries, by.x = "ISO_A2_EH", by.y = "ISO_A2_EH", all.x = TRUE)
 
 # plot refs world map
-local.refs.map.q <- merge(map.world, local.refs.countries.q, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+local.refs.countries.q$ISO_A2_EH <- countrycode(local.refs.countries.q$final.country, origin = "country.name", destination = "iso2c")
+local.refs.countries.q$ISO_A2_EH[local.refs.countries.q$final.country == "Kosovo"] <- "XK"
+local.refs.countries.q$ISO_A2_EH[local.refs.countries.q$final.country == "Micronesia"] <- "FM"
+local.refs.map.q <- merge(map.world, local.refs.countries.q, by.x = "ISO_A2_EH", by.y = "ISO_A2_EH", all.x = TRUE)
 
 # plot cits world map
-local.cits.map.q <- merge(map.world, local.cits.countries.q, by.x = "ISO_A2_EH", by.y = "country", all.x = TRUE)
+local.cits.countries.q$ISO_A2_EH <- countrycode(local.cits.countries.q$final.country, origin = "country.name", destination = "iso2c")
+local.cits.countries.q$ISO_A2_EH[local.cits.countries.q$final.country == "Kosovo"] <- "XK"
+local.cits.countries.q$ISO_A2_EH[local.cits.countries.q$final.country == "Micronesia"] <- "FM"
+local.cits.map.q <- merge(map.world, local.cits.countries.q, by.x = "ISO_A2_EH", by.y = "ISO_A2_EH", all.x = TRUE)
 
 # create one faceted plot with 6 maps and 1 common legend
 local.toponyms.map.q$approach <- "Toponyms approach"
 local.language.map$approach <- "Languages approach"
-local.pubs.map.q$approach <- "Journals approach"
+local.pubs.map.q$approach <- "Authors approach"
 local.database.map$approach <- "Databases approach"
 local.refs.map.q$approach <- "References approach"
 local.cits.map.q$approach <- "Citations approach"
 
 map.q <- rbind(local.toponyms.map.q, local.language.map, local.pubs.map.q, local.database.map, local.refs.map.q, local.cits.map.q)
-map.q$approach <- factor(map.q$approach, levels = c("Toponyms approach", "Languages approach", "Journals approach", "Databases approach", "References approach", "Citations approach"))
+map.q$approach <- factor(map.q$approach, levels = c("Toponyms approach", "Languages approach", "Authors approach", "Databases approach", "References approach", "Citations approach"))
 
 ggplot() +
   geom_sf(data = map.q, aes(fill = pubs.share)) +
@@ -1425,16 +1435,19 @@ ggplot() +
 ggsave("~/Desktop/Local.Research/Figure4.png", width = 6.27, height = 6.27, dpi = 300, bg = "white")
 
 
-### CASE STUDIES
+### REGIONS
 df.journals.final <- df.journals.final %>% left_join(categories %>% select(journal.id, category), by = "journal.id", relationship = "many-to-many")
 
-case.all.journals <- subset(df.journals.final, select = c(journal.id, country, pubs, category))
-case.all.journals <- case.all.journals[case.all.journals$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
-case.all.journals <- case.all.journals %>%
-  group_by(country, category) %>%
+# add UN regions and subregions
+df.journals.final$region <- countrycode(df.journals.final$country, origin = "iso2c", destination = "un.region.name")
+df.journals.final$subregion <- countrycode(df.journals.final$country, origin = "iso2c", destination = "un.regionsub.name")
+df.journals.final <- df.journals.final %>% mutate(region = case_when(country %in% c("US", "CA") ~ "United States and Canada",
+                                                                     region == "Americas" ~ "Latin America and the Caribbean", TRUE ~ region))
+
+regions.all.journals <- subset(df.journals.final, select = c(journal.id, region, pubs, category))
+regions.all.journals <- regions.all.journals %>% group_by(region, category) %>%
   summarise(all.total.pubs = sum(pubs, na.rm = TRUE), .groups = 'drop') %>%
-  as.data.frame() %>%
-  na.omit()
+  as.data.frame() %>% na.omit()
 
 ## toponyms approach
 case.toponyms.journals <- df.journals.final[df.journals.final$journal.id %in% local.toponyms.q$journal.id, c("journal.id", "country", "pubs", "category")]
