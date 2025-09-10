@@ -1450,140 +1450,123 @@ regions.all.journals <- regions.all.journals %>% group_by(region, category) %>%
   as.data.frame() %>% na.omit()
 
 ## toponyms approach
-case.toponyms.journals <- df.journals.final[df.journals.final$journal.id %in% local.toponyms.q$journal.id, c("journal.id", "country", "pubs", "category")]
-case.toponyms.journals <- case.toponyms.journals[case.toponyms.journals$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
-case.toponyms.journals <- case.toponyms.journals %>%
-  group_by(country, category) %>%
+regions.toponyms.journals <- df.journals.final[df.journals.final$journal.id %in% local.toponyms.q$journal.id, c("journal.id", "region", "pubs", "category")]
+regions.toponyms.journals <- regions.toponyms.journals %>% group_by(region, category) %>%
   summarise(tops.total.pubs = sum(pubs, na.rm = TRUE), .groups = 'drop') %>%
-  as.data.frame() %>%
-  na.omit()
-case.toponyms.journals <- merge(case.toponyms.journals, case.all.journals, by = c("country", "category"))
-case.toponyms.journals$pubs.share <- case.toponyms.journals$tops.total.pubs / case.toponyms.journals$all.total.pubs
-case.toponyms.journals$pubs.share <- sprintf("%.4f", case.toponyms.journals$pubs.share)
+  as.data.frame() %>% na.omit()
+regions.toponyms.journals <- merge(regions.toponyms.journals, regions.all.journals, by = c("region", "category"))
+regions.toponyms.journals$pubs.share <- regions.toponyms.journals$tops.total.pubs / regions.toponyms.journals$all.total.pubs
+regions.toponyms.journals$pubs.share <- sprintf("%.4f", regions.toponyms.journals$pubs.share)
 # add a variable for the specific approach
-case.toponyms.journals$approach <- rep("Toponyms", nrow(case.toponyms.journals))
+regions.toponyms.journals$approach <- rep("Toponyms", nrow(regions.toponyms.journals))
 
 ## language approach
-case.language.journals <- df.journals.final[df.journals.final$journal.id %in% local.language$journal.id, c("journal.id", "country", "pubs", "category")]
-case.language.journals <- case.language.journals[case.language.journals$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
-case.language.journals <- case.language.journals %>%
-  group_by(country, category) %>%
+regions.language.journals <- df.journals.final[df.journals.final$journal.id %in% local.language$journal.id, c("journal.id", "region", "pubs", "category")]
+regions.language.journals <- regions.language.journals %>% group_by(region, category) %>%
   summarise(lang.total.pubs = sum(pubs, na.rm = TRUE), .groups = 'drop') %>%
-  as.data.frame() %>%
-  na.omit()
-case.language.journals <- merge(case.language.journals, case.all.journals, by = c("country", "category"))
-case.language.journals$pubs.share <- case.language.journals$lang.total.pubs / case.language.journals$all.total.pubs
-case.language.journals$pubs.share <- sprintf("%.4f", case.language.journals$pubs.share)
+  as.data.frame() %>% na.omit()
+regions.language.journals <- merge(regions.language.journals, regions.all.journals, by = c("region", "category"))
+regions.language.journals$pubs.share <- regions.language.journals$lang.total.pubs / regions.language.journals$all.total.pubs
+regions.language.journals$pubs.share <- sprintf("%.4f", regions.language.journals$pubs.share)
 # add a variable for the specific approach
-case.language.journals$approach <- rep("Languages", nrow(case.language.journals))
+regions.language.journals$approach <- rep("Languages", nrow(regions.language.journals))
 
 ## pubs approach
-case.pubs.journals <- df.journals.final[df.journals.final$journal.id %in% local.pubs.q$journal.id, c("journal.id", "country", "pubs", "category")]
-case.pubs.journals <- case.pubs.journals[case.pubs.journals$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
-case.pubs.journals <- case.pubs.journals %>%
-  group_by(country, category) %>%
+regions.pubs.journals <- df.journals.final[df.journals.final$journal.id %in% local.pubs.q$journal.id, c("journal.id", "region", "pubs", "category")]
+regions.pubs.journals <- regions.pubs.journals %>% group_by(region, category) %>%
   summarise(pubs.total.pubs = sum(pubs, na.rm = TRUE), .groups = 'drop') %>%
-  as.data.frame() %>%
-  na.omit()
-case.pubs.journals <- merge(case.pubs.journals, case.all.journals, by = c("country", "category"))
-case.pubs.journals$pubs.share <- case.pubs.journals$pubs.total.pubs / case.pubs.journals$all.total.pubs
-case.pubs.journals$pubs.share <- sprintf("%.4f", case.pubs.journals$pubs.share)
+  as.data.frame() %>% na.omit()
+regions.pubs.journals <- merge(regions.pubs.journals, regions.all.journals, by = c("region", "category"))
+regions.pubs.journals$pubs.share <- regions.pubs.journals$pubs.total.pubs / regions.pubs.journals$all.total.pubs
+regions.pubs.journals$pubs.share <- sprintf("%.4f", regions.pubs.journals$pubs.share)
 # add a variable for the specific approach
-case.pubs.journals$approach <- rep("Journals", nrow(case.pubs.journals))
+regions.pubs.journals$approach <- rep("Authors", nrow(regions.pubs.journals))
 
 ## database approach
-case.database.journals <- df.journals.final[df.journals.final$journal.id %in% local.database$journal.id, c("journal.id", "country", "pubs", "category")]
-case.database.journals <- case.database.journals[case.database.journals$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
-case.database.journals <- case.database.journals %>%
-  group_by(country, category) %>%
+regions.database.journals <- df.journals.final[df.journals.final$journal.id %in% local.database$journal.id, c("journal.id", "region", "pubs", "category")]
+regions.database.journals <- regions.database.journals %>% group_by(region, category) %>%
   summarise(data.total.pubs = sum(pubs, na.rm = TRUE), .groups = 'drop') %>%
-  as.data.frame() %>%
-  na.omit()
-case.database.journals <- merge(case.database.journals, case.all.journals, by = c("country", "category"))
-case.database.journals$pubs.share <- case.database.journals$data.total.pubs / case.database.journals$all.total.pubs
-case.database.journals$pubs.share <- sprintf("%.4f", case.database.journals$pubs.share)
+  as.data.frame() %>% na.omit()
+regions.database.journals <- merge(regions.database.journals, regions.all.journals, by = c("region", "category"))
+regions.database.journals$pubs.share <- regions.database.journals$data.total.pubs / regions.database.journals$all.total.pubs
+regions.database.journals$pubs.share <- sprintf("%.4f", regions.database.journals$pubs.share)
 # add a variable for the specific approach
-case.database.journals$approach <- rep("Databases", nrow(case.database.journals))
+regions.database.journals$approach <- rep("Databases", nrow(regions.database.journals))
 
 ## refs approach
-case.refs.journals <- df.journals.final[df.journals.final$journal.id %in% local.refs.q$journal.id, c("journal.id", "country", "pubs", "category")]
-case.refs.journals <- case.refs.journals[case.refs.journals$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
-case.refs.journals <- case.refs.journals %>%
-  group_by(country, category) %>%
+regions.refs.journals <- df.journals.final[df.journals.final$journal.id %in% local.refs.q$journal.id, c("journal.id", "region", "pubs", "category")]
+regions.refs.journals <- regions.refs.journals %>% group_by(region, category) %>%
   summarise(refs.total.pubs = sum(pubs, na.rm = TRUE), .groups = 'drop') %>%
-  as.data.frame() %>%
-  na.omit()
-case.refs.journals <- merge(case.refs.journals, case.all.journals, by = c("country", "category"))
-case.refs.journals$pubs.share <- case.refs.journals$refs.total.pubs / case.refs.journals$all.total.pubs
-case.refs.journals$pubs.share <- sprintf("%.4f", case.refs.journals$pubs.share)
+  as.data.frame() %>% na.omit()
+regions.refs.journals <- merge(regions.refs.journals, regions.all.journals, by = c("region", "category"))
+regions.refs.journals$pubs.share <- regions.refs.journals$refs.total.pubs / regions.refs.journals$all.total.pubs
+regions.refs.journals$pubs.share <- sprintf("%.4f", regions.refs.journals$pubs.share)
 # add a variable for the specific approach
-case.refs.journals$approach <- rep("References", nrow(case.refs.journals))
+regions.refs.journals$approach <- rep("References", nrow(regions.refs.journals))
 
 ## cits approach
-case.cits.journals <- df.journals.final[df.journals.final$journal.id %in% local.cits.q$journal.id, c("journal.id", "country", "pubs", "category")]
-case.cits.journals <- case.cits.journals[case.cits.journals$country %in% c("US", "CN", "DE", "ES", "BR", "ZA"), ]
-case.cits.journals <- case.cits.journals %>%
-  group_by(country, category) %>%
+regions.cits.journals <- df.journals.final[df.journals.final$journal.id %in% local.cits.q$journal.id, c("journal.id", "region", "pubs", "category")]
+regions.cits.journals <- regions.cits.journals %>% group_by(region, category) %>%
   summarise(cits.total.pubs = sum(pubs, na.rm = TRUE), .groups = 'drop') %>%
-  as.data.frame() %>%
-  na.omit()
-case.cits.journals <- merge(case.cits.journals, case.all.journals, by = c("country", "category"))
-case.cits.journals$pubs.share <- case.cits.journals$cits.total.pubs / case.cits.journals$all.total.pubs
-case.cits.journals$pubs.share <- sprintf("%.4f", case.cits.journals$pubs.share)
+  as.data.frame() %>% na.omit()
+regions.cits.journals <- merge(regions.cits.journals, regions.all.journals, by = c("region", "category"))
+regions.cits.journals$pubs.share <- regions.cits.journals$cits.total.pubs / regions.cits.journals$all.total.pubs
+regions.cits.journals$pubs.share <- sprintf("%.4f", regions.cits.journals$pubs.share)
 # add a variable for the specific approach
-case.cits.journals$approach <- rep("Citations", nrow(case.cits.journals))
+regions.cits.journals$approach <- rep("Citations", nrow(regions.cits.journals))
 
 
-# merge all case studies to plot
-case.studies <- rbind(case.toponyms.journals %>% select(country, category, pubs.share, approach),
-                      case.language.journals %>% select(country, category, pubs.share, approach),
-                      case.pubs.journals %>% select(country, category, pubs.share, approach),
-                      case.database.journals %>% select(country, category, pubs.share, approach),
-                      case.refs.journals %>% select(country, category, pubs.share, approach),
-                      case.cits.journals %>% select(country, category, pubs.share, approach))
+# merge all regions to plot
+regions <- rbind(regions.toponyms.journals %>% select(region, category, pubs.share, approach),
+                 regions.language.journals %>% select(region, category, pubs.share, approach),
+                 regions.pubs.journals %>% select(region, category, pubs.share, approach),
+                 regions.database.journals %>% select(region, category, pubs.share, approach),
+                 regions.refs.journals %>% select(region, category, pubs.share, approach),
+                 regions.cits.journals %>% select(region, category, pubs.share, approach))
 
-# add missing observation
-case.studies <- rbind(case.studies, data.frame(country = c("ZA"),
-                                               category = c("Mathematical Sciences"),
-                                               pubs.share = c(NA),
-                                               approach = c("Languages")))
+# reduce category variable for plotting purposes
+regions$category <- ifelse(regions$category == "Biomedical and Clinical Sciences", "BiomClinSci",
+                                              ifelse(regions$category == "Health Sciences", "HealthSci",
+                                                     ifelse(regions$category == "Creative Arts and Writing", "ArtWrit",
+                                                            ifelse(regions$category == "History, Heritage and Archaeology", "HisHeritArch",
+                                                                   ifelse(regions$category == "Language, Communication and Culture", "LangCommCult",
+                                                                          ifelse(regions$category == "Philosophy and Religious Studies", "PhilReligStud",
+                                                                                 ifelse(regions$category == "Agricultural, Veterinary and Food Sciences", "AgriVetFoodSci",
+                                                                                        ifelse(regions$category == "Biological Sciences", "BiolSci",
+                                                                                               ifelse(regions$category == "Earth Sciences", "EarthSci",
+                                                                                                      ifelse(regions$category == "Environmental Sciences", "EnvironSci",
+                                                                                                             ifelse(regions$category == "Chemical Sciences", "ChemSci",
+                                                                                                                    ifelse(regions$category == "Engineering", "Eng",
+                                                                                                                           ifelse(regions$category == "Built Environment and Design", "EnvironDes",
+                                                                                                                                  ifelse(regions$category == "Information and Computing Sciences", "InfCompSci",
+                                                                                                                                         ifelse(regions$category == "Mathematical Sciences", "MathSci",
+                                                                                                                                                ifelse(regions$category == "Physical Sciences", "PhysSci",
+                                                                                                                                                       ifelse(regions$category == "Commerce, Management, Tourism and Services", "ComManTourServ",
+                                                                                                                                                              ifelse(regions$category == "Economics", "Econ",
+                                                                                                                                                                     ifelse(regions$category == "Education", "Edu",
+                                                                                                                                                                            ifelse(regions$category == "Human Society", "HumSoc",
+                                                                                                                                                                                   ifelse(regions$category == "Law and Legal Studies", "LawLegStud",
+                                                                                                                                                                                          ifelse(regions$category == "Psychology", "Psych", NA))))))))))))))))))))))
 
-# add field + category variable for plotting purposes
-case.studies$field.category <- ifelse(case.studies$category == "Biomedical and Clinical Sciences", "HS: BiomClinSci",
-                                              ifelse(case.studies$category == "Health Sciences", "HS: HealthSci",
-                                                     ifelse(case.studies$category == "Creative Arts and Writing", "H: ArtWrit",
-                                                            ifelse(case.studies$category == "History, Heritage and Archaeology", "H: HisHeritArch",
-                                                                   ifelse(case.studies$category == "Language, Communication and Culture", "H: LangCommCult",
-                                                                          ifelse(case.studies$category == "Philosophy and Religious Studies", "H: PhilReligStud",
-                                                                                 ifelse(case.studies$category == "Agricultural, Veterinary and Food Sciences", "LS: AgriVetFoodSci",
-                                                                                        ifelse(case.studies$category == "Biological Sciences", "LS: BiolSci",
-                                                                                               ifelse(case.studies$category == "Earth Sciences", "LS: EarthSci",
-                                                                                                      ifelse(case.studies$category == "Environmental Sciences", "LS: EnvironSci",
-                                                                                                             ifelse(case.studies$category == "Chemical Sciences", "PS: ChemSci",
-                                                                                                                    ifelse(case.studies$category == "Engineering", "PS: Eng",
-                                                                                                                           ifelse(case.studies$category == "Built Environment and Design", "PS: EnvironDes",
-                                                                                                                                  ifelse(case.studies$category == "Information and Computing Sciences", "PS: InfCompSci",
-                                                                                                                                         ifelse(case.studies$category == "Mathematical Sciences", "PS: MathSci",
-                                                                                                                                                ifelse(case.studies$category == "Physical Sciences", "PS: PhysSci",
-                                                                                                                                                       ifelse(case.studies$category == "Commerce, Management, Tourism and Services", "SS: ComManTourServ",
-                                                                                                                                                              ifelse(case.studies$category == "Economics", "SS: Econ",
-                                                                                                                                                                     ifelse(case.studies$category == "Education", "SS: Edu",
-                                                                                                                                                                            ifelse(case.studies$category == "Human Society", "SS: HumSoc",
-                                                                                                                                                                                   ifelse(case.studies$category == "Law and Legal Studies", "SS: LawLegStud",
-                                                                                                                                                                                          ifelse(case.studies$category == "Psychology", "SS: Psych", NA))))))))))))))))))))))
+# add new variable field to the regions dataframe
+regions$field <- ifelse(regions$category %in% c("BiomClinSci", "HealthSci"), "Health Sciences",
+                        ifelse(regions$category %in% c("ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud"), "Humanities",
+                               ifelse(regions$category %in% c("AgriVetFoodSci", "BiolSci", "EarthSci", "EnvironSci"), "Life Sciences",
+                                      ifelse(regions$category %in% c("EnvironDes", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci"), "Physical Sciences",
+                                             ifelse(regions$category %in% c("ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych"), "Social Sciences", NA)))))
+
 
 # convert variables to factor to order the levels and customize how they appear in the plot
-case.studies$approach <- factor(case.studies$approach, levels = c("Toponyms", "Languages", "Journals", "Databases", "References", "Citations"))
-case.studies$field.category <- factor(case.studies$field.category, levels = c("PS: EnvironDes", "PS: ChemSci", "PS: Eng", "PS: InfCompSci", "PS: MathSci", "PS: PhysSci", "LS: AgriVetFoodSci", "LS: BiolSci", "LS: EarthSci", "LS: EnvironSci", "HS: BiomClinSci", "HS: HealthSci", "SS: ComManTourServ", "SS: Econ", "SS: Edu", "SS: HumSoc", "SS: LawLegStud", "SS: Psych", "H: ArtWrit", "H: HisHeritArch", "H: LangCommCult", "H: PhilReligStud"))
+regions$approach <- factor(regions$approach, levels = c("Toponyms", "Languages", "Authors", "Databases", "References", "Citations"))
+regions$category <- factor(regions$category, levels = c("EnvironDes", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "AgriVetFoodSci", "BiolSci", "EarthSci", "EnvironSci", "BiomClinSci", "HealthSci", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud"))
 
 # convert variable to numeric
-case.studies$pubs.share <- as.numeric(case.studies$pubs.share)
+regions$pubs.share <- as.numeric(regions$pubs.share)
 
-# plot case studies per categories
-ggplot(case.studies, aes(x = approach, y = field.category, fill = pubs.share)) +
+# plot regions per categories ### SEGUIR POR ACÁ, MEJORANDO LA FIGURA PARA QUE QUEDE SIMILAR A F2
+ggplot(regions, aes(x = approach, y = category, fill = pubs.share)) +
   geom_tile() +
-  facet_wrap(~ country, ncol = 2,
-             labeller = labeller(country = c("BR" = "Brazil", "CN" = "China", "DE" = "Germany", "ES" = "Spain", "US" = "United States", "ZA" = "South Africa"))) +
+  facet_wrap(~ region, ncol = 2) +
   scale_fill_viridis_c(name = "Publication share", na.value = "grey50", option = "plasma") +
   labs(x = "Operational approach", y = "Field & Category") +
   theme_minimal() +
@@ -1628,7 +1611,7 @@ ggsave("~/Desktop/Local.Research/Figure3.png", width = 6.27, height = 5.27, dpi 
 ### PCA
 # Filter out incomplete cases and countries with less than 500 publications in the period
 complete_cases_df <- corr.local.q %>% filter(complete.cases(select(., -final.country))) %>%
-                                      semi_join(total.pubs.country %>% filter(total.pubs >= 3000), by = "final.country")
+                                      semi_join(total.pubs.country %>% filter(total.pubs >= 5000), by = "final.country")
 
 # Select numeric variables only
 pca_data <- complete_cases_df %>% select(-final.country)
@@ -1679,7 +1662,7 @@ pca_coords$country <- complete_cases_df$final.country
 # add clustering
 set.seed(123)  # For reproducibility
 # Run k-means clustering on the PCA scores (e.g., first 2 dimensions)
-km_res <- kmeans(pca_coords[, c("Dim.1", "Dim.2")], centers = 5, nstart = 25)  # Change 'centers' as needed
+km_res <- kmeans(pca_coords[, c("Dim.1", "Dim.2")], centers = 4, nstart = 25)  # Change 'centers' as needed
 
 # Add cluster assignment to pca_coords
 pca_coords$cluster <- factor(km_res$cluster)
@@ -1708,7 +1691,7 @@ ggplot() +
   labs(title = "PCA Biplot: Countries clustered with variable loadings",
        x = "Dimension 1",
        y = "Dimension 2") +
-  scale_color_manual(values = c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3", "#FC4E07"))
+  scale_color_manual(values = c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3"))
 
 
 
