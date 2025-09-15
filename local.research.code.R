@@ -1581,7 +1581,7 @@ ggplot(regions, aes(x = approach, y = category, fill = pubs.share)) +
   theme(legend.position = "bottom", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ggsave("~/Desktop/Local.Research/Figure5.png", width = 6.27, height = 10.27, dpi = 300, bg = "white")
 
-# OTRA OPCIÓN DE LA FIGURA 5
+# OTRAS OPCIONES DE LA FIGURA 5
 ggplot(regions, aes(x = approach, y = category, fill = pubs.share)) +
   geom_tile() +
   facet_grid(field ~ region, scales = "free_y", space = "free_y", switch = "y") +
@@ -1594,17 +1594,17 @@ ggplot(regions, aes(x = approach, y = category, fill = pubs.share)) +
     strip.placement = "outside",
     strip.text.y.left = element_text(angle = 0, face = "bold"))
 
-ggplot(regions, aes(x = category, y = approach, fill = pubs.share)) +
+ggplot(regions, aes(x = approach, y = region, fill = pubs.share)) +
   geom_tile() +
-  facet_grid(region ~ field, scales = "free_x", space = "free_x", switch = "x") +
+  facet_grid(. ~ field + category, scales = "free_x", space = "free_x", switch = "x") +
   scale_fill_viridis_c(name = "Publication share", na.value = "grey50", option = "plasma") +
-  labs(x = "Field & Category", y = "Operational approach") +
+  labs(x = "Operational approach", y = "Region") +
   theme_minimal() +
   theme(
     legend.position = "bottom",
-    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 0.5),
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
     strip.placement = "outside",
-    strip.text.x.bottom = element_text(angle = 0, face = "bold"))
+    strip.text.x.top = element_text(angle = 90, face = "bold"))
 
 
 ### CORRELATIONS
