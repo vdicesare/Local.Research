@@ -920,11 +920,17 @@ local.approaches.categories %>% filter(value.type == "prop") %>%
     "Databases approach" = "Databases",
     "References approach" = "References",
     "Citations approach" = "Citations")) +
-  scale_fill_viridis_c(name = "Publication share", na.value = "grey50", option = "plasma") +
+  scale_fill_viridis_c(name = "Publication share",
+    na.value = "grey50",
+    option = "plasma",
+    limits = c(0, 0.80)) +
   labs(x = "Operational approach", y = "Field & Category") +
   facet_grid(field ~ ., scales = "free_y", space = "free_y", switch = "y") +
   theme_minimal() +
-  theme(legend.position = "bottom", axis.text.x = element_text(angle = 0, vjust = 0.5, hjust = 0.5), strip.placement = "outside", strip.text.y.left = element_text(angle = 0, face = "bold"))
+  theme(legend.position = "bottom",
+    axis.text.x = element_text(angle = 0, vjust = 0.5, hjust = 0.5),
+    strip.placement = "outside",
+    strip.text.y.left = element_text(angle = 0, face = "bold"))
 ggsave("~/Desktop/Local.Research/Figure2.png", width = 6.7, height = 6.27, dpi = 300, bg = "white")
 
 
@@ -1559,11 +1565,13 @@ regions$field <- ifelse(regions$category %in% c("BiomClinSci", "HealthSci"), "He
 # convert variables to factor to order the levels and customize how they appear in the plot
 regions$approach <- factor(regions$approach, levels = c("Toponyms", "Languages", "Authors", "Databases", "References", "Citations"))
 regions$category <- factor(regions$category, levels = c("EnvironDes", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "AgriVetFoodSci", "BiolSci", "EarthSci", "EnvironSci", "BiomClinSci", "HealthSci", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud"))
+regions$field <- factor(regions$field, levels = c("Humanities", "Social Sciences", "Health Sciences", "Life Sciences", "Physical Sciences"))
+regions$region <- factor(regions$region, levels = c("Europe", "Africa", "United States and Canada", "Latin America and the Caribbean", "Oceania", "Asia"))
 
 # convert variable to numeric
 regions$pubs.share <- as.numeric(regions$pubs.share)
 
-# plot regions per categories ### SEGUIR POR ACÁ, MEJORANDO LA FIGURA PARA QUE QUEDE SIMILAR A F2
+# plot regions per categories ### agregar los fields a la izquierda y ordenar las categorías por field según sus shares con los shares más altos arriba
 ggplot(regions, aes(x = approach, y = category, fill = pubs.share)) +
   geom_tile() +
   facet_wrap(~ region, ncol = 2) +
@@ -1572,6 +1580,31 @@ ggplot(regions, aes(x = approach, y = category, fill = pubs.share)) +
   theme_minimal() +
   theme(legend.position = "bottom", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ggsave("~/Desktop/Local.Research/Figure5.png", width = 6.27, height = 10.27, dpi = 300, bg = "white")
+
+# OTRA OPCIÓN DE LA FIGURA 5
+ggplot(regions, aes(x = approach, y = category, fill = pubs.share)) +
+  geom_tile() +
+  facet_grid(field ~ region, scales = "free_y", space = "free_y", switch = "y") +
+  scale_fill_viridis_c(name = "Publication share", na.value = "grey50", option = "plasma") +
+  labs(x = "Operational approach", y = "Field & Category") +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+    strip.placement = "outside",
+    strip.text.y.left = element_text(angle = 0, face = "bold"))
+
+ggplot(regions, aes(x = category, y = approach, fill = pubs.share)) +
+  geom_tile() +
+  facet_grid(region ~ field, scales = "free_x", space = "free_x", switch = "x") +
+  scale_fill_viridis_c(name = "Publication share", na.value = "grey50", option = "plasma") +
+  labs(x = "Field & Category", y = "Operational approach") +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    axis.text.y = element_text(angle = 0, vjust = 0.5, hjust = 0.5),
+    strip.placement = "outside",
+    strip.text.x.bottom = element_text(angle = 0, face = "bold"))
 
 
 ### CORRELATIONS
@@ -1611,7 +1644,7 @@ ggsave("~/Desktop/Local.Research/Figure3.png", width = 6.27, height = 5.27, dpi 
 ### PCA
 # Filter out incomplete cases and countries with less than 500 publications in the period
 complete_cases_df <- corr.local.q %>% filter(complete.cases(select(., -final.country))) %>%
-                                      semi_join(total.pubs.country %>% filter(total.pubs >= 5000), by = "final.country")
+                                      semi_join(total.pubs.country %>% filter(total.pubs >= 6000), by = "final.country")
 
 # Select numeric variables only
 pca_data <- complete_cases_df %>% select(-final.country)
