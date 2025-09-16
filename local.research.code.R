@@ -914,9 +914,11 @@ local.approaches.categories$field <- factor(local.approaches.categories$field, l
 local.approaches.categories %>% filter(value.type == "prop") %>%
   ggplot(aes(x = approach, y = category, fill = value)) +
   geom_tile() +
+  geom_text(aes(label = ifelse(value >= 0.10, sprintf("%.2f", value), "")),
+    color = "white", size = 3) +
   scale_x_discrete(labels = c("Toponyms approach" = "Toponyms",
     "Languages approach" = "Languages",
-    "Authors approach" = "Authors",
+    "Journals approach" = "Authors",
     "Databases approach" = "Databases",
     "References approach" = "References",
     "Citations approach" = "Citations")) +
@@ -1521,7 +1523,6 @@ regions.cits.journals$pubs.share <- sprintf("%.4f", regions.cits.journals$pubs.s
 # add a variable for the specific approach
 regions.cits.journals$approach <- rep("Citations", nrow(regions.cits.journals))
 
-
 # merge all regions to plot
 regions <- rbind(regions.toponyms.journals %>% select(region, category, pubs.share, approach),
                  regions.language.journals %>% select(region, category, pubs.share, approach),
@@ -1561,50 +1562,32 @@ regions$field <- ifelse(regions$category %in% c("BiomClinSci", "HealthSci"), "He
                                       ifelse(regions$category %in% c("EnvironDes", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci"), "Physical Sciences",
                                              ifelse(regions$category %in% c("ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych"), "Social Sciences", NA)))))
 
-
 # convert variables to factor to order the levels and customize how they appear in the plot
 regions$approach <- factor(regions$approach, levels = c("Toponyms", "Languages", "Authors", "Databases", "References", "Citations"))
-regions$category <- factor(regions$category, levels = c("EnvironDes", "ChemSci", "Eng", "InfCompSci", "MathSci", "PhysSci", "AgriVetFoodSci", "BiolSci", "EarthSci", "EnvironSci", "BiomClinSci", "HealthSci", "ComManTourServ", "Econ", "Edu", "HumSoc", "LawLegStud", "Psych", "ArtWrit", "HisHeritArch", "LangCommCult", "PhilReligStud"))
-regions$field <- factor(regions$field, levels = c("Humanities", "Social Sciences", "Health Sciences", "Life Sciences", "Physical Sciences"))
-regions$region <- factor(regions$region, levels = c("Europe", "Africa", "United States and Canada", "Latin America and the Caribbean", "Oceania", "Asia"))
+regions$category <- factor(regions$category, levels = c("PhilReligStud", "LangCommCult", "HisHeritArch", "ArtWrit", "ComManTourServ", "Psych", "LawLegStud", "Econ", "Edu", "HumSoc",
+                                                        "BiomClinSci", "HealthSci", "BiolSci", "AgriVetFoodSci", "EnvironSci", "EarthSci", "ChemSci", "MathSci", "PhysSci", "Eng", "InfCompSci", "EnvironDes"))
+regions <- regions %>% mutate(field_label = case_when(field == "Humanities" ~ "Humanities", field == "Social Sciences" ~ "Social\nSciences", field == "Health Sciences" ~ "Health\nSciences",
+                                                      field == "Life Sciences" ~ "Life\nSciences", field == "Physical Sciences" ~ "Physical\nSciences", TRUE ~ field))
+regions <- regions %>% mutate(field_label = factor(field_label, levels = c("Humanities", "Social\nSciences", "Health\nSciences", "Life\nSciences", "Physical\nSciences")))
+regions <- regions %>% mutate(region_label = case_when(region == "Europe" ~ "Europe", region == "Africa" ~ "Africa", region == "United States and Canada" ~ "United States\nand Canada",
+                                                       region == "Latin America and the Caribbean" ~ "Latin America\nand the Caribbean", region == "Oceania" ~ "Oceania", region == "Asia" ~ "Asia", TRUE ~ field))
+regions <- regions %>% mutate(region_label = factor(region_label, levels = c("Oceania", "United States\nand Canada", "Europe", "Asia", "Latin America\nand the Caribbean", "Africa")))
 
 # convert variable to numeric
 regions$pubs.share <- as.numeric(regions$pubs.share)
 
-# plot regions per categories ### agregar los fields a la izquierda y ordenar las categorías por field según sus shares con los shares más altos arriba
+# plot regions per categories
 ggplot(regions, aes(x = approach, y = category, fill = pubs.share)) +
   geom_tile() +
-  facet_wrap(~ region, ncol = 2) +
+  facet_grid(field_label ~ region_label, scales = "free_y", space = "free_y", switch = "y") +
   scale_fill_viridis_c(name = "Publication share", na.value = "grey50", option = "plasma") +
   labs(x = "Operational approach", y = "Field & Category") +
   theme_minimal() +
-  theme(legend.position = "bottom", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-ggsave("~/Desktop/Local.Research/Figure5.png", width = 6.27, height = 10.27, dpi = 300, bg = "white")
-
-# OTRAS OPCIONES DE LA FIGURA 5
-ggplot(regions, aes(x = approach, y = category, fill = pubs.share)) +
-  geom_tile() +
-  facet_grid(field ~ region, scales = "free_y", space = "free_y", switch = "y") +
-  scale_fill_viridis_c(name = "Publication share", na.value = "grey50", option = "plasma") +
-  labs(x = "Operational approach", y = "Field & Category") +
-  theme_minimal() +
-  theme(
-    legend.position = "bottom",
+  theme(legend.position = "bottom",
     axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
     strip.placement = "outside",
-    strip.text.y.left = element_text(angle = 0, face = "bold"))
-
-ggplot(regions, aes(x = approach, y = region, fill = pubs.share)) +
-  geom_tile() +
-  facet_grid(. ~ field + category, scales = "free_x", space = "free_x", switch = "x") +
-  scale_fill_viridis_c(name = "Publication share", na.value = "grey50", option = "plasma") +
-  labs(x = "Operational approach", y = "Region") +
-  theme_minimal() +
-  theme(
-    legend.position = "bottom",
-    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
-    strip.placement = "outside",
-    strip.text.x.top = element_text(angle = 90, face = "bold"))
+    strip.text.y.left = element_text(angle = 90, face = "bold"))
+ggsave("~/Desktop/Local.Research/Figure5.png", width = 8.27, height = 9.27, dpi = 300, bg = "white")
 
 
 ### CORRELATIONS
