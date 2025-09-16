@@ -1625,9 +1625,9 @@ ggsave("~/Desktop/Local.Research/Figure3.png", width = 6.27, height = 5.27, dpi 
 
 
 ### PCA
-# Filter out incomplete cases and countries with less than 500 publications in the period
+# Filter out incomplete cases and countries with less than 10000 publications in the period
 complete_cases_df <- corr.local.q %>% filter(complete.cases(select(., -final.country))) %>%
-                                      semi_join(total.pubs.country %>% filter(total.pubs >= 6000), by = "final.country")
+                                      semi_join(total.pubs.country %>% filter(total.pubs >= 10000), by = "final.country")
 
 # Select numeric variables only
 pca_data <- complete_cases_df %>% select(-final.country)
