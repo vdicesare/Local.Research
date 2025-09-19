@@ -914,8 +914,7 @@ local.approaches.categories$field <- factor(local.approaches.categories$field, l
 local.approaches.categories %>% filter(value.type == "prop") %>%
   ggplot(aes(x = approach, y = category, fill = value)) +
   geom_tile() +
-  geom_text(aes(label = ifelse(value >= 0.10, sprintf("%.2f", value), "")),
-    color = "white", size = 3) +
+  geom_text(aes(label = sprintf("%.2f", value)), color = "white", size = 3) +
   scale_x_discrete(labels = c("Toponyms approach" = "Toponyms",
     "Languages approach" = "Languages",
     "Journals approach" = "Authors",
