@@ -1624,340 +1624,61 @@ ggsave("~/Desktop/Local.Research/Figure3.png", width = 6.27, height = 5.27, dpi 
 
 
 ### PCA
-# Filter out incomplete cases and countries with less than 10000 publications in the period
-complete_cases_df <- corr.local.q %>% filter(complete.cases(select(., -final.country))) %>%
-                                      semi_join(total.pubs.country %>% filter(total.pubs >= 10000), by = "final.country")
+# filter out incomplete cases and countries with less than 6000 publications in the period
+pca.countries <- corr.local.q %>% filter(complete.cases(select(., -final.country))) %>%
+                                  semi_join(total.pubs.country %>% filter(total.pubs >= 6000), by = "final.country")
 
-# Select numeric variables only
-pca_data <- complete_cases_df %>% select(-final.country)
+# keep numeric variables only
+pca.data <- pca.countries %>% select(-final.country)
 
-# Run PCA
-pca_result <- prcomp(pca_data, scale. = TRUE)
+# run PCA analysis
+pca.analysis <- prcomp(pca.data, scale. = TRUE)
+summary(pca.analysis)
+pca.analysis$rotation
 
-# See % variance explained by each PC
-summary(pca_result)
+# extract scores and attach countries
+pca.scores <- as.data.frame(pca.analysis$x) %>% mutate(country = pca.countries$final.country)
 
-# Check loadings (variable contributions)
-pca_result$rotation
+# create correlation circle
+pca.vars <- pca.countries[, c("Tops prop", "Non-Eng pub", "Pub prop", "Non-W/S index", "Ref prop", "Cit prop")]
+pca.result <- PCA(pca.vars, scale.unit = TRUE, graph = FALSE)
+pca.coords <- as.data.frame(pca.result$ind$coord)
+pca.coords$country <- pca.countries$final.country
 
-# Extract scores and attach countries (matching lengths)
-pca_scores <- as.data.frame(pca_result$x) %>% mutate(country = complete_cases_df$final.country)
+# add ISO codes and UN regions directly from country names
+pca.coords <- pca.coords %>% mutate(iso2c   = countrycode(country, origin = "country.name", destination = "iso2c"),
+                                    region  = countrycode(country, origin = "country.name", destination = "un.region.name"),
+                                    subregion = countrycode(country, origin = "country.name", destination = "un.regionsub.name")) %>%
+  mutate(region = case_when(iso2c %in% c("US", "CA") ~ "United States and Canada",
+                            region == "Americas" ~ "Latin America and the Caribbean",
+                            country == "Taiwan" ~ "Asia", TRUE ~ region))
 
-# Visualize loadings (variable importance)
-loadings_df <- as.data.frame(pca_result$rotation) %>% rownames_to_column(var = "variable")
+pca.coords$region <- factor(pca.coords$region, levels = c("Latin America and the Caribbean", "Europe", "Africa", "Oceania", "Asia", "United States and Canada"))
 
-# Reshape for plotting
-loadings_df_long <- loadings_df %>% pivot_longer(cols = starts_with("PC"), names_to = "PC", values_to = "loading")
-
-# Plot loadings for PC1, PC2, and PC3
-ggplot(loadings_df_long %>% filter(PC %in% c("PC1", "PC2", "PC3")),
-       aes(x = variable, y = loading, fill = PC)) +
-  geom_col(position = "dodge") +
-  theme_minimal() +
-  labs(title = "Variable Loadings on PC1, PC2, and PC3",
-       x = "Variable", y = "Loading") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_manual(values = c("steelblue", "darkorange", "seagreen"))
-
-# Correlation circle
-# Select numeric variables only
-pca_vars <- complete_cases_df[, c("Tops prop", "Non-Eng pub", "Pub prop", 
-                                  "Non-W/S index", "Ref prop", "Cit prop")]
-
-pca_result <- PCA(pca_vars, scale.unit = TRUE, graph = FALSE)
-
-fviz_pca_var(pca_result, 
-             col.var = "cos2",
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE)
-
-pca_coords <- as.data.frame(pca_result$ind$coord)
-pca_coords$country <- complete_cases_df$final.country
-
-# add clustering
-set.seed(123)  # For reproducibility
-# Run k-means clustering on the PCA scores (e.g., first 2 dimensions)
-km_res <- kmeans(pca_coords[, c("Dim.1", "Dim.2")], centers = 4, nstart = 25)  # Change 'centers' as needed
-
-# Add cluster assignment to pca_coords
-pca_coords$cluster <- factor(km_res$cluster)
-
-# Extract variable loadings
-loadings <- as.data.frame(pca_result$var$coord)
+# plot PCA by country and region
+arrow_scale <- 3
+loadings <- as.data.frame(pca.result$var$coord)
 loadings$varname <- rownames(loadings)
 
-# Scale arrows for visibility
-arrow_scale <- 3
-
 ggplot() +
-  # Plot countries colored by cluster
-  geom_point(data = pca_coords, aes(x = Dim.1, y = Dim.2, color = cluster), size = 3) +
-  geom_text(data = pca_coords, aes(x = Dim.1, y = Dim.2, label = country, color = cluster), vjust = -0.5, size = 3) +
-  
-  # Plot variable arrows
+  geom_point(data = pca.coords, aes(x = Dim.1, y = Dim.2, color = region), size = 2, alpha = 0.9) +
+  geom_text(data = pca.coords, aes(x = Dim.1, y = Dim.2, label = iso2c, color = region), vjust = -0.7, size = 3, show.legend = FALSE) +
   geom_segment(data = loadings, aes(x = 0, y = 0, xend = Dim.1 * arrow_scale, yend = Dim.2 * arrow_scale),
-               arrow = arrow(length = unit(0.2, "cm")), color = "darkred") +
-  
-  # Add variable names at arrow tips
+               arrow = arrow(length = unit(0.2, "cm")), color = "grey30", linewidth = 0.6) +
   geom_text(data = loadings, aes(x = Dim.1 * arrow_scale, y = Dim.2 * arrow_scale, label = varname),
-            color = "darkred", size = 3, vjust = -0.5) +
-  
+            color = "grey30", size = 3, vjust = -0.7) +
+  labs(x = "Principal Component 1", y = "Principal Component 2", color = "World\nregion") +
+  scale_color_manual(values = c("Latin America and the Caribbean" = "#FFDF3D",
+                                "Africa" = "#FC7300",
+                                "Asia" = "#E53946",
+                                "Europe" = "#D63FAE", 
+                                "Oceania" = "#8A33C4",
+                                "United States and Canada" = "#0D0887")) +
   theme_minimal() +
-  labs(title = "PCA Biplot: Countries clustered with variable loadings",
-       x = "Dimension 1",
-       y = "Dimension 2") +
-  scale_color_manual(values = c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3"))
-
-
-
+  theme(legend.position = "bottom", axis.text = element_text(size = 10), axis.title = element_text(size = 11),
+        panel.grid.minor = element_blank(), panel.grid.major = element_line(color = "grey80", linewidth = 0.3))
+ggsave("~/Desktop/Local.Research/Figure6.png", width = 8.27, height = 6.27, dpi = 300, bg = "white")
 
 
 ### SAVE DATAFRAMES
 save.image("~/Desktop/Local.Research/local.research.data.RData")
-
-
-### REVIEW
-## Methods to identify and justify the election of a threshold
-# Elbow method for cits.prop
-sorted_cits <- sort(journals$cits.prop, decreasing = TRUE)
-rank <- 1:length(sorted_cits)
-cits_df <- data.frame(rank = rank, cits.prop = sorted_cits)
-quartiles <- quantile(journals$cits.prop, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
-percentiles <- quantile(journals$cits.prop, probs = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), na.rm = TRUE)
-
-elbow_point <- function(x, y) {
-  line_start <- c(x[1], y[1])
-  line_end <- c(x[length(x)], y[length(y)])
-  distances <- sapply(1:length(x), function(i) {
-    numerator <- abs((line_end[2] - line_start[2]) * x[i] -
-                       (line_end[1] - line_start[1]) * y[i] +
-                       line_end[1]*line_start[2] -
-                       line_end[2]*line_start[1])
-    denominator <- sqrt((line_end[2] - line_start[2])^2 + 
-                          (line_end[1] - line_start[1])^2)
-    numerator / denominator})
-  which.max(distances)}
-elbow_idx <- elbow_point(rank, sorted_cits)
-elbow_value <- sorted_cits[elbow_idx]
-
-ggplot(cits_df, aes(x = rank, y = cits.prop)) +
-  geom_line(color = "darkgreen", linewidth = 1) +
-  annotate("point", x = elbow_idx, y = elbow_value, color = "red", size = 3) +
-  geom_hline(yintercept = percentiles,
-             linetype = "dashed",
-             color = "gray60") +
-  annotate("text",
-           x = max(cits_df$rank) * 0.97,
-           y = percentiles,
-           label = names(percentiles),
-           hjust = 1.1,
-           size = 3.5,
-           color = "gray60") +
-  geom_hline(yintercept = quartiles,
-             linetype = "dashed",
-             color = c("blue", "purple", "orange")) +
-  annotate("text",
-           x = max(cits_df$rank) * 0.92,
-           y = quartiles,
-           label = c("Q1", "Median", "Q3"),
-           hjust = 1.1,
-           size = 3.8,
-           color = c("blue", "purple", "orange")) +
-  labs(title = "cits.prop Distribution with Elbow, Percentiles, and Quartiles",
-       subtitle = paste("Elbow at rank", elbow_idx, "with value", round(elbow_value, 3)),
-       x = "Ranked Journals",
-       y = "cits.prop") +
-  theme_minimal()
-
-# Elbow method for pubs.prop
-sorted_pubs <- sort(journals$pubs.prop, decreasing = TRUE)
-rank <- 1:length(sorted_pubs)
-pubs_df <- data.frame(rank = rank, pubs.prop = sorted_pubs)
-quartiles <- quantile(journals$pubs.prop, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
-percentiles <- quantile(journals$pubs.prop, probs = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), na.rm = TRUE)
-
-elbow_idx <- elbow_point(rank, sorted_pubs)
-elbow_value <- sorted_pubs[elbow_idx]
-
-ggplot(pubs_df, aes(x = rank, y = pubs.prop)) +
-  geom_line(color = "darkgreen", linewidth = 1) +
-  annotate("point", x = elbow_idx, y = elbow_value, color = "red", size = 3) +
-  geom_hline(yintercept = percentiles,
-             linetype = "dashed",
-             color = "gray60") +
-  annotate("text",
-           x = max(pubs_df$rank) * 0.97,
-           y = percentiles,
-           label = names(percentiles),
-           hjust = 1.1,
-           size = 3.5,
-           color = "gray60") +
-  geom_hline(yintercept = quartiles,
-             linetype = "dashed",
-             color = c("blue", "purple", "orange")) +
-  annotate("text",
-           x = max(pubs_df$rank) * 0.92,
-           y = quartiles,
-           label = c("Q1", "Median", "Q3"),
-           hjust = 1.1,
-           size = 3.8,
-           color = c("blue", "purple", "orange")) +
-  labs(title = "pubs.prop Distribution with Elbow, Percentiles, and Quartiles",
-       subtitle = paste("Elbow at rank", elbow_idx, "with value", round(elbow_value, 3)),
-       x = "Ranked Journals",
-       y = "pubs.prop") +
-  theme_minimal()
-
-# Elbow method for refs.prop
-sorted_refs <- sort(journals$refs.prop, decreasing = TRUE)
-rank <- 1:length(sorted_refs)
-refs_df <- data.frame(rank = rank, refs.prop = sorted_refs)
-quartiles <- quantile(journals$refs.prop, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
-percentiles <- quantile(journals$refs.prop, probs = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), na.rm = TRUE)
-
-elbow_idx <- elbow_point(rank, sorted_refs)
-elbow_value <- sorted_refs[elbow_idx]
-
-ggplot(refs_df, aes(x = rank, y = refs.prop)) +
-  geom_line(color = "darkgreen", linewidth = 1) +
-  annotate("point", x = elbow_idx, y = elbow_value, color = "red", size = 3) +
-  geom_hline(yintercept = percentiles,
-             linetype = "dashed",
-             color = "gray60") +
-  annotate("text",
-           x = max(refs_df$rank) * 0.97,
-           y = percentiles,
-           label = names(percentiles),
-           hjust = 1.1,
-           size = 3.5,
-           color = "gray60") +
-  geom_hline(yintercept = quartiles,
-             linetype = "dashed",
-             color = c("blue", "purple", "orange")) +
-  annotate("text",
-           x = max(refs_df$rank) * 0.92,
-           y = quartiles,
-           label = c("Q1", "Median", "Q3"),
-           hjust = 1.1,
-           size = 3.8,
-           color = c("blue", "purple", "orange")) +
-  labs(title = "refs.prop Distribution with Elbow, Percentiles, and Quartiles",
-       subtitle = paste("Elbow at rank", elbow_idx, "with value", round(elbow_value, 3)),
-       x = "Ranked Journals",
-       y = "refs.prop") +
-  theme_minimal()
-
-# Elbow method for toponyms.prop
-sorted_tops <- sort(journals$toponyms.prop, decreasing = TRUE)
-rank <- 1:length(sorted_tops)
-tops_df <- data.frame(rank = rank, tops.prop = sorted_tops)
-quartiles <- quantile(journals$toponyms.prop, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
-percentiles <- quantile(journals$toponyms.prop, probs = c(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9), na.rm = TRUE)
-
-elbow_idx <- elbow_point(rank, sorted_tops)
-elbow_value <- sorted_tops[elbow_idx]
-
-ggplot(tops_df, aes(x = rank, y = tops.prop)) +
-  geom_line(color = "darkgreen", linewidth = 1) +
-  annotate("point", x = elbow_idx, y = elbow_value, color = "red", size = 3) +
-  geom_hline(yintercept = percentiles,
-             linetype = "dashed",
-             color = "gray60") +
-  annotate("text",
-           x = max(tops_df$rank) * 0.97,
-           y = percentiles,
-           label = names(percentiles),
-           hjust = 1.1,
-           size = 3.5,
-           color = "gray60") +
-  geom_hline(yintercept = quartiles,
-             linetype = "dashed",
-             color = c("blue", "purple", "orange")) +
-  annotate("text",
-           x = max(tops_df$rank) * 0.92,
-           y = quartiles,
-           label = c("Q1", "Median", "Q3"),
-           hjust = 1.1,
-           size = 3.8,
-           color = c("blue", "purple", "orange")) +
-  labs(title = "tops.prop Distribution with Elbow, Percentiles, and Quartiles",
-       subtitle = paste("Elbow at rank", elbow_idx, "with value", round(elbow_value, 3)),
-       x = "Ranked Journals",
-       y = "tops.prop") +
-  theme_minimal()
-
-# Boxplot and violin plot for cits.prop
-ggplot(journals, aes(x = "", y = cits.prop)) +
-  geom_violin(fill = "lightgreen", color = "darkgreen", alpha = 0.5) +
-  geom_boxplot(width = 0.1, fill = "white", outlier.shape = NA) +
-  geom_hline(yintercept = percentiles, linetype = "dashed", color = "gray60") +
-  annotate("text", x = 1.2, y = percentiles, label = names(percentiles),
-           color = "gray60", size = 3.5, hjust = 0) +
-  geom_hline(yintercept = quartiles, linetype = "dashed", color = c("blue", "purple", "orange")) +
-  annotate("text", x = 1.3, y = quartiles, label = c("Q1", "Median", "Q3"),
-           color = c("blue", "purple", "orange"), size = 3.8, hjust = 0) +
-  geom_hline(yintercept = elbow_value, linetype = "dotted", color = "red", linewidth = 1) +
-  annotate("text", x = 1.15, y = elbow_value, label = paste("Elbow =", round(elbow_value, 3)),
-           color = "red", size = 3.5, hjust = 0) +
-  labs(title = "Distribution of cits.prop with Elbow, Quartiles, and Percentiles",
-       x = "",
-       y = "cits.prop") +
-  theme_minimal() +
-  coord_flip()
-
-# Boxplot and violin plot for pubs.prop
-ggplot(journals, aes(x = "", y = pubs.prop)) +
-  geom_violin(fill = "lightgreen", color = "darkgreen", alpha = 0.5) +
-  geom_boxplot(width = 0.1, fill = "white", outlier.shape = NA) +
-  geom_hline(yintercept = percentiles, linetype = "dashed", color = "gray60") +
-  annotate("text", x = 1.2, y = percentiles, label = names(percentiles),
-           color = "gray60", size = 3.5, hjust = 0) +
-  geom_hline(yintercept = quartiles, linetype = "dashed", color = c("blue", "purple", "orange")) +
-  annotate("text", x = 1.3, y = quartiles, label = c("Q1", "Median", "Q3"),
-           color = c("blue", "purple", "orange"), size = 3.8, hjust = 0) +
-  geom_hline(yintercept = elbow_value, linetype = "dotted", color = "red", linewidth = 1) +
-  annotate("text", x = 1.15, y = elbow_value, label = paste("Elbow =", round(elbow_value, 3)),
-           color = "red", size = 3.5, hjust = 0) +
-  labs(title = "Distribution of pubs.prop with Elbow, Quartiles, and Percentiles",
-       x = "",
-       y = "pubs.prop") +
-  theme_minimal() +
-  coord_flip()
-
-# Boxplot and violin plot for refs.prop
-ggplot(journals, aes(x = "", y = refs.prop)) +
-  geom_violin(fill = "lightgreen", color = "darkgreen", alpha = 0.5) +
-  geom_boxplot(width = 0.1, fill = "white", outlier.shape = NA) +
-  geom_hline(yintercept = percentiles, linetype = "dashed", color = "gray60") +
-  annotate("text", x = 1.2, y = percentiles, label = names(percentiles),
-           color = "gray60", size = 3.5, hjust = 0) +
-  geom_hline(yintercept = quartiles, linetype = "dashed", color = c("blue", "purple", "orange")) +
-  annotate("text", x = 1.3, y = quartiles, label = c("Q1", "Median", "Q3"),
-           color = c("blue", "purple", "orange"), size = 3.8, hjust = 0) +
-  geom_hline(yintercept = elbow_value, linetype = "dotted", color = "red", linewidth = 1) +
-  annotate("text", x = 1.15, y = elbow_value, label = paste("Elbow =", round(elbow_value, 3)),
-           color = "red", size = 3.5, hjust = 0) +
-  labs(title = "Distribution of refs.prop with Elbow, Quartiles, and Percentiles",
-       x = "",
-       y = "refs.prop") +
-  theme_minimal() +
-  coord_flip()
-
-# Boxplot and violin plot for tops.prop
-ggplot(journals, aes(x = "", y = toponyms.prop)) +
-  geom_violin(fill = "lightgreen", color = "darkgreen", alpha = 0.5) +
-  geom_boxplot(width = 0.1, fill = "white", outlier.shape = NA) +
-  geom_hline(yintercept = percentiles, linetype = "dashed", color = "gray60") +
-  annotate("text", x = 1.2, y = percentiles, label = names(percentiles),
-           color = "gray60", size = 3.5, hjust = 0) +
-  geom_hline(yintercept = quartiles, linetype = "dashed", color = c("blue", "purple", "orange")) +
-  annotate("text", x = 1.3, y = quartiles, label = c("Q1", "Median", "Q3"),
-           color = c("blue", "purple", "orange"), size = 3.8, hjust = 0) +
-  geom_hline(yintercept = elbow_value, linetype = "dotted", color = "red", linewidth = 1) +
-  annotate("text", x = 1.15, y = elbow_value, label = paste("Elbow =", round(elbow_value, 3)),
-           color = "red", size = 3.5, hjust = 0) +
-  labs(title = "Distribution of tops.prop with Elbow, Quartiles, and Percentiles",
-       x = "",
-       y = "tops.prop") +
-  theme_minimal() +
-  coord_flip()
