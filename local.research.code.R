@@ -1659,6 +1659,12 @@ pca.coords$region <- factor(pca.coords$region, levels = c("Latin America and the
 arrow_scale <- 3
 loadings <- as.data.frame(pca.result$var$coord)
 loadings$varname <- rownames(loadings)
+loadings <- loadings %>% mutate(varname = case_when(varname == "Tops prop" ~ "Toponyms",
+                                                    varname == "Non-Eng pub" ~ "Languages",
+                                                    varname == "Pub prop" ~ "Authors",
+                                                    varname == "Non-W/S index"  ~ "Databases",
+                                                    varname == "Ref prop" ~ "References",
+                                                    varname == "Cit prop" ~ "Citations", TRUE ~ varname))
 
 ggplot() +
   geom_point(data = pca.coords, aes(x = Dim.1, y = Dim.2, color = region), size = 2, alpha = 0.9) +
