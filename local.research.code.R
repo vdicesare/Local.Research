@@ -1624,12 +1624,22 @@ ggsave("~/Desktop/Local.Research/Figure3.png", width = 6.27, height = 5.27, dpi 
 
 
 ### PCA
-# filter out incomplete cases and countries with less than 6000 publications in the period
-pca.countries <- corr.local.q %>% filter(complete.cases(select(., -final.country))) %>%
-                                  semi_join(total.pubs.country %>% filter(total.pubs >= 6000), by = "final.country")
+# add Global North / Global South categories to the countries listed in df total.pubs.country
+total.pubs.country <- total.pubs.country %>% mutate(global.divide = case_when(
+                                             final.country %in% c("Australia", "Austria", "Belgium", "Canada", "Switzerland", "Czechia", "Germany", "Denmark", "Spain", "Estonia",
+                                                                  "Finland", "France", "United Kingdom", "Greece", "Hungary", "Ireland", "Iceland", "Israel", "Italy", "Japan",
+                                                                  "South Korea", "Lithuania", "Luxembourg", "Latvia", "Netherlands", "Norway", "New Zealand", "Poland", "Portugal",
+                                                                  "Slovakia", "Slovenia", "Sweden", "United States", "Andorra", "Bulgaria", "Bosnia and Herzegovina", "Belarus",
+                                                                  "Cyprus", "Croatia", "Liechtenstein", "Monaco", "Moldova", "North Macedonia", "Malta", "Montenegro", "Romania",
+                                                                  "Russia", "San Marino", "Serbia", "Ukraine", "Vatican City") ~ "Global North", TRUE ~ "Global South"))
 
-# keep numeric variables only
-pca.data <- pca.countries %>% select(-final.country)
+# filter out incomplete cases and countries with less than 3000 publications in the period
+pca.countries <- corr.local.q %>% filter(complete.cases(select(., -final.country))) %>%
+                                  inner_join(total.pubs.country %>% filter(total.pubs >= 3000), by = "final.country") #%>%
+                                  #filter(global.divide == "Global South")
+
+# keep relevant numeric variables only
+pca.data <- pca.countries %>% select(-final.country, -total.pubs, -global.divide)
 
 # run PCA analysis
 pca.analysis <- prcomp(pca.data, scale. = TRUE)
@@ -1644,6 +1654,7 @@ pca.vars <- pca.countries[, c("Tops prop", "Non-Eng pub", "Pub prop", "Non-W/S i
 pca.result <- PCA(pca.vars, scale.unit = TRUE, graph = FALSE)
 pca.coords <- as.data.frame(pca.result$ind$coord)
 pca.coords$country <- pca.countries$final.country
+pca.coords <- pca.coords %>% left_join(total.pubs.country, by = c("country" = "final.country"))
 
 # add ISO codes and UN regions directly from country names
 pca.coords <- pca.coords %>% mutate(iso2c   = countrycode(country, origin = "country.name", destination = "iso2c"),
@@ -1668,23 +1679,22 @@ loadings <- loadings %>% mutate(varname = case_when(varname == "Tops prop" ~ "To
 
 ggplot() +
   geom_point(data = pca.coords, aes(x = Dim.1, y = Dim.2, color = region), size = 2, alpha = 0.9) +
-  geom_text(data = pca.coords, aes(x = Dim.1, y = Dim.2, label = iso2c, color = region), vjust = -0.7, size = 3, show.legend = FALSE) +
+  geom_text(data = subset(pca.coords, total.pubs >= 9000), aes(x = Dim.1, y = Dim.2, label = iso2c, color = region), vjust = -0.7, size = 3, show.legend = FALSE) +
   geom_segment(data = loadings, aes(x = 0, y = 0, xend = Dim.1 * arrow_scale, yend = Dim.2 * arrow_scale),
                arrow = arrow(length = unit(0.2, "cm")), color = "grey30", linewidth = 0.6) +
   geom_text(data = loadings, aes(x = Dim.1 * arrow_scale, y = Dim.2 * arrow_scale, label = varname),
             color = "grey30", size = 3, vjust = -0.7) +
   labs(x = "Principal Component 1", y = "Principal Component 2", color = "World\nregion") +
   scale_color_manual(values = c("Latin America and the Caribbean" = "#FFDF3D",
-                                "Africa" = "#FC7300",
-                                "Asia" = "#E53946",
-                                "Europe" = "#D63FAE", 
-                                "Oceania" = "#8A33C4",
+                                "Africa" =  "darkred",
+                                "Asia" = "#FC7300" ,
+                                "Europe" = "#9C179E", 
+                                "Oceania" = "#6A00A8",
                                 "United States and Canada" = "#0D0887")) +
   theme_minimal() +
   theme(legend.position = "bottom", axis.text = element_text(size = 10), axis.title = element_text(size = 11),
         panel.grid.minor = element_blank(), panel.grid.major = element_line(color = "grey80", linewidth = 0.3))
 ggsave("~/Desktop/Local.Research/Figure6.png", width = 8.27, height = 6.27, dpi = 300, bg = "white")
-
 
 ### SAVE DATAFRAMES
 save.image("~/Desktop/Local.Research/local.research.data.RData")
