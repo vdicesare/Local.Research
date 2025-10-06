@@ -1636,7 +1636,6 @@ total.pubs.country <- total.pubs.country %>% mutate(global.divide = case_when(
 # filter out incomplete cases and countries with less than 3000 publications in the period
 pca.countries <- corr.local.q %>% filter(complete.cases(select(., -final.country))) %>%
                                   inner_join(total.pubs.country %>% filter(total.pubs >= 3000), by = "final.country") #%>%
-                                  #filter(global.divide == "Global South")
 
 # keep relevant numeric variables only
 pca.data <- pca.countries %>% select(-final.country, -total.pubs, -global.divide)
@@ -1686,7 +1685,7 @@ ggplot() +
             color = "grey30", size = 3, vjust = -0.7) +
   labs(x = "Principal Component 1", y = "Principal Component 2", color = "World\nregion") +
   scale_color_manual(values = c("Latin America and the Caribbean" = "#FFDF3D",
-                                "Africa" =  "darkred",
+                                "Africa" =  "#FCA636",
                                 "Asia" = "#FC7300" ,
                                 "Europe" = "#9C179E", 
                                 "Oceania" = "#6A00A8",
