@@ -1430,16 +1430,18 @@ local.database.map$approach <- "Databases approach"
 local.refs.map.q$approach <- "References approach"
 local.cits.map.q$approach <- "Citations approach"
 
-map.q <- rbind(local.toponyms.map.q, local.language.map, local.pubs.map.q, local.database.map, local.refs.map.q, local.cits.map.q)
+map.q <- bind_rows(local.toponyms.map.q, local.language.map, local.pubs.map.q, local.database.map, local.refs.map.q, local.cits.map.q)
 map.q$approach <- factor(map.q$approach, levels = c("Toponyms approach", "Languages approach", "Authors approach", "Databases approach", "References approach", "Citations approach"))
 
 ggplot() +
-  geom_sf(data = map.q, aes(fill = pubs.share)) +
+  geom_sf(data = map.q %>% filter(ISO_A2_EH != "AQ"), aes(fill = pubs.share)) +
   scale_fill_viridis_c(name = "Publication share", na.value = "grey50", option = "plasma") +
   facet_wrap(~approach, ncol = 2) +
   theme_minimal() +
-  theme(legend.position = "bottom")
-ggsave("~/Desktop/Local.Research/Figure4.png", width = 6.27, height = 6.27, dpi = 300, bg = "white")
+  theme(legend.position = "bottom",
+        axis.text = element_blank(),
+        axis.ticks = element_blank())
+ggsave("~/Desktop/Local.Research/Figure4.png", width = 8.27, height = 8.27, dpi = 300, bg = "white")
 
 
 ### REGIONS
